@@ -16,3 +16,8 @@ type NullableJSON = {
   RawMessage: JSON;
   Valid: boolean;
 }
+
+type NullableTime = {
+	Time: string;
+	Valid: boolean;
+};

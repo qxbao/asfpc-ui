@@ -14,7 +14,7 @@ export const accountApi = createApi({
       }),
       providesTags: ["AccountStats"],
     }),
-    getAccountInfo: builder.query<GetAccountInfoResponse, GetAccountDTO>({
+    getAccountInfo: builder.query<GetAccountInfoResponse, GetAccountRequest>({
       query: (params) => ({
         url: "/account/info",
         method: "GET",
@@ -29,6 +29,14 @@ export const accountApi = createApi({
         params,
       }),
       providesTags: ["AccountList"],
+    }),
+    getGroupsByAccountID: builder.query<GetGroupsByAccountResponse, GetGroupsByAccountRequest>({
+      query: (params) => ({
+        url: "/account/group/list",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["SingleStats"],
     }),
     addAccount: builder.mutation<void, AddAccountRequest>({
       query: (body) => ({
@@ -62,15 +70,25 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["SingleStats", "AccountList"],
     }),
+    addGroup: builder.mutation<void, AddGroupRequest>({
+      query: (body) => ({
+        url: "/account/group/add",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["SingleStats"],
+    }),
   })
 })
 
 export const {
   useGetAccountStatsQuery,
   useGetAccountListQuery,
+  useGetGroupsByAccountIDQuery,
   useAddAccountMutation,
   useDeleteAccountsMutation,
   useRenewAccountsTokenMutation,
   useGetAccountInfoQuery,
   useUpdateAccountCredentialsMutation,
+  useAddGroupMutation,
 } = accountApi;

@@ -404,11 +404,11 @@ function AddAccountCard() {
 	};
 
 	return (
-		<Card sx={{ border: 2, borderColor: "divider", borderRadius: 5 }}>
+		<Card sx={{ border: 2, borderColor: "divider", borderRadius: 3 }}>
 			<CardHeader
 				title="New Bot"
 				slotProps={{
-					title: { fontSize: 18, fontWeight: 600, align: "center" },
+					title: { fontSize: 17, fontWeight: 600, align: "center" },
 				}}
 				sx={{
 					bgcolor: "background.paper",
@@ -416,7 +416,7 @@ function AddAccountCard() {
 					borderColor: "divider",
 				}}
 			/>
-			<CardContent>
+			<CardContent sx={{ padding: 3 }}>
 				<Box
 					component="form"
 					onSubmit={handleSubmit(onSubmit)}

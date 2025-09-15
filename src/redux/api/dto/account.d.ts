@@ -60,7 +60,7 @@ type AccountInfoDetails = {
   ProxyID: NullableInt32
 }
 
-type GetAccountDTO = {
+type GetAccountRequest = {
   id: number;
 }
 

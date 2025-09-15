@@ -49,7 +49,7 @@ const AppDialog: React.FC = () => {
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       maxWidth="sm"
-      sx={{ "& .MuiPaper-root": { bgcolor: 'white', py: 2 } }}
+      sx={{ "& .MuiPaper-root": { bgcolor: 'white', py: 1 } }}
       fullWidth
     >
       <DialogTitle
@@ -58,15 +58,12 @@ const AppDialog: React.FC = () => {
         {title}
       </DialogTitle>
       <DialogContent>
-        {type !== 'confirm' ? (
-          <DialogContentText id="dialog-description">
-            {content}
-          </DialogContentText>
-        ) : (
-          <DialogContentText id="dialog-description">
-            {content}
-          </DialogContentText>
-        )}
+        <DialogContentText 
+          id="dialog-description"
+          component="div"
+        >
+          {content}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="secondary" variant='outlined' sx={{borderWidth: 2}} autoFocus>
