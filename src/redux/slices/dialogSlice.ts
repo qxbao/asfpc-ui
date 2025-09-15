@@ -3,10 +3,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface DialogState {
   isOpen: boolean;
   title: string;
-  content: string;
-  type: 'info' | 'warning' | 'error' | 'success' | 'confirm';
-  onConfirm?: string; // Action type to dispatch on confirm
-  data?: any; // Any additional data needed for the dialog
+  content: string | React.ReactNode;
+  type: 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning' | 'confirm';
+  onConfirm?: string;
+  data?: any;
 }
 
 const initialState: DialogState = {

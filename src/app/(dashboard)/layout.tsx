@@ -1,6 +1,7 @@
 "use client";
 import CustomAppBar from "@/components/layouts/CustomAppBar";
 import CustomSideBar from "@/components/layouts/CustomSideBar";
+import AppDialog from "@/components/ui/AppDialog";
 import { Box, Toolbar, Typography } from "@mui/material";
 
 export default function DashboardLayout({
@@ -16,6 +17,7 @@ export default function DashboardLayout({
         <Toolbar />
         {children}
       </Box>
+      <AppDialog />
     </Box>
   );
 }

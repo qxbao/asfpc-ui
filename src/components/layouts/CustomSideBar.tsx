@@ -40,8 +40,7 @@ export default function CustomSideBar() {
                   borderRadius: 1,
                   color: pathname === item.url ? 'primary.contrastText' : 'secondary.main',
                   '&:hover': { bgcolor: pathname === item.url ? 'primary.main' : 'action.hover' }
-                }}
-                >
+              }}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText 
                   primary={item.text}

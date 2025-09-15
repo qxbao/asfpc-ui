@@ -1,15 +1,14 @@
-import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Button,
-  Alert
-} from '@mui/material';
-import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { closeDialog } from '@/redux/slices/dialogSlice';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@mui/material';
+import React from 'react';
 
 const AppDialog: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +25,7 @@ const AppDialog: React.FC = () => {
     handleClose();
   };
 
-  const getAlertSeverity = () => {
+  const getDialogColor = (): 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning' => {
     switch (type) {
       case 'error':
         return 'error';
@@ -35,8 +34,9 @@ const AppDialog: React.FC = () => {
       case 'success':
         return 'success';
       case 'info':
-      default:
         return 'info';
+      default:
+        return 'primary';
     }
   };
 
@@ -49,18 +49,19 @@ const AppDialog: React.FC = () => {
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       maxWidth="sm"
+      sx={{ "& .MuiPaper-root": { bgcolor: 'white', py: 2 } }}
       fullWidth
     >
-      <DialogTitle id="dialog-title">
+      <DialogTitle
+        sx={{ color: getDialogColor() + ".main", fontWeight: 'bold' }}
+        id="dialog-title">
         {title}
       </DialogTitle>
       <DialogContent>
         {type !== 'confirm' ? (
-          <Alert severity={getAlertSeverity()} sx={{ mb: 2 }}>
-            <DialogContentText id="dialog-description">
-              {content}
-            </DialogContentText>
-          </Alert>
+          <DialogContentText id="dialog-description">
+            {content}
+          </DialogContentText>
         ) : (
           <DialogContentText id="dialog-description">
             {content}
@@ -68,11 +69,11 @@ const AppDialog: React.FC = () => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="inherit">
+        <Button onClick={handleClose} color="secondary" variant='outlined' sx={{borderWidth: 2}} autoFocus>
           {isConfirmDialog ? 'Cancel' : 'Close'}
         </Button>
         {isConfirmDialog && (
-          <Button onClick={handleConfirm} color="primary" variant="contained">
+          <Button onClick={handleConfirm} color={getDialogColor()} variant="contained" autoFocus>
             Confirm
           </Button>
         )}

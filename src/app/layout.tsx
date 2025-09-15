@@ -1,4 +1,5 @@
 import { CustomThemeProvider } from '@/contexts/CustomThemeProvider';
+import { CssVarsProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import "./globals.css";
 import StoreProvider from '@/contexts/StoreProvider';
