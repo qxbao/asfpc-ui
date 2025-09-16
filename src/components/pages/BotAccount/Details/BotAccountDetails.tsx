@@ -1,9 +1,15 @@
 "use client";
 import Navigator from "@/components/ui/Navigator";
-import { useAddGroupMutation, useGetAccountInfoQuery, useGetGroupsByAccountIDQuery, useUpdateAccountCredentialsMutation } from "@/redux/api/account.api";
+import {
+	useAddGroupMutation,
+	useGetAccountInfoQuery,
+	useGetGroupsByAccountIDQuery,
+	useJoinGroupMutation,
+	useUpdateAccountCredentialsMutation,
+} from "@/redux/api/account.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
-import { Add, Save } from "@mui/icons-material";
+import { Add, Login, Save } from "@mui/icons-material";
 import {
 	Box,
 	Button,
@@ -11,14 +17,21 @@ import {
 	CardContent,
 	CardHeader,
 	Grid,
+	IconButton,
 	Paper,
 	TextField,
-	Typography
+	Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FieldErrors, SubmitHandler, useForm, UseFormRegister, UseFormWatch } from "react-hook-form";
+import {
+	FieldErrors,
+	SubmitHandler,
+	useForm,
+	UseFormRegister,
+	UseFormWatch,
+} from "react-hook-form";
 
 export default function BotAccountDetailsPage({
 	accountId,
@@ -26,12 +39,16 @@ export default function BotAccountDetailsPage({
 	accountId: number;
 }) {
 	const router = useRouter();
-	const { data: groupsData, isLoading: isLoadingGroups } = useGetGroupsByAccountIDQuery({
-		account_id: accountId
+	const { data: groupsData, isLoading: isLoadingGroups } =
+		useGetGroupsByAccountIDQuery({
+			account_id: accountId,
+		});
+	const { data: accountData, isLoading, isError } = useGetAccountInfoQuery({
+		id: accountId,
 	});
 	return (
 		<Box>
-			<Navigator link={["Bot account", "Bot Configuration"]} />
+			<Navigator link={["Bot accounts", "Bot Configuration"]} />
 			<Typography variant="h6" fontWeight={600} mb={1}>
 				Bot Configuration
 			</Typography>
@@ -47,13 +64,25 @@ export default function BotAccountDetailsPage({
 			</Box>
 			<Grid container spacing={2} mb={2}>
 				<Grid size={9}>
-					<AccountInfoCard accountId={accountId} groupLen={(isLoadingGroups || !groupsData?.data) ? 0 : groupsData?.data.length || 0} />
+					<AccountInfoCard
+						accountData={accountData?.data!}
+						groupLen={
+							isLoadingGroups || !groupsData?.data
+								? 0
+								: groupsData?.data.length || 0
+						}
+						isLoading={isLoading}
+						isError={isError}
+					/>
 				</Grid>
 				<Grid size={3}>
 					<AddGroupCard accountId={accountId} />
 				</Grid>
 				<Grid size={9}>
-					<GroupsTable groups={isLoadingGroups ? [] : groupsData?.data || []} accountId={accountId} />
+					<GroupsTable
+						groups={isLoadingGroups ? [] : groupsData?.data || []}
+						account={accountData?.data!}
+					/>
 				</Grid>
 			</Grid>
 		</Box>
@@ -67,11 +96,19 @@ type AccountDetailsUpdateForm = {
 	repeatPassword?: string;
 };
 
-function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen: number }) {
-	const { data, isLoading, isError } = useGetAccountInfoQuery({
-		id: accountId,
-	});
-	const [updateAccountCredentials, { isLoading: isUpdating }] = useUpdateAccountCredentialsMutation();
+function AccountInfoCard({
+	accountData,
+	groupLen,
+	isLoading,
+	isError,
+}: {
+	accountData: AccountInfoDetails;
+	groupLen: number;
+	isLoading: boolean;
+	isError: boolean;
+}) {
+	const [updateAccountCredentials, { isLoading: isUpdating }] =
+		useUpdateAccountCredentialsMutation();
 	const dispatch = useAppDispatch();
 	const [isEditing, setIsEditing] = useState(false);
 	const {
@@ -84,20 +121,24 @@ function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen:
 		mode: "all",
 	});
 
-	const handleSave: SubmitHandler<AccountDetailsUpdateForm> = async (formData) => {
+	const handleSave: SubmitHandler<AccountDetailsUpdateForm> = async (
+		formData
+	) => {
 		try {
 			await updateAccountCredentials({
-				id: accountId,
+				id: accountData.ID,
 				username: formData.username,
 				email: formData.email,
-				password: formData.password || data?.data.Password!,
+				password: formData.password || accountData.Password!,
 			}).unwrap();
 			dispatch(
 				openDialog({
 					title: "Success",
-					content: <Typography>
-						Bot <b>{watch("username")}</b> has been updated successfully!
-					</Typography>,
+					content: (
+						<Typography>
+							Bot <b>{watch("username")}</b> has been updated successfully!
+						</Typography>
+					),
 					type: "success",
 				})
 			);
@@ -106,7 +147,9 @@ function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen:
 			dispatch(
 				openDialog({
 					title: `ERROR ${(error as FetchError).status}`,
-					content: `Failed to update account: ${(error as FetchError).data.error}`,
+					content: `Failed to update account: ${
+						(error as FetchError).data.error
+					}`,
 					type: "error",
 				})
 			);
@@ -114,10 +157,10 @@ function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen:
 	};
 
 	const handleToggleMode = () => {
-		setValue("username", data?.data.Username || "");
-		setValue("email", data?.data.Email || "");
+		setValue("username", accountData.Username || "");
+		setValue("email", accountData.Email || "");
 		setIsEditing(!isEditing);
-	}
+	};
 
 	if (isLoading)
 		return (
@@ -142,11 +185,7 @@ function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen:
 				title={"Account Information"}
 				action={
 					!isEditing ? (
-						<Button
-							variant="outlined"
-							size="small"
-							onClick={handleToggleMode}
-						>
+						<Button variant="outlined" size="small" onClick={handleToggleMode}>
 							Edit
 						</Button>
 					) : (
@@ -160,7 +199,12 @@ function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen:
 							>
 								{isUpdating ? "Saving..." : "Save"}
 							</Button>
-							<Button variant="outlined" size="small" disabled={isUpdating} onClick={handleToggleMode}>
+							<Button
+								variant="outlined"
+								size="small"
+								disabled={isUpdating}
+								onClick={handleToggleMode}
+							>
 								Cancel
 							</Button>
 						</Box>
@@ -177,14 +221,24 @@ function AccountInfoCard({ accountId, groupLen }: { accountId: number, groupLen:
 			/>
 			<CardContent>
 				<Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-					{isEditing ? <EditAccount register={register} errors={errors} watch={watch} /> : <ShowAccount data={data!.data} groupLen={groupLen} />}
+					{isEditing ? (
+						<EditAccount register={register} errors={errors} watch={watch} />
+					) : (
+						<ShowAccount data={accountData} groupLen={groupLen} />
+					)}
 				</Box>
 			</CardContent>
 		</Card>
 	);
 }
 
-function ShowAccount({ data, groupLen }: { data: AccountInfoDetails, groupLen: number }) {
+function ShowAccount({
+	data,
+	groupLen,
+}: {
+	data: AccountInfoDetails;
+	groupLen: number;
+}) {
 	return (
 		<Grid container spacing={2} sx={{ rowGap: 2 }}>
 			<Grid size={6}>
@@ -343,11 +397,7 @@ function EditAccount({
 	);
 }
 
-function AddGroupCard({
-	accountId,
-}: {
-	accountId: number;
-}) {
+function AddGroupCard({ accountId }: { accountId: number }) {
 	const dispatch = useAppDispatch();
 	const {
 		register,
@@ -451,20 +501,48 @@ function AddGroupCard({
 	);
 }
 
-function GroupsTable({ groups, accountId }: { groups: GroupInfo[], accountId: number }) {
+function GroupsTable({
+	groups,
+	account,
+}: {
+	groups: GroupInfo[];
+	account: AccountInfoDetails;
+}) {
 	const [selectedIds, setSelectedIds] = useState<(number | string)[]>([]);
+	const [disableJoinGroup, setDisableJoinGroup] = useState(false);
 	const [paginationModel, setPaginationModel] = useState({
 		page: 0,
 		pageSize: 5,
 	});
 	const columns: GridColDef[] = [
-		{ field: "id", headerName: "Group ID", width: 150 },
+		{ field: "id", headerName: "ID", width: 100 },
+		{ field: "gid", headerName: "Group ID", width: 150 },
 		{ field: "groupName", headerName: "Group Name", flex: 1, minWidth: 150 },
 		{
-			field: "isJoined", headerName: "Joined", width: 120, type: "boolean"
+			field: "isJoined",
+			headerName: "Joined",
+			width: 120,
+			type: "boolean",
 		},
 		{
-			field: "scannedAt", headerName: "Last Scanned", width: 200
+			field: "scannedAt",
+			headerName: "Last Scanned",
+			width: 200,
+		},
+		{
+			field: "utils",
+			headerName: "Actions",
+			headerAlign: "center",
+			width: 150,
+			sortable: false,
+			filterable: false,
+			renderCell: (params) => (
+				<ActionsCell
+					disableJoinGroup={disableJoinGroup || !(account.Cookies.Valid)}
+					setDisableJoinGroup={setDisableJoinGroup}
+					groupId={params.row.id}
+				/>
+			),
 		},
 	];
 
@@ -473,10 +551,13 @@ function GroupsTable({ groups, accountId }: { groups: GroupInfo[], accountId: nu
 			<Paper sx={{ height: 500, width: "100%" }}>
 				<DataGrid
 					rows={groups.map((group) => ({
-						id: group.GroupID,
+						id: group.ID,
+						gid: group.GroupID,
 						groupName: group.GroupName,
 						isJoined: group.IsJoined,
-						scannedAt: group.ScannedAt.Valid ? new Date(group.ScannedAt.Time).toLocaleString() : "N/A",
+						scannedAt: group.ScannedAt.Valid
+							? new Date(group.ScannedAt.Time).toLocaleString()
+							: "N/A",
 					}))}
 					columns={columns}
 					rowCount={groups.length}
@@ -507,6 +588,64 @@ function GroupsTable({ groups, accountId }: { groups: GroupInfo[], accountId: nu
 					}}
 				/>
 			</Paper>
+		</Box>
+	);
+}
+
+function ActionsCell({
+	disableJoinGroup,
+	setDisableJoinGroup,
+	groupId,
+}: {
+	disableJoinGroup: boolean;
+	setDisableJoinGroup: (val: boolean) => void;
+	groupId: number;
+}) {
+	const [joinGroup, { isLoading }] = useJoinGroupMutation();
+	const dispatch = useAppDispatch();
+	const handleJoinGroup = async (e: React.MouseEvent<HTMLElement>) => {
+		e.stopPropagation();
+		setDisableJoinGroup(true);
+		try {
+			await joinGroup({ gid: Number(groupId) }).unwrap();
+			dispatch(
+				openDialog({
+					title: "Success",
+					content: `Join group task has been completed!`,
+					type: "success",
+				})
+			);
+			setDisableJoinGroup(false);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: `${(error as FetchError).status} ERROR`,
+					content: `Details: ${(error as FetchError).data.error}`,
+					type: "error",
+				})
+			);
+			setDisableJoinGroup(false);
+		}
+	};
+	return (
+		<Box
+			display="flex"
+			height="100%"
+			flexGrow={1}
+			alignContent={"center"}
+			justifyContent={"center"}
+		>
+			<Box>
+				<IconButton
+					onClick={handleJoinGroup}
+					size="small"
+					color="success"
+					title="Join group"
+					disabled={disableJoinGroup || isLoading}
+				>
+					<Login fontSize="small" />
+				</IconButton>
+			</Box>
 		</Box>
 	);
 }

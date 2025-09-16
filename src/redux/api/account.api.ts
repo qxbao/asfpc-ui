@@ -62,6 +62,14 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["AccountList", "AccountStats"],
     }),
+    loginAccount: builder.mutation<void, LoginAccountRequest>({
+      query: (body) => ({
+        url: "/account/login",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["SingleStats", "AccountList", "AccountStats"],
+    }),
     updateAccountCredentials: builder.mutation<void, UpdateAccountCredentialsRequest>({
       query: (body) => ({
         url: "/account/update/credentials",
@@ -78,6 +86,14 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["SingleStats"],
     }),
+    joinGroup: builder.mutation<void, JoinGroupRequest>({
+      query: (body) => ({
+        url: "/account/group/join",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["SingleStats", "AccountList"],
+    }),
   })
 })
 
@@ -88,7 +104,9 @@ export const {
   useAddAccountMutation,
   useDeleteAccountsMutation,
   useRenewAccountsTokenMutation,
+  useLoginAccountMutation,
   useGetAccountInfoQuery,
   useUpdateAccountCredentialsMutation,
   useAddGroupMutation,
+  useJoinGroupMutation,
 } = accountApi;

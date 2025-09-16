@@ -4,6 +4,10 @@ type AddGroupRequest = {
   account_id: number;
 }
 
+type JoinGroupRequest = {
+  gid: number;
+}
+
 type GetGroupsByAccountRequest = {
   account_id: number;
 }

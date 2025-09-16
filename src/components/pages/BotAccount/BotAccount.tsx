@@ -5,6 +5,7 @@ import {
 	useDeleteAccountsMutation,
 	useGetAccountListQuery,
 	useGetAccountStatsQuery,
+	useLoginAccountMutation,
 	useRenewAccountsTokenMutation,
 } from "@/redux/api/account.api";
 import { useAppDispatch } from "@/redux/hooks";
@@ -16,6 +17,7 @@ import {
 	Check,
 	Delete,
 	Edit,
+	Login,
 	Refresh,
 	Settings,
 	Visibility,
@@ -113,6 +115,7 @@ function AccountsStats() {
 function AccountTable() {
 	const { data: accountStats, isLoading: il1 } = useGetAccountStatsQuery();
 	const [selectedIds, setSelectedIds] = useState<(number | string)[]>([]);
+	const [disableLogin, setDisableLogin] = useState(false);
 	const [paginationModel, setPaginationModel] = useState({
 		page: 0,
 		pageSize: 10,
@@ -149,7 +152,13 @@ function AccountTable() {
 			width: 150,
 			sortable: false,
 			filterable: false,
-			renderCell: (params) => <ActionsCell accountId={params.row.id} />,
+			renderCell: (params) => (
+				<ActionsCell
+					disableLogin={disableLogin}
+					setDisableLogin={setDisableLogin}
+					accountId={params.row.id}
+				/>
+			),
 		},
 	];
 
@@ -325,12 +334,46 @@ function AccountTableToolbar({
 	);
 }
 
-function ActionsCell({ accountId }: { accountId: number | string }) {
+function ActionsCell({
+	accountId,
+	disableLogin,
+	setDisableLogin,
+}: {
+	accountId: number | string;
+	disableLogin: boolean;
+	setDisableLogin: Dispatch<SetStateAction<boolean>>;
+}) {
+	const [loginAccount, { isLoading }] = useLoginAccountMutation();
+	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const handleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 		router.push(`/account/${accountId}`);
 	};
+	const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.stopPropagation();
+		setDisableLogin(true);
+		try {
+			await loginAccount({ uid: Number(accountId) }).unwrap();
+			dispatch(
+				openDialog({
+					title: "Success",
+					content: `Login task has been completed!`,
+					type: "success",
+				})
+			);
+			setDisableLogin(false);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: `${(error as FetchError).status} ERROR`,
+					content: `Details: ${(error as FetchError).data.error}`,
+					type: "error",
+				})
+			);
+			setDisableLogin(false);
+		}
+	}
 	return (
 		<Box
 			display="flex"
@@ -342,9 +385,21 @@ function ActionsCell({ accountId }: { accountId: number | string }) {
 			<Box>
 				<IconButton
 					onClick={handleEdit}
-					size="small" color="primary" title="Config">
+					size="small"
+					color="secondary"
+					title="Config"
+				>
 					<Settings fontSize="small" />
-				</IconButton>				
+				</IconButton>
+				<IconButton
+					onClick={handleLogin}
+					disabled={disableLogin || isLoading}
+					size="small"
+					color="success"
+					title="Login"
+				>
+					<Login fontSize="small" />
+				</IconButton>
 			</Box>
 		</Box>
 	);

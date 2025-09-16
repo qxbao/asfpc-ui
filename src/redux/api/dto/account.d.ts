@@ -42,6 +42,10 @@ type RenewAccessTokenResponse = {
   }
 }
 
+type LoginAccountRequest = {
+  uid: number;
+}
+
 type GetAccountInfoResponse = {
   data: AccountInfoDetails;
 }
