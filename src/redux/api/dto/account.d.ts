@@ -20,7 +20,7 @@ type AccountInfo = {
 }
 
 type GetAccountListResponse = {
-  data: AccountInfo[];
+  data: AccountInfo[] | null;
 }
 
 type GetAccountListRequest = {
