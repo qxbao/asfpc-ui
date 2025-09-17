@@ -171,7 +171,7 @@ function AccountTable() {
 			<Paper sx={{ height: 500, width: "100%" }}>
 				<DataGrid
 					rows={
-						(!il2 && accountList)
+						(!il2 && accountList && accountList.data)
 							? accountList.data.map((account) => ({
 									id: account.ID,
 									username: account.Username,
