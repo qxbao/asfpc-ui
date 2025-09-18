@@ -1,6 +1,4 @@
 import { CustomThemeProvider } from '@/contexts/CustomThemeProvider';
-import { CssVarsProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
 import "./globals.css";
 import StoreProvider from '@/contexts/StoreProvider';
 
@@ -17,7 +15,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <CustomThemeProvider>
-          <CssBaseline />
           <StoreProvider>{children}</StoreProvider>
         </CustomThemeProvider>
       </body>

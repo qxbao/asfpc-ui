@@ -1,17 +1,18 @@
 import BotAccountDetailsPage from '@/components/pages/BotAccount/Details/BotAccountDetails';
 import React from 'react'
 
-export default function BotAccountDetails({
+export default async function BotAccountDetails({
   params,
 }: {
-  params: { account_id: string }
+  params: Promise<{ account_id: string }>
 }) {
   let account_id: number;
-  if (!params.account_id) {
+  const p = (await params);
+  if (!p.account_id) {
     return <div>Account ID is required</div>
   }
   try {
-    account_id = parseInt(params.account_id)
+    account_id = parseInt(p.account_id)
     if (isNaN(account_id)) {
       return <div>Invalid Account ID</div>
     }

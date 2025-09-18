@@ -5,7 +5,7 @@ import React from "react";
 
 export default function Navigator({ link }: { link: string[] }) {
 	return (
-		<Box display={"flex"} gap={0.8} fontSize={13} color={"text.secondary"}>
+		<Box display={"flex"} alignItems={"center"} gap={0.8} fontSize={13} color={"text.secondary"}>
 			<CustomLink href="/">
 				<Home sx={{ fontSize: 18 }} />
 			</CustomLink>

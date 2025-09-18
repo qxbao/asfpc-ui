@@ -12,7 +12,7 @@ type NavChild = {
 const navItems: NavChild[] = [
   { text: "Quick Access ", icon: <Dashboard />, url: "/" },
   { text: "Bot Accounts", icon: <AccountBox />, url: "/account" },
-  { text: "Groups & Comments", icon: <BarChart />, url: "/gac" },
+  { text: "Statistics", icon: <BarChart />, url: "/stats" },
   { text: "Logs", icon: <Assignment />, url: "/logs" },
   { text: "Settings", icon: <Settings />, url: "/settings" },
 ]

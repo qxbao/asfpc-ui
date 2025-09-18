@@ -15,8 +15,6 @@ import {
 	Add,
 	Block,
 	Check,
-	Delete,
-	Edit,
 	Login,
 	Refresh,
 	Settings,
@@ -45,7 +43,7 @@ import { useRouter } from "next/navigation";
 
 export default function BotAccountPage() {
 	return (
-		<Box>
+		<Box bgcolor={"background.paper"} p={3}>
 			<Navigator link={["Bot accounts"]} />
 			<Typography variant="h6" fontWeight={600} marginBottom={3}>
 				Bot Account Management
