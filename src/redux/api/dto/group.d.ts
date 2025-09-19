@@ -24,3 +24,7 @@ type GroupInfo = {
   AccountID: NullableInt32;
   ScannedAt: NullableTime;
 }
+
+type DeleteGroupRequest = {
+  group_id: number;
+}

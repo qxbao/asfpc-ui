@@ -51,9 +51,8 @@ function PromptTable() {
   });
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 70 },
     {
-      field: "service_name",
+      field: "id",
       headerName: "Service",
       width: 200,
     },
@@ -73,12 +72,11 @@ function PromptTable() {
           rows={
             (!isLoadingPrompts && promptList)
               ? promptList.data.map((prompt) => ({
-                  id: prompt.ID,
-                  service_name: prompt.ServiceName,
+                  id: prompt.ServiceName,
                   version: prompt.Version,
                   content: prompt.Content,
                   created_by: prompt.CreatedBy,
-                  created_at: prompt.CreatedAt,
+                  created_at: new Date(prompt.CreatedAt).toLocaleString(),
                 }))
               : []
           }
@@ -91,6 +89,7 @@ function PromptTable() {
           pageSizeOptions={[5, 10, 25]}
           checkboxSelection
           sx={{
+            minHeight: 500,
             border: 2,
             borderColor: "divider",
             bgcolor: "background.paper",

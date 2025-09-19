@@ -2,6 +2,7 @@
 import Navigator from "@/components/ui/Navigator";
 import {
 	useAddGroupMutation,
+	useDeleteGroupMutation,
 	useGetAccountInfoQuery,
 	useGetGroupsByAccountIDQuery,
 	useJoinGroupMutation,
@@ -9,7 +10,7 @@ import {
 } from "@/redux/api/account.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
-import { Add, Login, Save } from "@mui/icons-material";
+import { Add, Delete, Login, Save } from "@mui/icons-material";
 import {
 	Box,
 	Button,
@@ -602,6 +603,7 @@ function ActionsCell({
 	groupId: number;
 }) {
 	const [joinGroup, { isLoading }] = useJoinGroupMutation();
+	const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
 	const dispatch = useAppDispatch();
 	const handleJoinGroup = async (e: React.MouseEvent<HTMLElement>) => {
 		e.stopPropagation();
@@ -627,6 +629,27 @@ function ActionsCell({
 			setDisableJoinGroup(false);
 		}
 	};
+	const handleDeleteGroup = async (e: React.MouseEvent<HTMLElement>) => {
+		e.stopPropagation();
+		try {
+			await deleteGroup({ group_id: Number(groupId) }).unwrap();
+			dispatch(
+				openDialog({
+					title: "Success",
+					content: `Group has been deleted successfully!`,
+					type: "success",
+				})
+			);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: `${(error as FetchError).status} ERROR`,
+					content: `Details: ${(error as FetchError).data.error}`,
+					type: "error",
+				})
+			);
+		}
+	};
 	return (
 		<Box
 			display="flex"
@@ -644,6 +667,16 @@ function ActionsCell({
 					disabled={disableJoinGroup || isLoading}
 				>
 					<Login fontSize="small" />
+				</IconButton>
+				
+				<IconButton
+					onClick={handleDeleteGroup}
+					size="small"
+					color="error"
+					title="Delete group"
+					disabled={isDeleting}
+				>
+					<Delete fontSize="small" />
 				</IconButton>
 			</Box>
 		</Box>

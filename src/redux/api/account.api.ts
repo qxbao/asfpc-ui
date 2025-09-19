@@ -94,6 +94,14 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["SingleStats", "AccountList"],
     }),
+    deleteGroup: builder.mutation<void, DeleteGroupRequest>({
+      query: (body) => ({
+        url: "/account/group/delete",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["SingleStats", "AccountList"],
+    }),
   })
 })
 
@@ -109,4 +117,5 @@ export const {
   useUpdateAccountCredentialsMutation,
   useAddGroupMutation,
   useJoinGroupMutation,
+  useDeleteGroupMutation,
 } = accountApi;
