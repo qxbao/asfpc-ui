@@ -23,11 +23,6 @@ type GetAccountListResponse = {
   data: AccountInfo[] | null;
 }
 
-type GetAccountListRequest = {
-  page?: number;
-  limit?: number;
-}
-
 type AddAccountRequest = {
   username: string;
   email: string;

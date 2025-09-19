@@ -22,7 +22,7 @@ export const accountApi = createApi({
       }),
       providesTags: ["SingleStats"],
     }),
-    getAccountList: builder.query<GetAccountListResponse, GetAccountListRequest>({
+    getAccountList: builder.query<GetAccountListResponse, QueryRequestWithPage>({
       query: (params) => ({
         url: "/account/list",
         method: "GET",

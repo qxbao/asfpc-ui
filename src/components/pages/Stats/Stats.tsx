@@ -18,7 +18,9 @@ export default function StatsPageComponent() {
 }
 
 function StatsGrid() {
-	const { data, isLoading, isError } = useGetDataStatsQuery();
+	const { data, isLoading, isError } = useGetDataStatsQuery(undefined, {
+		pollingInterval: 10000,
+	});
 	if (isLoading) {
 		return <Typography>Loading...</Typography>;
 	}
@@ -34,8 +36,8 @@ function StatsGrid() {
 					value={data.data.TotalProfiles!}
 					icon={Person}
 					footer={`${(
-						(data.data.ScannedProfiles! / data.data.TotalProfiles!) *
-						100
+						data.data.ScannedProfiles! == 0 ? 0 :
+						(data.data.ScannedProfiles! / data.data.TotalProfiles!) * 100
 					).toFixed(2)}% (${data.data.ScannedProfiles!}) of them are scanned!`}
 				/>
 			</Grid>

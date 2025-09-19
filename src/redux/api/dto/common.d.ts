@@ -2,6 +2,11 @@ type RequestWithIDs = {
 	ids: number[];
 };
 
+type QueryRequestWithPage = {
+	page?: number;
+	limit?: number;
+}
+
 type NullableInt32 = {
 	Int32: number;
 	Valid: boolean;
