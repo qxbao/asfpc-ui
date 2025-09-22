@@ -13,10 +13,10 @@ const navItems: NavChild[] = [
   { text: "Quick Access ", icon: <Dashboard />, url: "/" },
   { text: "Bot Accounts", icon: <AccountBox />, url: "/account" },
   { text: "Prompts", icon: <Assignment />, url: "/prompt" },
-  { text: "Statistics", icon: <BarChart />, url: "/stats" },
   { text: "Analysis", icon: <Analytics />, url: "/analysis" },
-  { text: "Logs", icon: <DensitySmall />, url: "/log" },
   { text: "Gemini API Key", icon: <Key />, url: "/key" },
+  { text: "Statistics", icon: <BarChart />, url: "/stats" },
+  { text: "Logs", icon: <DensitySmall />, url: "/log" },
   { text: "Settings", icon: <Settings />, url: "/settings" },
 ]
 

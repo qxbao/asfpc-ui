@@ -97,6 +97,7 @@ function APITable() {
 			field: "key",
 			headerName: "API Key",
 			width: 400,
+			flex: 1,
 			renderCell: (params) => (
 				<Box sx={{ fontFamily: "monospace" }}>
 					{params.value ? `${params.value.substring(0, 20)}...${params.value.substring(params.value.length - 10)}` : ""}
@@ -106,7 +107,7 @@ function APITable() {
 		{
 			field: "tokenUsed",
 			headerName: "Tokens Used",
-			width: 150,
+			width: 200,
 			type: "number",
 			renderCell: (params) => (
 				<Box>{params.value?.toLocaleString()}</Box>
@@ -213,7 +214,6 @@ function AddAPIKeyCard() {
 						fullWidth
 						size="small"
 						multiline
-						rows={3}
 						slotProps={{
 							input: {
 								style: { fontFamily: "monospace", fontSize: "0.875rem" },
