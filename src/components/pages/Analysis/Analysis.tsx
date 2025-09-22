@@ -1,0 +1,127 @@
+"use client";
+import Navigator from "@/components/ui/Navigator";
+import { useAnalyzeProfileGeminiMutation, useGetProfilesQuery } from "@/redux/api/analysis.api";
+import { useAppDispatch } from "@/redux/hooks";
+import { openDialog } from "@/redux/slices/dialogSlice";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { useState } from "react";
+
+export default function AnalysisPageComponent() {
+	return (
+		<Box bgcolor={"background.paper"} p={3}>
+			<Navigator link={["Analysis"]} />
+			<Typography variant="h6" fontWeight={600} marginBottom={3}>
+				Analysis
+			</Typography>
+			<Grid container spacing={2} mb={2}>
+				<Grid size={12}>
+					<ProfileTable />
+				</Grid>
+			</Grid>
+		</Box>
+	);
+}
+
+function ProfileTable() {
+	const [paginationModel, setPaginationModel] = useState({
+		page: 0,
+		pageSize: 10,
+	});
+	const [analyzeProfile, { isLoading: isAnalyzingProfile }] = useAnalyzeProfileGeminiMutation();
+  const dispatch = useAppDispatch();
+  const { data: profileList, isLoading: isLoadingProfiles } = useGetProfilesQuery({
+    limit: paginationModel.pageSize,
+    page: paginationModel.page,
+  });
+
+
+  const handleAnalyzeProfile = async (profileId: number) => {
+    try {
+      const response = await analyzeProfile({ id: profileId }).unwrap();
+      dispatch(openDialog({
+        title: "Analysis Result",
+        content: `The analysis score is: ${response.data}`,
+        type: "success",
+      }))
+    } catch (error) {
+      dispatch(openDialog({
+        title: "Analysis Failed",
+        content: (error as FetchError).data.error,
+        type: "error",
+      }))
+    }
+  }
+
+  const columns: GridColDef[] = [
+		{
+			field: "id",
+			headerName: "ID",
+			width: 100,
+		},
+		{ field: "facebook_id", headerName: "Facebook ID", width: 200 },
+		{ field: "name", headerName: "Name", width: 250 },
+		{ field: "nn_count", headerName: "NN Score", width: 100 },
+		{ field: "is_analyzed", headerName: "Analyzed", type: "boolean", width: 100 },
+		{
+			field: "actions",
+			headerName: "Actions",
+			flex: 1,
+			headerAlign: "center",
+			renderCell(params) {
+				return (
+					<Box
+						display={"flex"}
+						justifyContent={"center"}
+						alignItems={"center"}
+						height={"100%"}
+						gap={2}
+					>
+						<Button
+              onClick={() => handleAnalyzeProfile(params.row.id)}
+              disabled={params.row.is_analyzed || isAnalyzingProfile} size="small" variant="outlined" color="success">
+							Analyze
+						</Button>
+					</Box>
+				);
+			},
+		},
+	];
+
+	return (
+		<Box>
+			<Paper sx={{ width: "100%" }}>
+				<Typography fontWeight={400} p={1} fontSize={14} bgcolor={"inherit"}>
+					Total Profiles: {profileList?.total || 0}
+				</Typography>
+				<DataGrid
+					rows={
+						!isLoadingProfiles && profileList
+							? profileList.data.map((profile) => ({
+									id: profile.ID,
+									name: profile.Name.String,
+									facebook_id: profile.FacebookID,
+									nn_count: profile.NonNullCount,
+									is_analyzed: profile.IsAnalyzed.Bool,
+							  }))
+							: []
+					}
+					columns={columns}
+					rowCount={profileList?.total || 0}
+					loading={isLoadingProfiles}
+					paginationModel={paginationModel}
+					onPaginationModelChange={setPaginationModel}
+					paginationMode="server"
+					pageSizeOptions={[10, 25, 100]}
+					checkboxSelection
+					sx={{
+						minHeight: 500,
+						border: 2,
+						borderColor: "divider",
+						bgcolor: "background.paper",
+					}}
+				/>
+			</Paper>
+		</Box>
+	);
+}

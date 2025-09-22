@@ -2,6 +2,11 @@ type RequestWithIDs = {
 	ids: number[];
 };
 
+type RequestWithID = {
+	id: number;
+};
+
+
 type QueryRequestWithPage = {
 	page?: number;
 	limit?: number;
@@ -24,5 +29,10 @@ type NullableJSON = {
 
 type NullableTime = {
 	Time: string;
+	Valid: boolean;
+};
+
+type NullableBool = {
+	Bool: boolean;
 	Valid: boolean;
 };

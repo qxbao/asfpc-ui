@@ -28,6 +28,13 @@ export const dataApi = createApi({
 			}),
 			invalidatesTags: ["Prompts"],
 		}),
+		getLogs: builder.query<GetLogsResponse, QueryRequestWithPage>({
+			query: (params) => ({
+				url: "/data/log/list",
+				method: "GET",
+				params,
+			}),
+		}),
 	}),
 });
 
@@ -35,4 +42,5 @@ export const {
 	useGetDataStatsQuery,
 	useGetAllPromptsQuery,
 	useCreatePromptMutation,
+	useGetLogsQuery,
 } = dataApi;

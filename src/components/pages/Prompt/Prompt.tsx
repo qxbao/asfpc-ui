@@ -81,7 +81,7 @@ function PromptTable() {
               : []
           }
           columns={columns}
-          rowCount={promptList?.total ? Math.ceil(promptList.total / paginationModel.pageSize) : 0}
+          rowCount={promptList?.total || 0}
           loading={isLoadingPrompts}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
