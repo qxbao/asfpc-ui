@@ -3,29 +3,32 @@ import { customQuery } from "./custom";
 import { BackendURL } from "@/lib/server";
 
 export const analysisApi = createApi({
-	baseQuery: customQuery(BackendURL),
-	reducerPath: "analysisApi",
-	tagTypes: ["Profiles", "APIKeys"],
-	endpoints: (builder) => ({
-		getProfiles: builder.query<
-			GetProfilesAnalysisResponse,
-			QueryRequestWithPage
-		>({
-			query: (params) => ({
-				url: "/analysis/profile/list",
-				method: "GET",
-				params,
-			}),
-			providesTags: ["Profiles"],
-		}),
-		analyzeProfileGemini: builder.mutation<AnalyzeProfileGeminiResponse, RequestWithID>({
-			query: (body) => ({
-				url: "/analysis/profile/analyze", 
-				method: "POST",
-				body,
-			}),
-			invalidatesTags: ["Profiles"],
-		}),
+  baseQuery: customQuery(BackendURL),
+  reducerPath: "analysisApi",
+  tagTypes: ["Profiles", "APIKeys"],
+  endpoints: (builder) => ({
+    getProfiles: builder.query<
+      GetProfilesAnalysisResponse,
+      QueryRequestWithPage
+    >({
+      query: (params) => ({
+        url: "/analysis/profile/list",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Profiles"],
+    }),
+    analyzeProfileGemini: builder.mutation<
+      AnalyzeProfileGeminiResponse,
+      RequestWithID
+    >({
+      query: (body) => ({
+        url: "/analysis/profile/analyze",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Profiles"],
+    }),
     getGeminiKeys: builder.query<GetGeminiKeysResponse, void>({
       query: () => ({
         url: "/analysis/key/list",
@@ -41,7 +44,20 @@ export const analysisApi = createApi({
       }),
       invalidatesTags: ["APIKeys"],
     }),
+    deleteJunkProfiles: builder.mutation<DeleteJunkProfilesResponse, void>({
+      query: () => ({
+        url: "/analysis/profile/delete_junk",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Profiles"],
+    }),
   }),
 });
 
-export const { useGetProfilesQuery, useAnalyzeProfileGeminiMutation, useGetGeminiKeysQuery, useAddGeminiKeyMutation } = analysisApi;
+export const {
+  useGetProfilesQuery,
+  useAnalyzeProfileGeminiMutation,
+  useGetGeminiKeysQuery,
+  useAddGeminiKeyMutation,
+  useDeleteJunkProfilesMutation,
+} = analysisApi;

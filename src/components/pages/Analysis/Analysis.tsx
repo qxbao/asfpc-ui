@@ -1,8 +1,9 @@
 "use client";
 import Navigator from "@/components/ui/Navigator";
-import { useAnalyzeProfileGeminiMutation, useGetProfilesQuery } from "@/redux/api/analysis.api";
+import { useAnalyzeProfileGeminiMutation, useDeleteJunkProfilesMutation, useGetProfilesQuery } from "@/redux/api/analysis.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
+import { DeleteForever } from "@mui/icons-material";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -34,7 +35,6 @@ function ProfileTable() {
     limit: paginationModel.pageSize,
     page: paginationModel.page,
   });
-
 
   const handleAnalyzeProfile = async (profileId: number) => {
     try {
@@ -90,6 +90,7 @@ function ProfileTable() {
 
 	return (
 		<Box>
+			<Toolbar />
 			<Paper sx={{ width: "100%" }}>
 				<Typography fontWeight={400} p={1} fontSize={14} bgcolor={"inherit"}>
 					Total Profiles: {profileList?.total || 0}
@@ -124,4 +125,37 @@ function ProfileTable() {
 			</Paper>
 		</Box>
 	);
+}
+
+function Toolbar() {
+	const [deleteJunkProfiles, { isLoading: isDeletingJunkProfiles }] = useDeleteJunkProfilesMutation();
+	const dispatch = useAppDispatch();
+	const handleDeleteJunkProfiles = async () => {
+		try {
+			const response = await deleteJunkProfiles().unwrap();
+			dispatch(openDialog({
+				title: "Delete Successful",
+				content: `Deleted ${response.data} junk profiles.`,
+				type: "success",
+			}));
+		} catch (error) {
+			dispatch(openDialog({
+				title: "Delete Failed",
+				content: (error as FetchError).data.error,
+				type: "error",
+			}));
+		}
+	}
+	return <Box sx={{ p: 1, border: 2, borderColor: "divider", bgcolor: "background.paper" }} >
+		<Button disabled={isDeletingJunkProfiles}
+			variant="contained"
+			color="error"
+			size="small"
+			sx={{ textTransform: "none" }}
+			onClick={handleDeleteJunkProfiles}
+			startIcon={<DeleteForever />}
+		>
+			Delete Junk Profiles
+		</Button>
+	</Box>;
 }

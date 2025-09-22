@@ -14,3 +14,7 @@ type ProfileAnalysis = {
 type AnalyzeProfileGeminiResponse = {
   data: float64;
 }
+
+type DeleteJunkProfilesResponse = {
+  data: number;
+}

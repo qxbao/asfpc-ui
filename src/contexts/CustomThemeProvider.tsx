@@ -29,7 +29,7 @@ const theme = createTheme({
       main: '#727272ff',
     },
     error: {
-      main: '#9e2f27ff',
+      main: '#941b12ff',
     },
     success: {
       main: '#1d9923ff',
