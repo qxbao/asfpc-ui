@@ -2,16 +2,12 @@
 import Navigator from "@/components/ui/Navigator";
 import {
 	useAddGeminiKeyMutation,
+	useDeleteGeminiKeyMutation,
 	useGetGeminiKeysQuery,
 } from "@/redux/api/analysis.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
-import {
-	Add,
-	Key,
-	Visibility,
-	VisibilityOff,
-} from "@mui/icons-material";
+import { Add, Delete, Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import {
 	Box,
 	Button,
@@ -54,9 +50,10 @@ export default function APIKeyPageComponent() {
 function APIKeysStats() {
 	const { data, isLoading } = useGetGeminiKeysQuery();
 	const totalKeys = data?.data?.length || 0;
-	const totalTokensUsed = data?.data?.reduce((sum, key) => sum + key.TokenUsed, 0) || 0;
+	const totalTokensUsed =
+		data?.data?.reduce((sum, key) => sum + key.TokenUsed, 0) || 0;
 	const loadingIcon = <CircularProgress color="secondary" size={40} />;
-	
+
 	return (
 		<Grid container spacing={4} mt={4}>
 			<Grid size={4}>
@@ -92,7 +89,29 @@ function APIKeysStats() {
 
 function APITable() {
 	const { data: apiKeys, isLoading } = useGetGeminiKeysQuery();
-
+	const [deleteGeminiKey, { isLoading: isDeleting }] = useDeleteGeminiKeyMutation();
+	const dispatch = useAppDispatch();
+	const handleDeleteAPIKey = async (id: number) => {
+		if (isDeleting) return;
+		try {
+			await deleteGeminiKey({ key_id: id }).unwrap();
+			dispatch(
+				openDialog({
+					title: "Success",
+					content: `Gemini API key has been deleted successfully!`,
+					type: "success",
+				})
+			);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: `${(error as FetchError).status} ERROR`,
+					content: `Details: ${(error as FetchError).data.error}`,
+					type: "error",
+				})
+			);
+		}
+	};
 	const columns: GridColDef[] = [
 		{ field: "id", headerName: "ID", width: 70 },
 		{
@@ -102,7 +121,11 @@ function APITable() {
 			flex: 1,
 			renderCell: (params) => (
 				<Box sx={{ fontFamily: "monospace" }}>
-					{params.value ? `${params.value.substring(0, 20)}...${params.value.substring(params.value.length - 10)}` : ""}
+					{params.value
+						? `${params.value.substring(0, 20)}...${params.value.substring(
+								params.value.length - 10
+						  )}`
+						: ""}
 				</Box>
 			),
 		},
@@ -111,8 +134,19 @@ function APITable() {
 			headerName: "Tokens Used",
 			width: 200,
 			type: "number",
+		},
+		{
+			field: "actions",
+			headerName: "Actions",
+			align: "right",
+			headerAlign: "right",
+			width: 150,
 			renderCell: (params) => (
-				<Box>{params.value?.toLocaleString()}</Box>
+				<Box>
+					<IconButton disabled={isDeleting} size="small" color="error" onClick={() => handleDeleteAPIKey(params.row.id)}>
+						<Delete fontSize="small" />
+					</IconButton>
+				</Box>
 			),
 		},
 	];
@@ -122,7 +156,7 @@ function APITable() {
 			<Paper sx={{ height: 400, width: "100%" }}>
 				<DataGrid
 					rows={
-						(!isLoading && apiKeys && apiKeys.data)
+						!isLoading && apiKeys && apiKeys.data
 							? apiKeys.data.map((key) => ({
 									id: key.ID,
 									key: key.ApiKey,

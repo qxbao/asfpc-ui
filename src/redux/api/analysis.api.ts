@@ -44,6 +44,14 @@ export const analysisApi = createApi({
       }),
       invalidatesTags: ["APIKeys"],
     }),
+    deleteGeminiKey: builder.mutation<void, DeleteGeminiKeyRequest>({
+      query: (body) => ({
+        url: "/analysis/key/delete",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["APIKeys"],
+    }),
     deleteJunkProfiles: builder.mutation<DeleteJunkProfilesResponse, void>({
       query: () => ({
         url: "/analysis/profile/delete_junk",
@@ -68,4 +76,5 @@ export const {
   useAnalyzeProfileGeminiMutation,
   useAddGeminiKeyMutation,
   useDeleteJunkProfilesMutation,
+  useDeleteGeminiKeyMutation,
 } = analysisApi;
