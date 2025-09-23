@@ -48,7 +48,7 @@ function ProfileStats() {
 	const loadingIcon = <CircularProgress color="secondary" size={40} />;
 	return (
 		<Grid container spacing={4} mt={4}>
-			<Grid size={4}>
+			<Grid size={3}>
 				<StatCard
 					title="Total Profiles"
 					value={isLoading ? loadingIcon : data?.data.TotalProfiles || 0}
@@ -56,7 +56,7 @@ function ProfileStats() {
 					color="primary.main"
 				/>
 			</Grid>
-			<Grid size={4}>
+			<Grid size={3}>
 				<StatCard
 					title="Scanned Profiles"
 					value={isLoading ? loadingIcon : data?.data.ScannedProfiles || 0}
@@ -73,7 +73,7 @@ function ProfileStats() {
 					}
 				/>
 			</Grid>
-			<Grid size={4}>
+			<Grid size={3}>
 				<StatCard
 					title="Analyzed Profiles"
 					value={isLoading ? loadingIcon : data?.data.AnalyzedProfiles || 0}
@@ -87,6 +87,21 @@ function ProfileStats() {
 										(data?.data.TotalProfiles || 1)) *
 									100
 							  ).toFixed(2)}% of all profiles`
+					}
+				/>
+			</Grid>
+			<Grid size={3}>
+				<StatCard
+					title="Embedded Profiles"
+					value={isLoading ? loadingIcon : data?.data.EmbeddedCount || 0}
+					icon={People}
+					color="success.main"
+					footer={
+						isLoading
+							? ""
+							: `${(
+									(data?.data.EmbeddedCount || 0) / (data?.data.AnalyzedProfiles || 1) * 100
+							  ).toFixed(2)}% of analyzed profiles`
 					}
 				/>
 			</Grid>

@@ -27,4 +27,5 @@ type ProfileStats = {
   TotalProfiles: number;
   ScannedProfiles: number;
   AnalyzedProfiles: number;
+  EmbeddedCount: number;
 }
