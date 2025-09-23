@@ -18,6 +18,7 @@ import {
 	Card,
 	CardContent,
 	CardHeader,
+	CircularProgress,
 	Grid,
 	IconButton,
 	InputAdornment,
@@ -54,6 +55,7 @@ function APIKeysStats() {
 	const { data, isLoading } = useGetGeminiKeysQuery();
 	const totalKeys = data?.data?.length || 0;
 	const totalTokensUsed = data?.data?.reduce((sum, key) => sum + key.TokenUsed, 0) || 0;
+	const loadingIcon = <CircularProgress color="secondary" size={40} />;
 	
 	return (
 		<Grid container spacing={4} mt={4}>
@@ -62,7 +64,7 @@ function APIKeysStats() {
 					icon={Key}
 					color="primary.main"
 					title="Total API Keys"
-					value={isLoading ? "Loading..." : totalKeys}
+					value={isLoading ? loadingIcon : totalKeys}
 					footer="All Gemini API keys in the system"
 				/>
 			</Grid>
@@ -71,7 +73,7 @@ function APIKeysStats() {
 					icon={Key}
 					color="success.main"
 					title="Active Keys"
-					value={isLoading ? "Loading..." : totalKeys}
+					value={isLoading ? loadingIcon : totalKeys}
 					footer="Available API keys for usage"
 				/>
 			</Grid>
@@ -80,7 +82,7 @@ function APIKeysStats() {
 					icon={Key}
 					color="info.main"
 					title="Tokens Used"
-					value={isLoading ? "Loading..." : totalTokensUsed.toLocaleString()}
+					value={isLoading ? loadingIcon : totalTokensUsed.toLocaleString()}
 					footer="Total tokens consumed across all keys"
 				/>
 			</Grid>

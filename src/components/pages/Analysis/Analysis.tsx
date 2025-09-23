@@ -1,10 +1,24 @@
 "use client";
+import StatCard from "@/components/ui/cards/StatCard";
 import Navigator from "@/components/ui/Navigator";
-import { useAnalyzeProfileGeminiMutation, useDeleteJunkProfilesMutation, useGetProfilesQuery } from "@/redux/api/analysis.api";
+import {
+	useAnalyzeProfileGeminiMutation,
+	useDeleteJunkProfilesMutation,
+	useGetProfilesQuery,
+	useGetProfileStatsQuery,
+} from "@/redux/api/analysis.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
-import { DeleteForever } from "@mui/icons-material";
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { DeleteForever, People, PeopleOutline } from "@mui/icons-material";
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Grid,
+	LinearProgress,
+	Paper,
+	Typography,
+} from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 
@@ -17,10 +31,82 @@ export default function AnalysisPageComponent() {
 			</Typography>
 			<Grid container spacing={2} mb={2}>
 				<Grid size={12}>
+					<ProfileStats />
+				</Grid>
+				<Grid size={12}>
 					<ProfileTable />
 				</Grid>
 			</Grid>
 		</Box>
+	);
+}
+
+function ProfileStats() {
+	const { data, isLoading } = useGetProfileStatsQuery(undefined, {
+		pollingInterval: 5000,
+	});
+	const loadingIcon = <CircularProgress color="secondary" size={40} />;
+	return (
+		<Grid container spacing={4} mt={4}>
+			<Grid size={4}>
+				<StatCard
+					title="Total Profiles"
+					value={isLoading ? loadingIcon : data?.data.TotalProfiles || 0}
+					icon={PeopleOutline}
+					color="primary.main"
+				/>
+			</Grid>
+			<Grid size={4}>
+				<StatCard
+					title="Scanned Profiles"
+					value={isLoading ? loadingIcon : data?.data.ScannedProfiles || 0}
+					icon={People}
+					color="warning.main"
+					footer={
+						isLoading
+							? ""
+							: `${(
+									((data?.data.ScannedProfiles || 0) /
+										(data?.data.TotalProfiles || 1)) *
+									100
+							  ).toFixed(2)}% of all profiles`
+					}
+				/>
+			</Grid>
+			<Grid size={4}>
+				<StatCard
+					title="Analyzed Profiles"
+					value={isLoading ? loadingIcon : data?.data.AnalyzedProfiles || 0}
+					icon={People}
+					color="success.main"
+					footer={
+						isLoading
+							? ""
+							: `${(
+									((data?.data.AnalyzedProfiles || 0) /
+										(data?.data.TotalProfiles || 1)) *
+									100
+							  ).toFixed(2)}% of all profiles`
+					}
+				/>
+			</Grid>
+			<Grid size={12}>
+				<Typography variant="body2" color="text.secondary" mb={1}>
+					Overall Analysis Progress
+				</Typography>
+				<LinearProgress
+					color="success"
+					variant={isLoading ? "query" : "determinate"}
+					value={
+						isLoading
+							? 0
+							: ((data?.data.AnalyzedProfiles || 0) /
+									(data?.data.TotalProfiles || 1)) *
+							  100
+					}
+				/>
+			</Grid>
+		</Grid>
 	);
 }
 
@@ -29,31 +115,37 @@ function ProfileTable() {
 		page: 0,
 		pageSize: 10,
 	});
-	const [analyzeProfile, { isLoading: isAnalyzingProfile }] = useAnalyzeProfileGeminiMutation();
-  const dispatch = useAppDispatch();
-  const { data: profileList, isLoading: isLoadingProfiles } = useGetProfilesQuery({
-    limit: paginationModel.pageSize,
-    page: paginationModel.page,
-  });
+	const [analyzeProfile, { isLoading: isAnalyzingProfile }] =
+		useAnalyzeProfileGeminiMutation();
+	const dispatch = useAppDispatch();
+	const { data: profileList, isLoading: isLoadingProfiles } =
+		useGetProfilesQuery({
+			limit: paginationModel.pageSize,
+			page: paginationModel.page,
+		});
 
-  const handleAnalyzeProfile = async (profileId: number) => {
-    try {
-      const response = await analyzeProfile({ id: profileId }).unwrap();
-      dispatch(openDialog({
-        title: "Analysis Result",
-        content: `The analysis score is: ${response.data}`,
-        type: "success",
-      }))
-    } catch (error) {
-      dispatch(openDialog({
-        title: "Analysis Failed",
-        content: (error as FetchError).data.error,
-        type: "error",
-      }))
-    }
-  }
+	const handleAnalyzeProfile = async (profileId: number) => {
+		try {
+			const response = await analyzeProfile({ id: profileId }).unwrap();
+			dispatch(
+				openDialog({
+					title: "Analysis Result",
+					content: `The analysis score is: ${response.data}`,
+					type: "success",
+				})
+			);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: "Analysis Failed",
+					content: (error as FetchError).data.error,
+					type: "error",
+				})
+			);
+		}
+	};
 
-  const columns: GridColDef[] = [
+	const columns: GridColDef[] = [
 		{
 			field: "id",
 			headerName: "ID",
@@ -62,7 +154,12 @@ function ProfileTable() {
 		{ field: "facebook_id", headerName: "Facebook ID", width: 200 },
 		{ field: "name", headerName: "Name", width: 250 },
 		{ field: "nn_count", headerName: "NN Score", width: 100 },
-		{ field: "is_analyzed", headerName: "Analyzed", type: "boolean", width: 100 },
+		{
+			field: "is_analyzed",
+			headerName: "Analyzed",
+			type: "boolean",
+			width: 100,
+		},
 		{
 			field: "actions",
 			headerName: "Actions",
@@ -78,8 +175,12 @@ function ProfileTable() {
 						gap={2}
 					>
 						<Button
-              onClick={() => handleAnalyzeProfile(params.row.id)}
-              disabled={params.row.is_analyzed || isAnalyzingProfile} size="small" variant="outlined" color="success">
+							onClick={() => handleAnalyzeProfile(params.row.id)}
+							disabled={params.row.is_analyzed || isAnalyzingProfile}
+							size="small"
+							variant="outlined"
+							color="success"
+						>
 							Analyze
 						</Button>
 					</Box>
@@ -92,9 +193,6 @@ function ProfileTable() {
 		<Box>
 			<Toolbar />
 			<Paper sx={{ width: "100%" }}>
-				<Typography fontWeight={400} p={1} fontSize={14} bgcolor={"inherit"}>
-					Total Profiles: {profileList?.total || 0}
-				</Typography>
 				<DataGrid
 					rows={
 						!isLoadingProfiles && profileList
@@ -128,34 +226,47 @@ function ProfileTable() {
 }
 
 function Toolbar() {
-	const [deleteJunkProfiles, { isLoading: isDeletingJunkProfiles }] = useDeleteJunkProfilesMutation();
+	const [deleteJunkProfiles, { isLoading: isDeletingJunkProfiles }] =
+		useDeleteJunkProfilesMutation();
 	const dispatch = useAppDispatch();
 	const handleDeleteJunkProfiles = async () => {
 		try {
 			const response = await deleteJunkProfiles().unwrap();
-			dispatch(openDialog({
-				title: "Delete Successful",
-				content: `Deleted ${response.data} junk profiles.`,
-				type: "success",
-			}));
+			dispatch(
+				openDialog({
+					title: "Delete Successful",
+					content: `Deleted ${response.data} junk profiles.`,
+					type: "success",
+				})
+			);
 		} catch (error) {
-			dispatch(openDialog({
-				title: "Delete Failed",
-				content: (error as FetchError).data.error,
-				type: "error",
-			}));
+			dispatch(
+				openDialog({
+					title: "Delete Failed",
+					content: (error as FetchError).data.error,
+					type: "error",
+				})
+			);
 		}
-	}
-	return <Box sx={{ p: 1, border: 2, borderColor: "divider", bgcolor: "background.paper" }} >
-		<Button disabled={isDeletingJunkProfiles}
-			variant="contained"
-			color="error"
-			size="small"
-			sx={{ textTransform: "none" }}
-			onClick={handleDeleteJunkProfiles}
-			startIcon={<DeleteForever />}
+	};
+	return (
+		<Box
+			sx={{
+				mb: 2,
+				borderColor: "divider",
+				bgcolor: "background.paper",
+			}}
 		>
-			Delete Junk Profiles
-		</Button>
-	</Box>;
+			<Button
+				disabled={isDeletingJunkProfiles}
+				variant="contained"
+				color="error"
+				size="small"
+				onClick={handleDeleteJunkProfiles}
+				startIcon={<DeleteForever />}
+			>
+				Delete Junk Profiles
+			</Button>
+		</Box>
+	);
 }

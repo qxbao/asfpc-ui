@@ -3,8 +3,6 @@ type GetDataStatsResponse = {
 };
 
 type DataStats = {
-	TotalProfiles: number;
-	ScannedProfiles: number;
 	TotalGroups: number;
 	TotalComments: number;
 	TotalPosts: number;

@@ -51,13 +51,21 @@ export const analysisApi = createApi({
       }),
       invalidatesTags: ["Profiles"],
     }),
+    getProfileStats: builder.query<GetProfileStatsResponse, void>({
+      query: () => ({
+        url: "/analysis/profile/stats",
+        method: "GET",
+      }),
+      providesTags: ["Profiles"],
+    }),
   }),
 });
 
 export const {
   useGetProfilesQuery,
-  useAnalyzeProfileGeminiMutation,
+  useGetProfileStatsQuery,
   useGetGeminiKeysQuery,
+  useAnalyzeProfileGeminiMutation,
   useAddGeminiKeyMutation,
   useDeleteJunkProfilesMutation,
 } = analysisApi;

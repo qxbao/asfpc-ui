@@ -18,3 +18,13 @@ type AnalyzeProfileGeminiResponse = {
 type DeleteJunkProfilesResponse = {
   data: number;
 }
+
+type GetProfileStatsResponse = {
+  data: ProfileStats;
+}
+
+type ProfileStats = {
+  TotalProfiles: number;
+  ScannedProfiles: number;
+  AnalyzedProfiles: number;
+}

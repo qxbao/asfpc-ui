@@ -1,12 +1,13 @@
 "use client"
 import { SvgIconComponent } from "@mui/icons-material"
 import { Card, CardContent, Typography, Box } from "@mui/material"
+import React from "react"
 
 type StatsCardProps = {
   icon: SvgIconComponent
   color: string
   title: string
-  value: string | number
+  value: string | number | React.ReactNode
   footer?: string
 }
 
@@ -19,6 +20,7 @@ export default function StatCard({ icon, color, title, value, footer }: StatsCar
         boxShadow: 3,
         position: "relative",
         overflow: "visible",
+        height: "100%",
       }}
     >
       <Box

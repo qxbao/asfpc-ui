@@ -29,37 +29,25 @@ function StatsGrid() {
 	}
 	return (
 		<Grid container spacing={4} mt={5}>
-			<Grid size={3}>
-				<StatCard
-					title="Profiles"
-					color="success.main"
-					value={data.data.TotalProfiles!}
-					icon={Person}
-					footer={`${(
-						data.data.ScannedProfiles! == 0 ? 0 :
-						(data.data.ScannedProfiles! / data.data.TotalProfiles!) * 100
-					).toFixed(2)}% (${data.data.ScannedProfiles!}) of them are scanned!`}
-				/>
-			</Grid>
-			<Grid size={3}>
+			<Grid size={4}>
 				<StatCard
 					title="Groups"
-					color="error.main"
+					color="success.main"
 					value={data.data.TotalGroups!}
 					icon={Group}
           footer={"Last 24h: TODO"}
 				/>
 			</Grid>
-			<Grid size={3}>
+			<Grid size={4}>
 				<StatCard
 					title="Posts"
-					color="secondary.main"
+					color="warning.main"
 					value={data.data.TotalPosts!}
 					icon={PostAdd}
           footer={"Last 24h: TODO"}
 				/>
 			</Grid>
-			<Grid size={3}>
+			<Grid size={4}>
 				<StatCard
 					title="Comments"
 					color="info.main"

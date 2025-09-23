@@ -27,6 +27,7 @@ import {
 	Card,
 	CardContent,
 	CardHeader,
+	CircularProgress,
 	Grid,
 	IconButton,
 	InputAdornment,
@@ -63,6 +64,7 @@ export default function BotAccountPage() {
 
 function AccountsStats() {
 	const { data, isLoading } = useGetAccountStatsQuery();
+	const loadingIcon = <CircularProgress color="secondary" size={40} />;
 	return (
 		<Grid container spacing={4} mt={4}>
 			<Grid size={4}>
@@ -70,7 +72,7 @@ function AccountsStats() {
 					icon={AccountTree}
 					color="primary.main"
 					title="Total Bots"
-					value={isLoading ? "Loading..." : data?.data.TotalAccounts!}
+					value={isLoading ? loadingIcon : data?.data.TotalAccounts!}
 					footer="All bot accounts in the system"
 				/>
 			</Grid>
@@ -79,7 +81,7 @@ function AccountsStats() {
 					icon={Check}
 					color="success.main"
 					title="Active Bots"
-					value={isLoading ? "Loading..." : data?.data.ActiveAccounts!}
+					value={isLoading ? loadingIcon : data?.data.ActiveAccounts!}
 					footer={
 						isLoading
 							? ""
@@ -95,7 +97,7 @@ function AccountsStats() {
 					icon={Block}
 					color="error.main"
 					title="Blocked Bots"
-					value={isLoading ? "Loading..." : data?.data.BlockedAccounts!}
+					value={isLoading ? loadingIcon : data?.data.BlockedAccounts!}
 					footer={
 						isLoading
 							? ""
