@@ -53,7 +53,7 @@ function ProfileStats() {
 					title="Total Profiles"
 					value={isLoading ? loadingIcon : data?.data.TotalProfiles || 0}
 					icon={PeopleOutline}
-					color="primary.main"
+					color="info.main"
 				/>
 			</Grid>
 			<Grid size={3}>
@@ -62,15 +62,6 @@ function ProfileStats() {
 					value={isLoading ? loadingIcon : data?.data.ScannedProfiles || 0}
 					icon={People}
 					color="warning.main"
-					footer={
-						isLoading
-							? ""
-							: `${(
-									((data?.data.ScannedProfiles || 0) /
-										(data?.data.TotalProfiles || 1)) *
-									100
-							  ).toFixed(2)}% of all profiles`
-					}
 				/>
 			</Grid>
 			<Grid size={3}>
@@ -79,15 +70,6 @@ function ProfileStats() {
 					value={isLoading ? loadingIcon : data?.data.AnalyzedProfiles || 0}
 					icon={People}
 					color="success.main"
-					footer={
-						isLoading
-							? ""
-							: `${(
-									((data?.data.AnalyzedProfiles || 0) /
-										(data?.data.TotalProfiles || 1)) *
-									100
-							  ).toFixed(2)}% of all profiles`
-					}
 				/>
 			</Grid>
 			<Grid size={3}>
@@ -95,31 +77,42 @@ function ProfileStats() {
 					title="Embedded Profiles"
 					value={isLoading ? loadingIcon : data?.data.EmbeddedCount || 0}
 					icon={People}
-					color="success.main"
-					footer={
-						isLoading
-							? ""
-							: `${(
-									(data?.data.EmbeddedCount || 0) / (data?.data.AnalyzedProfiles || 1) * 100
-							  ).toFixed(2)}% of analyzed profiles`
-					}
+					color="primary.main"
 				/>
 			</Grid>
 			<Grid size={12}>
-				<Typography variant="body2" color="text.secondary" mb={1}>
-					Overall Analysis Progress
-				</Typography>
-				<LinearProgress
-					color="success"
-					variant={isLoading ? "query" : "determinate"}
-					value={
-						isLoading
-							? 0
-							: ((data?.data.AnalyzedProfiles || 0) /
-									(data?.data.TotalProfiles || 1)) *
-							  100
-					}
-				/>
+				<Box mb={2}>
+					<Typography variant="body2" color="text.secondary" mb={1}>
+						Analysis Progress ({isLoading ? "Loading..." : `${((data?.data.AnalyzedProfiles || 0) / (data?.data.TotalProfiles || 1) * 100).toFixed(2)}%`})
+					</Typography>
+					<LinearProgress
+						color="success"
+						variant={isLoading ? "query" : "determinate"}
+						value={
+							isLoading
+								? 0
+								: ((data?.data.AnalyzedProfiles || 0) /
+										(data?.data.TotalProfiles || 1)) *
+									100
+						}
+					/>
+				</Box>
+				<Box>
+					<Typography variant="body2" color="text.secondary" mb={1}>
+						Embedding Progress ({isLoading ? "Loading..." : `${((data?.data.EmbeddedCount || 0) / (data?.data.AnalyzedProfiles || 1) * 100).toFixed(2)}%`})
+					</Typography>
+					<LinearProgress
+						color="primary"
+						variant={isLoading ? "query" : "determinate"}
+						value={
+							isLoading
+								? 0
+								: ((data?.data.EmbeddedCount || 0) /
+										(data?.data.AnalyzedProfiles || 1)) *
+									100
+						}
+					/>
+				</Box>
 			</Grid>
 		</Grid>
 	);
