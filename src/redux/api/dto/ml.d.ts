@@ -16,4 +16,5 @@ type ModelMetadata = {
 
 type TrainModelRequest = {
   model_name: string;
+  auto_tune?: boolean;
 } | undefined;

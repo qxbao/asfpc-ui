@@ -16,7 +16,9 @@ import {
   CardContent,
   CardHeader,
   Chip,
+  FormControlLabel,
   Grid,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -241,6 +243,7 @@ function ModelCard({ model, index }: { model: ModelInfo; index: number }) {
 
 type TrainModelFormData = {
 	modelName: string;
+	autoTune: boolean;
 };
 
 function TrainModelCard() {
@@ -254,6 +257,7 @@ function TrainModelCard() {
 		mode: "onChange",
 		defaultValues: {
 			modelName: "",
+			autoTune: false,
 		},
 	});
 	const [trainModel, { isLoading }] = useTrainModelMutation();
@@ -262,6 +266,7 @@ function TrainModelCard() {
 		try {
 			await trainModel({
 				model_name: data.modelName,
+				auto_tune: data.autoTune,
 			}).unwrap();
 			reset();
 
@@ -349,6 +354,29 @@ function TrainModelCard() {
 								<Typography variant="caption">Gemini Score</Typography>
 							</Box>
 						</Box>
+					</Box>
+
+					<Box>
+						<FormControlLabel
+							control={
+								<Switch
+									{...register("autoTune")}
+									size="small"
+									color="primary"
+								/>
+							}
+							label={
+								<Box>
+									<Typography variant="body2" color="text.primary">
+										AutoTune Hyperparameters
+									</Typography>
+									<Typography variant="caption" color="text.secondary">
+										Automatically optimize model parameters for better performance
+									</Typography>
+								</Box>
+							}
+							sx={{ alignItems: "flex-start", ml: 0 }}
+						/>
 					</Box>
 
 					<Button
