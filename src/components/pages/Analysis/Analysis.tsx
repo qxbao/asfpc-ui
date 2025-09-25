@@ -7,6 +7,7 @@ import {
 	useDeleteJunkProfilesMutation,
 	useGetProfilesQuery,
 	useGetProfileStatsQuery,
+	useImportProfileMutation,
 } from "@/redux/api/analysis.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
@@ -23,6 +24,7 @@ import {
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function AnalysisPageComponent() {
 	return (
@@ -35,8 +37,11 @@ export default function AnalysisPageComponent() {
 				<Grid size={12}>
 					<ProfileStats />
 				</Grid>
-				<Grid size={12}>
+				<Grid size={9}>
 					<ProfileTable />
+				</Grid>
+				<Grid size={3}>
+					<ImportProfilesForm />
 				</Grid>
 			</Grid>
 		</Box>
@@ -291,4 +296,131 @@ function Toolbar() {
 			</Link>
 		</Box>
 	);
+}
+
+type ImportFormData = {
+    file: FileList;
+};
+
+function ImportProfilesForm() {
+    const dispatch = useAppDispatch();
+    const [importProfile, { isLoading: isUploading }] = useImportProfileMutation();
+    
+    const {
+        register,
+        handleSubmit,
+        watch,
+        reset,
+        formState: { errors },
+    } = useForm<ImportFormData>();
+
+    const watchedFile = watch("file");
+    const selectedFile = watchedFile?.[0];
+
+    const onSubmit = async (data: ImportFormData) => {
+        const file = data.file[0];
+        
+        if (!file) {
+					dispatch(
+						openDialog({
+							title: "No File Selected",
+							content: "Please select a JSON file to import.",
+							type: "warning",
+						})
+					);
+					return;
+        }
+
+        if (file.type !== "application/json") {
+            dispatch(
+                openDialog({
+                    title: "Invalid File",
+                    content: "Please select a valid JSON file.",
+                    type: "error",
+                })
+            );
+            return;
+        }
+
+        try {
+            const result = await importProfile({ file }).unwrap();
+            dispatch(
+                openDialog({
+                    title: "Import Successful",
+                    content: `Successfully imported ${result.data || 0} profiles.`,
+                    type: "success",
+                })
+            );
+            reset();
+        } catch (error) {
+            dispatch(
+                openDialog({
+                    title: "Import Failed",
+                    content: (error as FetchError).data.error,
+                    type: "error",
+                })
+            );
+        }
+    };
+
+    return (
+        <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" fontWeight={600} mb={2}>
+                Import Profiles
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+                <Button
+                    component="label"
+                    variant="outlined"
+                    fullWidth
+                    sx={{ 
+                        mb: 2, 
+                        p: 2, 
+                        textAlign: "left", 
+                        justifyContent: "flex-start",
+                        color: errors.file ? "error.main" : "inherit",
+                        borderColor: errors.file ? "error.main" : "inherit"
+                    }}
+                >
+                    {selectedFile ? selectedFile.name : "Choose JSON file..."}
+                    <input
+                        {...register("file", { 
+                            required: "Please select a file",
+                            validate: {
+                                fileType: (files) => {
+                                    if (!files?.[0]) return "Please select a file";
+                                    return files[0].type === "application/json" || "Please select a valid JSON file";
+                                }
+                            }
+                        })}
+                        type="file"
+                        accept=".json"
+                        hidden
+                    />
+                </Button>
+                
+                {errors.file && (
+                    <Typography variant="body2" color="error.main" mb={2}>
+                        {errors.file.message}
+                    </Typography>
+                )}
+                
+                {selectedFile && !errors.file && (
+                    <Typography variant="body2" color="text.secondary" mb={2}>
+                        File size: {(selectedFile.size / 1024).toFixed(2)} KB
+                    </Typography>
+                )}
+
+                <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    disabled={isUploading}
+                    startIcon={isUploading ? <CircularProgress size={20} /> : undefined}
+                >
+                    {isUploading ? "Importing..." : "Import Profiles"}
+                </Button>
+            </Box>
+        </Paper>
+    );
 }

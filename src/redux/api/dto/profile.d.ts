@@ -29,3 +29,11 @@ type ProfileStats = {
   AnalyzedProfiles: number;
   EmbeddedCount: number;
 }
+
+type ImportProfileRequest = {
+  file: File;
+}
+
+type ImportProfileResponse = {
+  data: number;
+}

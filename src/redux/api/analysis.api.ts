@@ -29,6 +29,18 @@ export const analysisApi = createApi({
       }),
       invalidatesTags: ["Profiles"],
     }),
+    importProfile: builder.mutation<ImportProfileResponse, ImportProfileRequest>({
+      query: (body) => {
+        const formData = new FormData();
+        formData.append("file", body.file);
+        return {
+          url: "/analysis/profile/import",
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: ["Profiles"],
+    }),
     getGeminiKeys: builder.query<GetGeminiKeysResponse, void>({
       query: () => ({
         url: "/analysis/key/list",
@@ -77,4 +89,5 @@ export const {
   useAddGeminiKeyMutation,
   useDeleteJunkProfilesMutation,
   useDeleteGeminiKeyMutation,
+  useImportProfileMutation,
 } = analysisApi;
