@@ -1,6 +1,7 @@
 "use client";
 import StatCard from "@/components/ui/cards/StatCard";
 import Navigator from "@/components/ui/Navigator";
+import { BackendURL } from "@/lib/server";
 import {
 	useAnalyzeProfileGeminiMutation,
 	useDeleteJunkProfilesMutation,
@@ -9,7 +10,7 @@ import {
 } from "@/redux/api/analysis.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
-import { DeleteForever, People, PeopleOutline } from "@mui/icons-material";
+import { DeleteForever, Download, People, PeopleOutline } from "@mui/icons-material";
 import {
 	Box,
 	Button,
@@ -20,6 +21,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function AnalysisPageComponent() {
@@ -263,6 +265,8 @@ function Toolbar() {
 				mb: 2,
 				borderColor: "divider",
 				bgcolor: "background.paper",
+				gap: 2,
+				display: "flex",
 			}}
 		>
 			<Button
@@ -275,6 +279,16 @@ function Toolbar() {
 			>
 				Delete Junk Profiles
 			</Button>
+			<Link href={BackendURL + "/analysis/profile/export"} rel="noopener noreferrer" target="_blank">
+				<Button
+					size="small"
+					variant="contained"
+					color="primary"
+					startIcon={<Download />}
+				>
+					Export Profiles
+				</Button>
+			</Link>
 		</Box>
 	);
 }
