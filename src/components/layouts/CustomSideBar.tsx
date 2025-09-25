@@ -1,5 +1,5 @@
 import { Drawer, Toolbar, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Box } from '@mui/material'
-import { Dashboard, BarChart, Settings, AccountBox, Assignment, DensitySmall, Analytics, Key } from "@mui/icons-material"
+import { Dashboard, BarChart, Settings, AccountBox, Assignment, DensitySmall, Analytics, Key, Computer } from "@mui/icons-material"
 import React from 'react'
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -12,11 +12,12 @@ type NavChild = {
 const navItems: NavChild[] = [
   { text: "Quick Access ", icon: <Dashboard />, url: "/" },
   { text: "Bot Accounts", icon: <AccountBox />, url: "/account" },
-  { text: "Prompts", icon: <Assignment />, url: "/prompt" },
-  { text: "Analysis", icon: <Analytics />, url: "/analysis" },
-  { text: "Gemini API Key", icon: <Key />, url: "/key" },
   { text: "Statistics", icon: <BarChart />, url: "/stats" },
+  { text: "Analysis", icon: <Analytics />, url: "/analysis" },
+  { text: "Prompts", icon: <Assignment />, url: "/prompt" },
+  { text: "ML Models", icon: <Computer />, url: "/ml" },
   { text: "Logs", icon: <DensitySmall />, url: "/log" },
+  { text: "Gemini API Key", icon: <Key />, url: "/key" },
   { text: "Settings", icon: <Settings />, url: "/settings" },
 ]
 

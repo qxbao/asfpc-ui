@@ -99,7 +99,7 @@ function ProfileStats() {
 				</Box>
 				<Box>
 					<Typography variant="body2" color="text.secondary" mb={1}>
-						Embedding Progress ({isLoading ? "Loading..." : `${((data?.data.EmbeddedCount || 0) / (data?.data.AnalyzedProfiles || 1) * 100).toFixed(2)}%`})
+						Embedding Progress ({isLoading ? "Loading..." : `${((data?.data.EmbeddedCount || 0) / (data?.data.TotalProfiles || 1) * 100).toFixed(2)}%`})
 					</Typography>
 					<LinearProgress
 						color="primary"
@@ -108,7 +108,7 @@ function ProfileStats() {
 							isLoading
 								? 0
 								: ((data?.data.EmbeddedCount || 0) /
-										(data?.data.AnalyzedProfiles || 1)) *
+										(data?.data.TotalProfiles || 1)) *
 									100
 						}
 					/>

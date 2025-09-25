@@ -3,6 +3,7 @@ import { accountApi } from './api/account.api'
 import dialogReducer from './slices/dialogSlice'
 import { dataApi } from './api/data.api'
 import { analysisApi } from './api/analysis.api'
+import { mlApi } from './api/ml.api'
 
 export const makeStore = () => {
   return configureStore({
@@ -10,12 +11,14 @@ export const makeStore = () => {
       dialog: dialogReducer,
       [accountApi.reducerPath]: accountApi.reducer,
       [dataApi.reducerPath]: dataApi.reducer,
-      [analysisApi.reducerPath]: analysisApi.reducer
+      [analysisApi.reducerPath]: analysisApi.reducer,
+      [mlApi.reducerPath]: mlApi.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
       .concat(accountApi.middleware)
       .concat(dataApi.middleware)
-      .concat(analysisApi.middleware),
+      .concat(analysisApi.middleware)
+      .concat(mlApi.middleware),
   })
 }
 

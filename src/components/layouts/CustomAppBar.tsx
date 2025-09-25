@@ -12,7 +12,7 @@ export default function CustomAppBar() {
     }}>
       <Toolbar sx={{ justifyContent: "start", bgcolor: "background.paper" }}>
         <Typography variant="h5" color={"primary"} fontWeight={700}>
-          ASFPC Toolkit
+          Dashboard - ASFPC
         </Typography>
       </Toolbar>
     </AppBar>
