@@ -222,7 +222,7 @@ function SettingsForm() {
 
 		return (
 			<Box key={categoryKey}>
-				<Typography variant="h6" gutterBottom color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+				<Typography variant="h6" gutterBottom color={color} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
 					<Icon fontSize="small" />
 					{title}
 				</Typography>
