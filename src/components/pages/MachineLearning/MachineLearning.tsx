@@ -135,7 +135,7 @@ function ModelListing() {
 				Available Models ({models.data.length})
 			</Typography>
 			<Grid container spacing={3}>
-				{models.data.map((model) => (
+				{models.data.toSorted((a, b) => (b.Metadata && a.Metadata ? b.Metadata!.r2 - a.Metadata!.r2 : 0)).map((model) => (
 					<Grid size={4} key={model.Name}>
 						<ModelCard model={model} />
 					</Grid>
