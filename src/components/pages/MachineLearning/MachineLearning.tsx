@@ -1,17 +1,21 @@
 "use client";
 import Navigator from "@/components/ui/Navigator";
+import { BackendURL } from "@/lib/server";
 import { useDeleteModelMutation, useGetModelsQuery, useTrainModelMutation } from "@/redux/api/ml.api";
+import { useUpdateSettingsMutation } from "@/redux/api/setting.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
+import { useSettings } from "@/redux/useSettings";
 import {
 	Add,
+	Check,
 	Delete,
-	ImportExport,
+	DisabledByDefault,
 	ModelTraining,
 	Psychology,
 	Remove,
 	Share,
-	TrendingUp,
+	TrendingUp
 } from "@mui/icons-material";
 import {
 	Box,
@@ -26,11 +30,9 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import StatCard from "../../ui/cards/StatCard";
-import { ExportCsv } from "@mui/x-data-grid";
-import Link from "next/link";
-import { BackendURL } from "@/lib/server";
 
 export default function MachineLearningPageComponent() {
 	return (
@@ -148,6 +150,34 @@ function ModelListing() {
 function ModelCard({ model }: { model: ModelInfo }) {
 	const dispatch = useAppDispatch();
 	const [deleteModel, { isLoading: isDeleting }] = useDeleteModelMutation();
+	const { getSetting } = useSettings();
+	const scoringModelName = getSetting("ML_SCORING_MODEL_NAME", "No");
+	const [updateSettings, { isLoading: isUpdatingSettings }] = useUpdateSettingsMutation();
+
+	const handleUpdateScoringModel = async () => {
+		const isCurrentScoringModel = scoringModelName === model.Name;
+		if (isUpdatingSettings) return;
+		try {
+			await updateSettings({ settings: { ML_SCORING_MODEL_NAME: isCurrentScoringModel ? "No" : model.Name } }).unwrap();
+			dispatch(
+				openDialog({
+					title: "Success",
+					content: isCurrentScoringModel ? 
+						`Scoring model feature has been disabled.` :
+						`Scoring model has been removed from model: "${model.Name}".`,
+					type: "success",
+				})
+			);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: "Error",
+					content: `Failed to update scoring model: ${(error as FetchError).data.error}`,
+					type: "error",
+				})
+			);
+		}
+	};
 
 	const handleDelete = async () => {
 		try {
@@ -299,6 +329,19 @@ function ModelCard({ model }: { model: ModelInfo }) {
 											Export
 										</Button>
 									</Link>
+								</Grid>
+								<Grid size={12}>
+									<Button
+										variant="outlined"
+										color={scoringModelName === model.Name ? "error" : "success"}
+										fullWidth
+										onClick={handleUpdateScoringModel}
+										disabled={isUpdatingSettings}
+										sx={{ textTransform: "none", borderRadius: 3 }}
+										startIcon={scoringModelName === model.Name ? <Remove /> : <Check />}
+									>
+										{scoringModelName === model.Name ? "Disable" : "Set Scoring Model"}
+									</Button>
 								</Grid>
 							</Grid>
 						</>

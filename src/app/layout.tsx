@@ -1,5 +1,6 @@
 import { CustomThemeProvider } from '@/contexts/CustomThemeProvider';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { SettingsLoaderProvider } from '@/contexts/SettingsLoaderProvider';
 import "./globals.css";
 import StoreProvider from '@/contexts/StoreProvider';
 
@@ -17,7 +18,11 @@ export default function RootLayout({
       <body>
         <AppRouterCacheProvider>
           <CustomThemeProvider>
-            <StoreProvider>{children}</StoreProvider>
+            <StoreProvider>
+              <SettingsLoaderProvider>
+                {children}
+              </SettingsLoaderProvider>
+            </StoreProvider>
           </CustomThemeProvider>
         </AppRouterCacheProvider>
       </body>
