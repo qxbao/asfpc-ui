@@ -159,15 +159,6 @@ function ModelCard({ model }: { model: ModelInfo }) {
 		if (isUpdatingSettings) return;
 		try {
 			await updateSettings({ settings: { ML_SCORING_MODEL_NAME: isCurrentScoringModel ? "No" : model.Name } }).unwrap();
-			dispatch(
-				openDialog({
-					title: "Success",
-					content: isCurrentScoringModel ? 
-						`Scoring model feature has been disabled.` :
-						`Scoring model has been removed from model: "${model.Name}".`,
-					type: "success",
-				})
-			);
 		} catch (error) {
 			dispatch(
 				openDialog({
@@ -237,7 +228,7 @@ function ModelCard({ model }: { model: ModelInfo }) {
 				<Box display="flex" flexDirection="column" gap={2}>
 					{!model.Metadata ? (
 						<Typography variant="body2" color="text.secondary">
-							No metadata available for this model. Please retrain the model to
+							No metadata available for this model. Please re-train the model to
 							generate performance metrics.
 						</Typography>
 					) : (
@@ -303,7 +294,9 @@ function ModelCard({ model }: { model: ModelInfo }) {
 									{new Date(model.Metadata.saved_at).toLocaleString()}
 								</Typography>
 							</Box>
-							<Grid container spacing={2} mt={1}>
+						</>
+					)}
+					<Grid container spacing={2} mt={1}>
 								<Grid size={6}>
 									<Button
 										variant="outlined"
@@ -344,8 +337,6 @@ function ModelCard({ model }: { model: ModelInfo }) {
 									</Button>
 								</Grid>
 							</Grid>
-						</>
-					)}
 				</Box>
 			</CardContent>
 		</Card>
@@ -426,7 +417,7 @@ function TrainModelCard() {
 						placeholder="potential_customer_v2"
 						error={!!errors.modelName}
 						helperText={
-							errors.modelName?.message || "Use existed model name to retrain"
+							errors.modelName?.message || "Use existed model name to re-train"
 						}
 						{...register("modelName", {
 							required: "Model name is required",
@@ -479,7 +470,7 @@ function TrainModelCard() {
 							label={
 								<Box>
 									<Typography variant="body2" color="text.primary">
-										AutoTune Hyperparameters
+										Auto-tuning Hyperparameters
 									</Typography>
 									<Typography variant="caption" color="text.secondary">
 										Automatically optimize model parameters for better
