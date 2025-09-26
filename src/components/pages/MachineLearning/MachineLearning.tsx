@@ -1,29 +1,36 @@
 "use client";
 import Navigator from "@/components/ui/Navigator";
-import { useGetModelsQuery, useTrainModelMutation } from "@/redux/api/ml.api";
+import { useDeleteModelMutation, useGetModelsQuery, useTrainModelMutation } from "@/redux/api/ml.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
 import {
-  Add,
-  ModelTraining,
-  Psychology,
-  TrendingUp
+	Add,
+	Delete,
+	ImportExport,
+	ModelTraining,
+	Psychology,
+	Remove,
+	Share,
+	TrendingUp,
 } from "@mui/icons-material";
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  FormControlLabel,
-  Grid,
-  Switch,
-  TextField,
-  Typography,
+	Box,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	Chip,
+	FormControlLabel,
+	Grid,
+	Switch,
+	TextField,
+	Typography,
 } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import StatCard from "../../ui/cards/StatCard";
+import { ExportCsv } from "@mui/x-data-grid";
+import Link from "next/link";
+import { BackendURL } from "@/lib/server";
 
 export default function MachineLearningPageComponent() {
 	return (
@@ -65,7 +72,11 @@ function MLStats() {
 					icon={TrendingUp}
 					color="success.main"
 					title="Active Models"
-					value={isLoading ? "Loading..." : totalModels}
+					value={
+						isLoading
+							? "Loading..."
+							: data?.data?.filter((m) => m.Validation.IsValid).length
+					}
 					footer="Ready for predictions"
 				/>
 			</Grid>
@@ -124,9 +135,9 @@ function ModelListing() {
 				Available Models ({models.data.length})
 			</Typography>
 			<Grid container spacing={3}>
-				{models.data.map((model, index) => (
+				{models.data.map((model) => (
 					<Grid size={4} key={model.Name}>
-						<ModelCard model={model} index={index} />
+						<ModelCard model={model} />
 					</Grid>
 				))}
 			</Grid>
@@ -134,8 +145,31 @@ function ModelListing() {
 	);
 }
 
-function ModelCard({ model, index }: { model: ModelInfo; index: number }) {
-	const hasMetadata = model.Metadata !== null;
+function ModelCard({ model }: { model: ModelInfo }) {
+	const dispatch = useAppDispatch();
+	const [deleteModel, { isLoading: isDeleting }] = useDeleteModelMutation();
+
+	const handleDelete = async () => {
+		try {
+			if (isDeleting) return; 
+			await deleteModel({ model_name: model.Name });
+			dispatch(
+				openDialog({
+					title: "Success",
+					content: `Model "${model.Name}" has been deleted successfully!`,
+					type: "success",
+				})
+			);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: "Error",
+					content: `Failed to delete model "${model.Name}": ${(error as FetchError).data.error}`,
+					type: "error",
+				})
+			);
+		}
+	};
 
 	return (
 		<Card
@@ -155,6 +189,12 @@ function ModelCard({ model, index }: { model: ModelInfo; index: number }) {
 						<Typography variant="subtitle1" fontWeight={600}>
 							{model.Name}
 						</Typography>
+						<Chip
+							size="small"
+							label={model.Validation.IsValid ? "Valid" : "Invalid"}
+							sx={{ fontWeight: 600 }}
+							color={model.Validation.IsValid ? "success" : "error"}
+						/>
 					</Box>
 				}
 				sx={{
@@ -233,6 +273,34 @@ function ModelCard({ model, index }: { model: ModelInfo; index: number }) {
 									{new Date(model.Metadata.saved_at).toLocaleString()}
 								</Typography>
 							</Box>
+							<Grid container spacing={2} mt={1}>
+								<Grid size={6}>
+									<Button
+										variant="outlined"
+										color="error"
+										fullWidth
+										disabled={isDeleting}
+										startIcon={<Delete />}
+									sx={{ textTransform: "none", borderRadius: 3 }}
+									onClick={handleDelete}
+								>
+									{isDeleting ? "Deleting..." : "Delete"}
+								</Button>
+								</Grid>
+								<Grid size={6}>
+									<Link href={`${BackendURL}/ml/export?model_name=${encodeURIComponent(model.Name)}`} target="_blank" rel="noopener noreferrer">
+										<Button
+											variant="outlined"
+											color="primary"
+											fullWidth
+											sx={{ textTransform: "none", borderRadius: 3 }}
+											startIcon={<Share />}
+										>
+											Export
+										</Button>
+									</Link>
+								</Grid>
+							</Grid>
 						</>
 					)}
 				</Box>
@@ -371,7 +439,8 @@ function TrainModelCard() {
 										AutoTune Hyperparameters
 									</Typography>
 									<Typography variant="caption" color="text.secondary">
-										Automatically optimize model parameters for better performance
+										Automatically optimize model parameters for better
+										performance
 									</Typography>
 								</Box>
 							}

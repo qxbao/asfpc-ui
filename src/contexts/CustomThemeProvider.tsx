@@ -19,7 +19,7 @@ const theme = createTheme({
       paper: '#0c0c0cff',
     },
     primary: {
-      main: '#1b4fc7ff',
+      main: '#0d80c2ff',
     },
     text: {
       primary: '#e3e3e3ff',
@@ -27,6 +27,9 @@ const theme = createTheme({
     },
     secondary: {
       main: '#727272ff',
+    },
+    info: {
+      main: '#1b3bc7ff',
     },
     error: {
       main: '#d3271bff',

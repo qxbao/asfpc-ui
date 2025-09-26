@@ -19,7 +19,15 @@ export const mlApi = createApi({
       }),
       invalidatesTags: ["Models"],
     }),
+    deleteModel: builder.mutation<void, DeleteModelRequest>({
+      query: (body) => ({
+        url: "/ml/delete",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["Models"],
+    }),
   }),
 });
 
-export const { useGetModelsQuery, useTrainModelMutation } = mlApi;
+export const { useGetModelsQuery, useTrainModelMutation, useDeleteModelMutation } = mlApi;

@@ -5,6 +5,7 @@ type GetModelsResponse = {
 type ModelInfo = {
   Name: string;
   Metadata: ModelMetadata | null;
+  Validation: ModelValidation;
 };
 
 type ModelMetadata = {
@@ -14,7 +15,16 @@ type ModelMetadata = {
   saved_at: string;
 };
 
+type ModelValidation = {
+  IsExists: boolean;
+  IsValid: boolean;
+};
+
 type TrainModelRequest = {
   model_name: string;
   auto_tune?: boolean;
 } | undefined;
+
+type DeleteModelRequest = {
+  model_name: string;
+};
