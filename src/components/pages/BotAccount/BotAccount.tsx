@@ -162,6 +162,12 @@ function AccountTable() {
 		},
 	];
 
+	if (il1 || il2) {
+		return <Box display="flex" justifyContent="center" alignItems="center" height={400}>
+			<CircularProgress color="secondary" size={40} />
+		</Box>;
+	}
+
 	return (
 		<Box>
 			<AccountTableToolbar

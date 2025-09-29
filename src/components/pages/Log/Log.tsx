@@ -1,7 +1,7 @@
 "use client";
 import Navigator from "@/components/ui/Navigator";
 import { useGetLogsQuery } from "@/redux/api/data.api";
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Paper, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Link from "next/link";
 import { useState } from "react";
@@ -77,6 +77,12 @@ function LogTable() {
 		},
 		{ field: "created_at", headerName: "Created At", width: 200 },
 	];
+
+	if (isLoadingLogs) {
+		return <Box display="flex" justifyContent="center" alignItems="center" height={400}>
+			<CircularProgress color="secondary" size={40} />
+		</Box>
+	}
 
 	return (
 		<Box>

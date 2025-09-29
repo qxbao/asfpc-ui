@@ -1,5 +1,5 @@
 import { Drawer, Toolbar, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Box } from '@mui/material'
-import { Dashboard, BarChart, Settings, AccountBox, Assignment, DensitySmall, Analytics, Key, Computer } from "@mui/icons-material"
+import { Dashboard, BarChart, Home, Settings, AccountBox, Assignment, DensitySmall, Analytics, Key, Computer } from "@mui/icons-material"
 import React from 'react'
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -10,7 +10,7 @@ type NavChild = {
 };
 
 const navItems: NavChild[] = [
-  { text: "Quick Access ", icon: <Dashboard />, url: "/" },
+  { text: "Home", icon: <Home />, url: "/" },
   { text: "Bot Accounts", icon: <AccountBox />, url: "/account" },
   { text: "Statistics", icon: <BarChart />, url: "/stats" },
   { text: "Analysis", icon: <Analytics />, url: "/analysis" },

@@ -10,6 +10,7 @@ import {
 	Card,
 	CardContent,
 	CardHeader,
+	CircularProgress,
 	Grid,
 	Paper,
 	TextField,
@@ -61,6 +62,12 @@ function PromptTable() {
     { field: "created_by", headerName: "Responsible", width: 150 },
     { field: "created_at", headerName: "Created at", width: 150 },
   ];
+
+  if (isLoadingPrompts) {
+    return <Box display="flex" justifyContent="center" alignItems="center" height={400}>
+      <CircularProgress color="secondary" size={40} />
+    </Box>
+  }
 
   return (
     <Box>
