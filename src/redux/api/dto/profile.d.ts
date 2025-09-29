@@ -9,6 +9,8 @@ type ProfileAnalysis = {
   Name: NullableString;
   NonNullCount: number;
   IsAnalyzed: NullableBool;
+  GeminiScore: NullableFloat64;
+  ModelScore: NullableFloat64;
 }
 
 type AnalyzeProfileGeminiResponse = {
@@ -28,6 +30,7 @@ type ProfileStats = {
   ScannedProfiles: number;
   AnalyzedProfiles: number;
   EmbeddedCount: number;
+  ScoredProfiles: number;
 }
 
 type ImportProfileRequest = {

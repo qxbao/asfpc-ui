@@ -4,12 +4,14 @@ import { useGetAllSettingsQuery } from "./api/setting.api";
 export const useSettings = () => {
   const settingsState = useAppSelector((state) => state.settings);
   
-  const { isLoading, error, refetch } = useGetAllSettingsQuery(undefined, {
+  const { isLoading, error, refetch, isUninitialized } = useGetAllSettingsQuery(undefined, {
     skip: settingsState.isLoaded,
   });
 
   const refreshSettings = () => {
-    refetch();
+    if (!isUninitialized) {
+      refetch();
+    }
   };
 
   const getSetting = (key: string, defaultValue: string = ""): string => {

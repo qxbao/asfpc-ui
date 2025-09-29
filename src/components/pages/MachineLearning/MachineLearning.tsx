@@ -1,7 +1,8 @@
 "use client";
+import React from "react";
 import Navigator from "@/components/ui/Navigator";
 import { BackendURL } from "@/lib/server";
-import { useDeleteModelMutation, useGetModelsQuery, useTrainModelMutation } from "@/redux/api/ml.api";
+import { useDeleteModelMutation, useGetModelsQuery, useTrainModelMutation, useTraceRequestQuery, mlApi } from "@/redux/api/ml.api";
 import { useUpdateSettingsMutation } from "@/redux/api/setting.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
@@ -26,6 +27,7 @@ import {
 	Chip,
 	FormControlLabel,
 	Grid,
+	LinearProgress,
 	Switch,
 	TextField,
 	Typography,
@@ -350,6 +352,7 @@ type TrainModelFormData = {
 
 function TrainModelCard() {
 	const dispatch = useAppDispatch();
+	const [trainingRequestId, setTrainingRequestId] = React.useState<number | null>(null);
 	const {
 		register,
 		handleSubmit,
@@ -363,22 +366,23 @@ function TrainModelCard() {
 		},
 	});
 	const [trainModel, { isLoading }] = useTrainModelMutation();
+	
+	const { data: trainingData } = useTraceRequestQuery(
+		trainingRequestId!, 
+		{ 
+			skip: !trainingRequestId,
+			pollingInterval: 1000,
+		}
+	);
 
 	const onSubmit: SubmitHandler<TrainModelFormData> = async (data) => {
 		try {
-			await trainModel({
+			const result = await trainModel({
 				model_name: data.modelName,
 				auto_tune: data.autoTune,
 			}).unwrap();
-			reset();
-
-			dispatch(
-				openDialog({
-					title: "Success",
-					content: `Model "${data.modelName}" training has been initiated successfully!`,
-					type: "success",
-				})
-			);
+			
+			setTrainingRequestId(result.request_id);
 		} catch (error) {
 			dispatch(
 				openDialog({
@@ -389,6 +393,36 @@ function TrainModelCard() {
 			);
 		}
 	};
+	
+	React.useEffect(() => {
+		if (trainingData?.data) {
+			const status = trainingData.data.Status;
+			
+			if (status === 2) {
+				reset();
+				setTrainingRequestId(null);
+				dispatch(mlApi.util.invalidateTags(["Models"]));
+				dispatch(
+					openDialog({
+						title: "Training Completed",
+						content: "Model training has been completed successfully!",
+						type: "success",
+					})
+				);
+			} else if (status === 3) {
+				setTrainingRequestId(null);
+				dispatch(
+					openDialog({
+						title: "Training Failed",
+						content: `Training failed: ${trainingData.data.ErrorMessage?.Valid ? trainingData.data.ErrorMessage.String : "Unknown error"}`,
+						type: "error",
+					})
+				);
+			}
+		}
+	}, [trainingData, dispatch, reset]);
+	
+	const isTraining = trainingRequestId !== null;
 
 	return (
 		<Card sx={{ border: 2, borderColor: "divider", borderRadius: 3 }}>
@@ -482,15 +516,60 @@ function TrainModelCard() {
 						/>
 					</Box>
 
+					{trainingData && (
+						<Box>
+							<Typography variant="body2" color="text.secondary" mb={1}>
+								Training Progress
+							</Typography>
+							<Box display="flex" alignItems="center" gap={1} mb={1}>
+								<LinearProgress 
+									variant="determinate" 
+									value={trainingData.data.Progress * 100} 
+									sx={{ flexGrow: 1, height: 8, borderRadius: 4 }}
+								/>
+								<Typography variant="caption" color="text.secondary" minWidth={40}>
+									{Math.round(trainingData.data.Progress * 100)}%
+								</Typography>
+							</Box>
+							<Box display="flex" justifyContent="space-between" alignItems="center">
+								<Typography variant="caption" color="text.secondary">
+									Status:
+								</Typography>
+								<Chip
+									label={
+										trainingData.data.Status === 0 ? "Pending" :
+										trainingData.data.Status === 1 ? "Running" :
+										trainingData.data.Status === 2 ? "Completed" : "Failed"
+									}
+									size="small"
+									color={
+										trainingData.data.Status === 0 ? "default" :
+										trainingData.data.Status === 1 ? "primary" :
+										trainingData.data.Status === 2 ? "success" : "error"
+									}
+									variant="outlined"
+								/>
+							</Box>
+							{trainingData.data.Description?.Valid && (
+								<Typography variant="caption" color="text.secondary" mt={1} display="block">
+									{trainingData.data.Description.String}
+								</Typography>
+							)}
+						</Box>
+					)}
+
 					<Button
 						type="submit"
 						variant="contained"
 						fullWidth
-						disabled={isSubmitting || isLoading}
+						disabled={isSubmitting || isLoading || (trainingRequestId !== null
+							&& trainingData !== undefined
+							&& trainingData.data.Status! <= 1)}
 						sx={{ textTransform: "none", borderRadius: 3 }}
 						startIcon={<Add />}
 					>
-						{isSubmitting || isLoading ? "Training..." : "Train Model"}
+						{isTraining ? "Training in Progress..." : 
+						 isSubmitting || isLoading ? "Starting..." : "Train Model"}
 					</Button>
 				</Box>
 			</CardContent>

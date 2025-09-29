@@ -37,26 +37,25 @@ export const SettingsLoaderProvider = ({ children }: SettingsLoaderProviderProps
     data, 
     isLoading, 
     error,
-    refetch 
+    refetch,
+    isUninitialized
   } = useGetAllSettingsQuery(undefined, {
-    skip: settingsState.isLoaded, // Skip if already loaded
-    refetchOnMountOrArgChange: false, // Don't refetch on mount if data exists
-    refetchOnFocus: false, // Don't refetch on window focus
+    skip: settingsState.isLoaded,
+    refetchOnMountOrArgChange: false,
+    refetchOnFocus: false,
   });
 
-  // Auto-retry on error with exponential backoff
   useEffect(() => {
-    if (error && !settingsState.isLoaded) {
+    if (error && !settingsState.isLoaded && !isUninitialized) {
       const retryTimer = setTimeout(() => {
         console.log('Retrying settings fetch...');
         refetch();
-      }, 5000); // Retry after 5 seconds
+      }, 5000);
 
       return () => clearTimeout(retryTimer);
     }
-  }, [error, settingsState.isLoaded, refetch]);
+  }, [error, settingsState.isLoaded, refetch, isUninitialized]);
 
-  // Log settings loading status for debugging
   useEffect(() => {
     if (settingsState.isLoaded) {
       console.log('Settings loaded successfully:', Object.keys(settingsState.settings).length, 'settings');

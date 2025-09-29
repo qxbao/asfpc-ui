@@ -36,3 +36,8 @@ type NullableBool = {
 	Bool: boolean;
 	Valid: boolean;
 };
+
+type NullableFloat64 = {
+	Float64: number;
+	Valid: boolean;
+};

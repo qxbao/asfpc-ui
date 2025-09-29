@@ -5,13 +5,13 @@ import { BackendURL } from "@/lib/server";
 export const mlApi = createApi({
   baseQuery: customQuery(BackendURL),
   reducerPath: "mlApi",
-  tagTypes: ["Models"],
+  tagTypes: ["Models", "TrainingRequest"],
   endpoints: (builder) => ({
     getModels: builder.query<GetModelsResponse, void>({
       query: () => "/ml/list",
       providesTags: ["Models"],
     }),
-    trainModel: builder.mutation<void, TrainModelRequest>({
+    trainModel: builder.mutation<TrainModelResponse, TrainModelRequest>({
       query: (body) => ({
         url: "/ml/train",
         method: "POST",
@@ -27,7 +27,17 @@ export const mlApi = createApi({
       }),
       invalidatesTags: ["Models"],
     }),
+    traceRequest: builder.query<TraceRequestResponse, number>({
+      query: (request_id) => `/data/request/${request_id}`,
+      providesTags: (_result, _error, request_id) => [{ type: "TrainingRequest", id: request_id }],
+    }),
   }),
 });
 
-export const { useGetModelsQuery, useTrainModelMutation, useDeleteModelMutation } = mlApi;
+export const { 
+  useGetModelsQuery, 
+  useTrainModelMutation, 
+  useDeleteModelMutation,
+  useTraceRequestQuery,
+  useLazyTraceRequestQuery 
+} = mlApi;

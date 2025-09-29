@@ -27,7 +27,7 @@ import {
 	Paper,
 	Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridLoadingOverlay } from "@mui/x-data-grid";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -59,41 +59,73 @@ function ProfileStats() {
 		pollingInterval: 5000,
 	});
 	const loadingIcon = <CircularProgress color="secondary" size={40} />;
+	
 	return (
 		<Grid container spacing={4} mt={4}>
-			<Grid size={3}>
+			<Grid size={{ xs: 12, sm: 6 }} sx={{ gridRow: 'span 2' }}>
 				<StatCard
 					title="Total Profiles"
 					value={isLoading ? loadingIcon : data?.data.TotalProfiles || 0}
 					icon={PeopleOutline}
 					color="info.main"
+					sx={{
+						'& .stat-icon': { fontSize: '4rem' },
+						'& .stat-value': {
+							fontSize: '3rem',
+							fontWeight: 800,
+						},
+						'& .stat-title': {
+							fontSize: '1.2rem',
+						},
+					}}
 				/>
 			</Grid>
-			<Grid size={3}>
-				<StatCard
-					title="Scanned Profiles"
-					value={isLoading ? loadingIcon : data?.data.ScannedProfiles || 0}
-					icon={People}
-					color="warning.main"
-				/>
+
+			<Grid size={{ xs: 12, sm: 6 }}>
+				<Grid container spacing={2}>
+					<Grid size={6}>
+						<StatCard
+							title="Scored Profiles"
+							value={isLoading ? loadingIcon : data?.data.ScoredProfiles || 0}
+							icon={People}
+							color="secondary.main"
+							sx={{ height: '90px' }}
+						/>
+					</Grid>
+
+					<Grid size={6}>
+						<StatCard
+							title="Scanned Profiles"
+							value={isLoading ? loadingIcon : data?.data.ScannedProfiles || 0}
+							icon={People}
+							color="warning.main"
+							sx={{ height: '90px' }}
+						/>
+					</Grid>
+
+					<Grid size={6}>
+						<StatCard
+							title="Analyzed Profiles"
+							value={isLoading ? loadingIcon : data?.data.AnalyzedProfiles || 0}
+							icon={People}
+							color="success.main"
+							sx={{ height: '90px' }}
+						/>
+					</Grid>
+
+					<Grid size={6}>
+						<StatCard
+							title="Embedded Profiles"
+							value={isLoading ? loadingIcon : data?.data.EmbeddedCount || 0}
+							icon={People}
+							color="primary.main"
+							sx={{ height: '90px' }}
+						/>
+					</Grid>
+				</Grid>
 			</Grid>
-			<Grid size={3}>
-				<StatCard
-					title="Analyzed Profiles"
-					value={isLoading ? loadingIcon : data?.data.AnalyzedProfiles || 0}
-					icon={People}
-					color="success.main"
-				/>
-			</Grid>
-			<Grid size={3}>
-				<StatCard
-					title="Embedded Profiles"
-					value={isLoading ? loadingIcon : data?.data.EmbeddedCount || 0}
-					icon={People}
-					color="primary.main"
-				/>
-			</Grid>
-			<Grid size={12}>
+
+			<Grid size={12} mb={2}>
 				<Box mb={2}>
 					<Typography variant="body2" color="text.secondary" mb={1}>
 						Analysis Progress (
@@ -188,13 +220,27 @@ function ProfileTable() {
 			headerName: "ID",
 			width: 100,
 		},
-		{ field: "facebook_id", headerName: "Facebook ID", width: 200 },
-		{ field: "name", headerName: "Name", width: 250 },
+		{ field: "facebook_id", headerName: "Facebook ID", width: 150 },
+		{ field: "name", headerName: "Name", width: 200 },
 		{ field: "nn_count", headerName: "Non-null cols", width: 100 },
 		{
 			field: "is_analyzed",
 			headerName: "Analyzed",
 			type: "boolean",
+			width: 80,
+		},
+		{
+			field: "gemini_score",
+			headerName: "Gemini Score",
+			type: "number",
+			align: "center",
+			width: 100,
+		},
+		{
+			field: "model_score",
+			headerName: "Model Score",
+			type: "number",
+			align: "center",
 			width: 100,
 		},
 		{
@@ -226,6 +272,12 @@ function ProfileTable() {
 		},
 	];
 
+	if (isLoadingProfiles && !profileList) {
+		return <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}>
+			<CircularProgress size={60} />
+		</Box>;
+	}
+
 	return (
 		<Box>
 			<Toolbar />
@@ -239,12 +291,18 @@ function ProfileTable() {
 									facebook_id: profile.FacebookID,
 									nn_count: profile.NonNullCount,
 									is_analyzed: profile.IsAnalyzed.Bool,
+									gemini_score: profile.GeminiScore.Valid
+										? profile.GeminiScore.Float64
+										: "No",
+									model_score: profile.ModelScore.Valid
+										? profile.ModelScore.Float64
+										: "No",
 							  }))
 							: []
 					}
 					columns={columns}
 					rowCount={profileList?.total || 0}
-					loading={isLoadingProfiles}
+					loading={isLoadingProfiles && !profileList}
 					paginationModel={paginationModel}
 					onPaginationModelChange={setPaginationModel}
 					paginationMode="server"
