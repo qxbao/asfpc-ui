@@ -222,7 +222,7 @@ function ProfileTable() {
 		},
 		{ field: "facebook_id", headerName: "Facebook ID", width: 150 },
 		{ field: "name", headerName: "Name", width: 200 },
-		{ field: "nn_count", headerName: "Non-null cols", width: 100 },
+		{ field: "nn_count", headerName: "Non-null fields", width: 100 },
 		{
 			field: "is_analyzed",
 			headerName: "Analyzed",

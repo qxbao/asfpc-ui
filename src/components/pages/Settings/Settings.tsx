@@ -10,7 +10,8 @@ import {
 	Security, 
 	Speed, 
 	Storage,
-	Refresh
+	Refresh,
+	Computer
 } from "@mui/icons-material";
 import {
 	Box,
@@ -52,7 +53,6 @@ function SettingsStats() {
 	const { settings, isLoading } = useSettings();
 	const facebookSettings = useFacebookSettings();
 	const geminiSettings = useGeminiSettings();
-	const concurrencySettings = useConcurrencySettings();
 	
 	const loadingIcon = <CircularProgress color="secondary" size={40} />;
 	const totalSettings = Object.keys(settings).length;
@@ -90,9 +90,9 @@ function SettingsStats() {
 				<StatCard
 					icon={Storage}
 					color="success.main"
-					title="Limits & Concurrency"
-					value={isLoading ? loadingIcon : Object.keys(concurrencySettings).length}
-					footer="Performance limits and concurrency"
+					title="ML & Others"
+					value={isLoading ? loadingIcon : totalSettings - Object.keys(facebookSettings).length - Object.keys(geminiSettings).length}
+					footer="Machine Learning and other settings"
 				/>
 			</Grid>
 		</Grid>
@@ -174,18 +174,20 @@ function SettingsForm() {
 			facebook: [] as string[],
 			gemini: [] as string[],
 			concurrency: [] as string[],
-      ml: [] as string[],
+			ml: [] as string[],
 			other: [] as string[],
 		};
 
 		Object.keys(flattenedSettings).forEach(key => {
 			const upperKey = key.toUpperCase();
-			if (upperKey.includes('FACEBOOK')) {
+			if (upperKey.startsWith('FACEBOOK')) {
 				categories.facebook.push(key);
-			} else if (upperKey.includes('GEMINI')) {
+			} else if (upperKey.startsWith('GEMINI')) {
 				categories.gemini.push(key);
-			} else if (upperKey.includes('CONCURRENCY') || upperKey.includes('LIMIT')) {
+			} else if (upperKey.startsWith('CONCURRENCY') || upperKey.startsWith('LIMIT')) {
 				categories.concurrency.push(key);
+			} else if (upperKey.startsWith('ML')) {
+				categories.ml.push(key);
 			} else {
 				categories.other.push(key);
 			}
@@ -214,6 +216,7 @@ function SettingsForm() {
 				case 'facebook': return SettingsIcon;
 				case 'gemini': return Security;
 				case 'concurrency': return Speed;
+				case 'ml': return Computer;
 				default: return Storage;
 			}
 		};
@@ -299,11 +302,10 @@ function SettingsForm() {
 					onSubmit={handleSubmit(onSubmit)}
 					sx={{ display: "flex", flexDirection: "column", gap: 3 }}
 				>
-					{renderSettingsByCategory("Facebook Settings", "facebook", "primary.main")}
-					{renderSettingsByCategory("Gemini AI Settings", "gemini", "info.main")}
-					{renderSettingsByCategory("Concurrency & Limits", "concurrency", "success.main")}
-					{renderSettingsByCategory("Machine Learning Settings", "ml", "success.main")}
-					{renderSettingsByCategory("Other Settings", "other", "warning.main")}
+					{renderSettingsByCategory("Facebook", "facebook", "primary.main")}
+					{renderSettingsByCategory("Gemini AI", "gemini", "info.main")}
+					{renderSettingsByCategory("Machine Learning", "ml", "success.main")}
+					{renderSettingsByCategory("Others", "other", "warning.main")}
 
 					<Divider />
 

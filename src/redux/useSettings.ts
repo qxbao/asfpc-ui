@@ -55,9 +55,7 @@ export const useGeminiSettings = () => {
   return getSettingsByPrefix("GEMINI");
 };
 
-export const useConcurrencySettings = () => {
+export const useMLSettings = () => {
   const { getSettingsByPrefix } = useSettings();
-  const concurrencySettings = getSettingsByPrefix("CONCURRENCY");
-  const limitSettings = getSettingsByPrefix("LIMIT");
-  return { ...concurrencySettings, ...limitSettings };
-};
+  return getSettingsByPrefix("ML");
+}
