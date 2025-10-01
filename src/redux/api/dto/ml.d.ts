@@ -23,6 +23,7 @@ type ModelValidation = {
 type TrainModelRequest = {
   model_name: string;
   auto_tune?: boolean;
+  trials?: number;
 } | undefined;
 
 type DeleteModelRequest = {

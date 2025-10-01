@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Navigator from "@/components/ui/Navigator";
 import { BackendURL } from "@/lib/server";
 import { useDeleteModelMutation, useGetModelsQuery, useTrainModelMutation, useTraceRequestQuery, mlApi } from "@/redux/api/ml.api";
@@ -348,6 +348,7 @@ function ModelCard({ model }: { model: ModelInfo }) {
 type TrainModelFormData = {
 	modelName: string;
 	autoTune: boolean;
+	trials: number;
 };
 
 function TrainModelCard() {
@@ -356,6 +357,7 @@ function TrainModelCard() {
 	const {
 		register,
 		handleSubmit,
+		watch,
 		formState: { errors, isSubmitting },
 		reset,
 	} = useForm<TrainModelFormData>({
@@ -363,6 +365,7 @@ function TrainModelCard() {
 		defaultValues: {
 			modelName: "",
 			autoTune: false,
+			trials: 20,
 		},
 	});
 	const [trainModel, { isLoading }] = useTrainModelMutation();
@@ -380,6 +383,7 @@ function TrainModelCard() {
 			const result = await trainModel({
 				model_name: data.modelName,
 				auto_tune: data.autoTune,
+				trials: data.autoTune ? data.trials : undefined,
 			}).unwrap();
 			
 			setTrainingRequestId(result.request_id);
@@ -394,12 +398,10 @@ function TrainModelCard() {
 		}
 	};
 	
-	React.useEffect(() => {
+	useEffect(() => {
 		if (trainingData?.data) {
 			const status = trainingData.data.Status;
-			
 			if (status === 2) {
-				reset();
 				setTrainingRequestId(null);
 				dispatch(mlApi.util.invalidateTags(["Models"]));
 				dispatch(
@@ -514,6 +516,36 @@ function TrainModelCard() {
 							}
 							sx={{ alignItems: "flex-start", ml: 0 }}
 						/>
+						{
+							watch("autoTune") && (
+								<Box mt={1}>
+									<TextField
+										label="Optuna Trials"
+										variant="outlined"
+										fullWidth
+										size="small"
+										type="number"
+										placeholder="50"
+										error={!!errors.trials}
+										helperText={
+											errors.trials?.message || "Number of Optuna optimization trials (default: 20)"
+										}
+										{...register("trials", {
+											required: "Trials number is required when auto-tune is enabled",
+											min: {
+												value: 1,
+												message: "Trials must be at least 1",
+											},
+											max: {
+												value: 1000,
+												message: "Trials must be at most 1000",
+											},
+											valueAsNumber: true,
+										})}
+									/>
+								</Box>
+							)
+						}
 					</Box>
 
 					{trainingData && (

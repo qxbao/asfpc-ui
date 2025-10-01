@@ -2,7 +2,7 @@
 import Navigator from "@/components/ui/Navigator";
 import { useUpdateSettingsMutation } from "@/redux/api/setting.api";
 import { useAppDispatch } from "@/redux/hooks";
-import { useSettings, useFacebookSettings, useGeminiSettings, useConcurrencySettings } from "@/redux/useSettings";
+import { useSettings, useFacebookSettings, useGeminiSettings } from "@/redux/useSettings";
 import { openDialog } from "@/redux/slices/dialogSlice";
 import { 
 	Save, 
@@ -25,6 +25,7 @@ import {
 	Typography,
 	Divider,
 	Alert,
+	Switch,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -205,6 +206,10 @@ function SettingsForm() {
 			   upperKey.includes('TIMEOUT');
 	};
 
+	const isBooleanField = (key: string) => {
+		return key.toUpperCase().endsWith('BOOL');
+	};
+
 	const renderSettingsByCategory = (title: string, categoryKey: keyof ReturnType<typeof categorizeSettings>, color: string) => {
 		const categories = categorizeSettings();
 		const categorySettings = categories[categoryKey];
@@ -232,26 +237,56 @@ function SettingsForm() {
 				<Grid container spacing={3}>
 					{categorySettings.map((settingKey) => (
 						<Grid size={6} key={settingKey}>
-							<TextField
-								label={formatLabel(settingKey)}
-								variant="outlined"
-								fullWidth
-								size="small"
-								type={isNumericField(settingKey) ? "number" : "text"}
-								error={!!errors[settingKey]}
-								helperText={errors[settingKey]?.message}
-								{...register(settingKey, {
-									required: "This field is required",
-									...(isNumericField(settingKey) && {
-										min: { value: 1, message: "Must be at least 1" },
-										max: { value: 10000, message: "Must be at most 10000" },
-									}),
-								})}
-								onChange={(e) => {
-									register(settingKey).onChange(e);
-									setHasChanges(true);
-								}}
-							/>
+							{isBooleanField(settingKey) ? (
+								<Box 
+									sx={{ 
+										border: 1, 
+										borderColor: 'divider', 
+										borderRadius: 1, 
+										display: 'flex',
+										justifyContent: 'space-between',
+										alignItems: 'center'
+									}}
+								>
+									<Typography variant="body2">
+										{formatLabel(settingKey ? settingKey.split('_').slice(0, -1).join('_') : '')}
+									</Typography>
+									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+										<Typography variant="caption" color={watchedValues[settingKey] === 'TRUE' ? 'success.main' : 'text.secondary'}>
+											{watchedValues[settingKey] === 'TRUE' ? 'ON' : 'OFF'}
+										</Typography>
+										<Switch
+											checked={watchedValues[settingKey] === 'TRUE'}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+												setValue(settingKey, e.target.checked ? 'TRUE' : 'FALSE');
+												setHasChanges(true);
+											}}
+											color="primary"
+										/>
+									</Box>
+								</Box>
+							) : (
+								<TextField
+									label={formatLabel(settingKey)}
+									variant="outlined"
+									fullWidth
+									size="small"
+									type={isNumericField(settingKey) ? "number" : "text"}
+									error={!!errors[settingKey]}
+									helperText={errors[settingKey]?.message}
+									{...register(settingKey, {
+										required: "This field is required",
+										...(isNumericField(settingKey) && {
+											min: { value: 1, message: "Must be at least 1" },
+											max: { value: 10000, message: "Must be at most 10000" },
+										}),
+									})}
+									onChange={(e) => {
+										register(settingKey).onChange(e);
+										setHasChanges(true);
+									}}
+								/>
+							)}
 						</Grid>
 					))}
 				</Grid>

@@ -42,18 +42,18 @@ export default function CustomSideBar() {
               <ListItemButton
                 onClick={() => router.push(item.url)}
                 sx={{
-                  bgcolor: pathname === item.url ? 'primary.main' : 'inherit',
                   borderRadius: 1,
-                  color: pathname === item.url ? 'primary.contrastText' : 'secondary.main',
-                  '&:hover': { bgcolor: pathname === item.url ? 'primary.main' : 'action.hover' }
+                  color: pathname === item.url ? 'primary.main' : 'secondary.main',
               }}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText 
+                <ListItemIcon sx={{
+                  color: pathname === item.url ? 'primary.main' : 'secondary.main',
+                }}>{item.icon}</ListItemIcon>
+                <ListItemText
                   primary={item.text}
                   slotProps={{
                     primary: {
                       fontSize: '.95rem',
-                      fontWeight: pathname === item.url ? 600 : 400,
+                      fontWeight: pathname === item.url ? 700 : 400,
                     }
                   }}
                 />
