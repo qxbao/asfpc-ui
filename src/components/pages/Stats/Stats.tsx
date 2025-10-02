@@ -1,5 +1,6 @@
 "use client";
 import StatCard from "@/components/ui/cards/StatCard";
+import ErrorCard from "@/components/ui/ErrorCard";
 import Navigator from "@/components/ui/Navigator";
 import { useGetDataStatsQuery } from "@/redux/api/data.api";
 import { Comment, Group, Person, PostAdd } from "@mui/icons-material";
@@ -18,15 +19,25 @@ export default function StatsPageComponent() {
 }
 
 function StatsGrid() {
-	const { data, isLoading, isError } = useGetDataStatsQuery(undefined, {
+	const { data, isLoading, isError, refetch } = useGetDataStatsQuery(undefined, {
 		pollingInterval: 10000,
 	});
 	if (isLoading) {
 		return <Typography>Loading...</Typography>;
 	}
 	if (isError || !data) {
-		return <Typography>Error loading data</Typography>;
-	}
+			return (
+				<ErrorCard
+					title="Connection Error"
+					message="Unable to fetch statistics data from the server. Please check your connection and try again."
+					errorCode="ERROR_STATS_FETCH"
+					onRetry={refetch}
+					onRefresh={() => window.location.reload()}
+				/>
+			);
+		}
+	
+
 	return (
 		<Grid container spacing={4} mt={5}>
 			<Grid size={4}>

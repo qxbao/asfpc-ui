@@ -48,7 +48,6 @@ export const SettingsLoaderProvider = ({ children }: SettingsLoaderProviderProps
   useEffect(() => {
     if (error && !settingsState.isLoaded && !isUninitialized) {
       const retryTimer = setTimeout(() => {
-        console.log('Retrying settings fetch...');
         refetch();
       }, 5000);
 

@@ -16,8 +16,8 @@ const navItems: NavChild[] = [
   { text: "Analysis", icon: <Analytics />, url: "/analysis" },
   { text: "Prompts", icon: <Assignment />, url: "/prompt" },
   { text: "ML Models", icon: <Computer />, url: "/ml" },
-  { text: "Logs", icon: <DensitySmall />, url: "/log" },
   { text: "Automation", icon: <AutoMode />, url: "/cron" },
+  { text: "Logs", icon: <DensitySmall />, url: "/log" },
   { text: "Gemini API Key", icon: <Key />, url: "/key" },
   { text: "Settings", icon: <Settings />, url: "/settings" },
 ]

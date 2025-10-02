@@ -1,26 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import ErrorCard from "@/components/ui/ErrorCard";
 import Navigator from "@/components/ui/Navigator";
 import {
-  useListJobsQuery,
-  useStopJobMutation,
-  useResumeJobMutation,
   useForceRunJobMutation,
+  useListJobsQuery,
+  useResumeJobMutation,
+  useStopJobMutation,
 } from "@/redux/api/cron.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
 import {
-  Schedule,
-  CheckCircle,
-  Cancel,
-  PlayArrow,
-  Stop,
   FlashOn,
+  PlayArrow,
+  Schedule,
+  Stop
 } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -29,17 +26,17 @@ import {
   Grid,
   IconButton,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import StatCard from "../../ui/cards/StatCard";
+import { useEffect, useState } from "react";
 
 export default function AutomationPage() {
   return (
     <Box bgcolor={"background.paper"} p={3}>
       <Navigator link={["Automation"]} />
       <Typography variant="h6" fontWeight={600} marginBottom={3}>
-        Cron Job Management
+        Automation
       </Typography>
       <Grid spacing={4} mt={4} container>
         <Grid size={12}>
@@ -195,6 +192,9 @@ function CronJobTable() {
     if (!dateString) return "N/A";
     try {
       const date = new Date(dateString);
+      if (date.getFullYear() < 1970) {
+        return "N/A";
+      }
       return date.toLocaleString("en-US", {
         year: "numeric",
         month: "2-digit",
@@ -323,14 +323,13 @@ function CronJobTable() {
 
   if (isError) {
     return (
-      <Card sx={{ bgcolor: "error.main", color: "white" }}>
-        <CardContent>
-          <Typography variant="body1">Failed to load cron jobs</Typography>
-          <Button color="inherit" onClick={refetch}>
-            Retry
-          </Button>
-        </CardContent>
-      </Card>
+      <ErrorCard
+        title="Connection Error"
+        message="Unable to fetch cron job data from the server. Please check your connection and try again."
+        errorCode="ERROR_CRON_FETCH"
+        onRetry={refetch}
+        onRefresh={() => window.location.reload()}
+      />
     );
   }
 

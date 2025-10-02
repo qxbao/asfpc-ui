@@ -16,9 +16,7 @@ export const settingApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(setSettings(data.data));
-        } catch (error) {
-          dispatch(openDialog({ title: "Error", type: "error", content: "Failed to fetch settings." }));
-        }
+        } catch {}
       },
     }),
     updateSettings: builder.mutation<void, UpdateSettingsRequest>({
