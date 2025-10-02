@@ -1,7 +1,7 @@
-import { Drawer, Toolbar, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Box } from '@mui/material'
-import { Dashboard, BarChart, Home, Settings, AccountBox, Assignment, DensitySmall, Analytics, Key, Computer } from "@mui/icons-material"
-import React from 'react'
+import { AccountBox, Analytics, Assignment, AutoMode, BarChart, Computer, DensitySmall, Home, Key, Settings } from "@mui/icons-material";
+import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
+import React from 'react';
 
 type NavChild = {
   text: string;
@@ -17,6 +17,7 @@ const navItems: NavChild[] = [
   { text: "Prompts", icon: <Assignment />, url: "/prompt" },
   { text: "ML Models", icon: <Computer />, url: "/ml" },
   { text: "Logs", icon: <DensitySmall />, url: "/log" },
+  { text: "Automation", icon: <AutoMode />, url: "/cron" },
   { text: "Gemini API Key", icon: <Key />, url: "/key" },
   { text: "Settings", icon: <Settings />, url: "/settings" },
 ]
