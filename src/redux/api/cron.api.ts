@@ -29,7 +29,7 @@ export const cronApi = createApi({
     }),
     forceRunJob: builder.mutation<void, { job_name: string }>({
       query: (body) => ({
-        url: "/cron/run",
+        url: "/cron/trigger",
         method: "POST",
         body,
       }),

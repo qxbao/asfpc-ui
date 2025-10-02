@@ -41,68 +41,12 @@ export default function AutomationPage() {
       <Typography variant="h6" fontWeight={600} marginBottom={3}>
         Cron Job Management
       </Typography>
-      <CronJobStats />
       <Grid spacing={4} mt={4} container>
         <Grid size={12}>
           <CronJobTable />
         </Grid>
       </Grid>
     </Box>
-  );
-}
-
-function CronJobStats() {
-  const { data, isLoading } = useListJobsQuery();
-  const loadingIcon = <CircularProgress color="secondary" size={40} />;
-  
-  const totalJobs = data?.count || 0;
-  const runningJobs = data?.data 
-    ? Object.values(data.data).filter(job => job.is_running).length 
-    : 0;
-  const stoppedJobs = totalJobs - runningJobs;
-
-  return (
-    <Grid container spacing={4} mt={4}>
-      <Grid size={4}>
-        <StatCard
-          icon={Schedule}
-          color="primary.main"
-          title="Total Jobs"
-          value={isLoading ? loadingIcon : totalJobs}
-          footer="All cron jobs in the system"
-        />
-      </Grid>
-      <Grid size={4}>
-        <StatCard
-          icon={CheckCircle}
-          color="success.main"
-          title="Running Jobs"
-          value={isLoading ? loadingIcon : runningJobs}
-          footer={
-            isLoading
-              ? ""
-              : totalJobs > 0
-              ? `${((runningJobs / totalJobs) * 100).toFixed(2)}% of all jobs`
-              : "No jobs available"
-          }
-        />
-      </Grid>
-      <Grid size={4}>
-        <StatCard
-          icon={Cancel}
-          color="error.main"
-          title="Stopped Jobs"
-          value={isLoading ? loadingIcon : stoppedJobs}
-          footer={
-            isLoading
-              ? ""
-              : totalJobs > 0
-              ? `${((stoppedJobs / totalJobs) * 100).toFixed(2)}% of all jobs`
-              : "No jobs available"
-          }
-        />
-      </Grid>
-    </Grid>
   );
 }
 
@@ -150,7 +94,7 @@ function CountdownCell({ nextRun }: { nextRun: string | null | undefined }) {
   }, [nextRun]);
 
   return (
-    <Tooltip title={nextRun ? new Date(nextRun).toLocaleString() : "N/A"}>
+    <Tooltip sx={{ display: "flex", height: "100%", alignItems: "center" }} title={nextRun ? new Date(nextRun).toLocaleString() : "N/A"}>
       <Typography variant="body2" fontFamily="monospace">
         {countdown}
       </Typography>
@@ -165,17 +109,15 @@ function CronJobTable() {
     pageSize: 10,
   });
 
-  const { data, isLoading, refetch } = useListJobsQuery();
+  const { data, isLoading, refetch, isError } = useListJobsQuery();
   const [stopJob] = useStopJobMutation();
   const [resumeJob] = useResumeJobMutation();
   const [forceRunJob] = useForceRunJobMutation();
 
-  // Check if any job is running to enable polling
   const hasRunningJobs = data?.data 
     ? Object.values(data.data).some(job => job.is_running) 
     : false;
 
-  // Refetch when jobs are running
   useEffect(() => {
     if (!hasRunningJobs) return;
     
@@ -289,7 +231,7 @@ function CronJobTable() {
     },
     {
       field: "next_run",
-      headerName: "Next Run",
+      headerName: "Next iteration",
       flex: 1,
       minWidth: 180,
       renderCell: (params: GridRenderCellParams<JobStatus>) => (
@@ -298,7 +240,7 @@ function CronJobTable() {
     },
     {
       field: "last_run",
-      headerName: "Last Run",
+      headerName: "Last iteration",
       flex: 1,
       minWidth: 180,
       renderCell: (params: GridRenderCellParams<JobStatus>) =>
@@ -321,9 +263,10 @@ function CronJobTable() {
       field: "actions",
       headerName: "Actions",
       width: 150,
+      headerAlign: "center",
       sortable: false,
       renderCell: (params: GridRenderCellParams<JobStatus>) => (
-        <Box display="flex" gap={0.5}>
+        <Box display="flex" alignContent="center" justifyContent="center" height="100%" width="100%" gap={0.5}>
           {params.row.is_running ? (
             <>
               <Tooltip title="Stop Job">
@@ -368,6 +311,29 @@ function CronJobTable() {
       }))
     : [];
 
+  if (isLoading) {
+    return (
+      <Card sx={{ bgcolor: "background.paper", border: 2, borderColor: "divider", borderRadius: 3 }}>
+        <CardContent sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 200 }}>
+          <CircularProgress color="secondary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card sx={{ bgcolor: "error.main", color: "white" }}>
+        <CardContent>
+          <Typography variant="body1">Failed to load cron jobs</Typography>
+          <Button color="inherit" onClick={refetch}>
+            Retry
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card
       sx={{
@@ -378,20 +344,184 @@ function CronJobTable() {
     >
       <CardHeader
         title={
-          <Box display="flex" alignItems="center" gap={1}>
-            <Schedule color="primary" />
-            <Typography variant="subtitle1" fontWeight={600}>
-              Cron Jobs ({data?.count || 0})
-            </Typography>
+          <Box>
+            {/* Header Section */}
+            <Box 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="space-between"
+              mb={2}
+            >
+              <Box display="flex" alignItems="center" gap={2}>
+                <Box
+                  sx={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 56,
+                    height: 56,
+                    borderRadius: 3,
+                    bgcolor: "primary.main",
+                    color: "primary.contrastText",
+                    boxShadow: 3,
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      inset: -2,
+                      borderRadius: 3,
+                      padding: 2,
+                      mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                      maskComposite: 'exclude',
+                      opacity: 0.3,
+                    }
+                  }}
+                >
+                  <Schedule sx={{ fontSize: 28 }} />
+                </Box>
+                <Box>
+                  <Typography 
+                    variant="h5" 
+                    fontWeight={800}
+                    color="text.primary"
+                    sx={{ 
+                      lineHeight: 1.2,
+                      backgroundClip: 'text',
+                    }}
+                  >
+                    Cron Jobs Management
+                  </Typography>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{ mt: 0.5, fontWeight: 500 }}
+                  >
+                    Automated task scheduling and monitoring system
+                  </Typography>
+                </Box>
+              </Box>
+              
+              <Box display="flex" alignItems="center" gap={1}>
+                <IconButton
+                  size="small"
+                  onClick={refetch}
+                  sx={{
+                    bgcolor: 'background.default',
+                    border: 1,
+                    borderColor: 'divider',
+                    '&:hover': {
+                      bgcolor: 'primary.50',
+                      borderColor: 'primary.main',
+                    }
+                  }}
+                >
+                  <Schedule fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+
+            {/* Stats Row */}
+            <Box display="flex" gap={2}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  bgcolor: 'primary.50',
+                  border: 1,
+                  borderColor: 'primary.200',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    bgcolor: 'primary.main',
+                  }}
+                />
+                <Typography variant="body2" fontWeight={600} color="primary.main">
+                  {data?.count || 0} Total Jobs
+                </Typography>
+              </Box>
+              
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  bgcolor: 'success.50',
+                  border: 1,
+                  borderColor: 'success.200',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    bgcolor: 'success.main',
+                    animation: hasRunningJobs ? 'pulse 2s infinite' : 'none',
+                    '@keyframes pulse': {
+                      '0%': {
+                        boxShadow: '0 0 0 0 rgba(76, 175, 80, 0.7)',
+                      },
+                      '70%': {
+                        boxShadow: '0 0 0 8px rgba(76, 175, 80, 0)',
+                      },
+                      '100%': {
+                        boxShadow: '0 0 0 0 rgba(76, 175, 80, 0)',
+                      },
+                    },
+                  }}
+                />
+                <Typography variant="body2" fontWeight={600} color="success.main">
+                  {Object.values(data?.data || {}).filter(job => job.is_running).length} Active
+                </Typography>
+              </Box>
+              
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  bgcolor: 'grey.100',
+                  border: 1,
+                  borderColor: 'grey.300',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    bgcolor: 'grey.500',
+                  }}
+                />
+                <Typography variant="body2" fontWeight={600} color="grey.700">
+                  {(data?.count || 0) - Object.values(data?.data || {}).filter(job => job.is_running).length} Stopped
+                </Typography>
+              </Box>
+            </Box>
           </Box>
         }
         sx={{
           bgcolor: "background.paper",
           borderBottom: 1,
           borderColor: "divider",
+          p: 3,
         }}
       />
-      <CardContent>
+      <CardContent sx={{ padding: 0 }}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -401,7 +531,12 @@ function CronJobTable() {
           onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[5, 10, 25, 50]}
           disableRowSelectionOnClick
-          autoHeight
+          sx={{
+						minHeight: 500,
+						border: 2,
+						borderColor: "divider",
+						bgcolor: "background.paper",
+					}}
         />
       </CardContent>
     </Card>
