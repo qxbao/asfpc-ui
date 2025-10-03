@@ -9,11 +9,50 @@ type ModelInfo = {
 };
 
 type ModelMetadata = {
-  rmse: number;
-  r2: number;
-  mae: number;
-  saved_at: string;
-};
+  rmse?: number
+  r2?: number
+  mae?: number
+  rmsle?: number
+  smape?: number
+  prediction_stats?: PredictionStats
+  residual_stats?: ResidualStats
+  top_features?: TopFeatures
+  saved_at?: string
+  is_gpu?: boolean
+  train_params?: TrainParams
+}
+
+interface PredictionStats {
+  min: number
+  max: number
+  mean: number
+  std: number
+}
+
+interface ResidualStats {
+  mean: number
+  std: number
+  bias_low_scores: number
+  bias_high_scores: number
+}
+
+interface TopFeatures {
+  f769: number
+  f276: number
+  f768: number
+  f752: number
+  f545: number
+  f661: number
+  f584: number
+  f698: number
+  f720: number
+  f42: number
+}
+
+interface TrainParams {
+  [key: string]: string | number;
+}
+
 
 type ModelValidation = {
   IsExists: boolean;
