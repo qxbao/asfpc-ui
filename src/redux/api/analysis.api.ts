@@ -71,6 +71,13 @@ export const analysisApi = createApi({
       }),
       invalidatesTags: ["Profiles"],
     }),
+    deleteProfilesModelScore: builder.mutation<void, void>({
+      query: () => ({
+        url: "/analysis/profile/delete_scores",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Profiles"],
+    }),
     getProfileStats: builder.query<GetProfileStatsResponse, void>({
       query: () => ({
         url: "/analysis/profile/stats",
@@ -90,4 +97,5 @@ export const {
   useDeleteJunkProfilesMutation,
   useDeleteGeminiKeyMutation,
   useImportProfileMutation,
+  useDeleteProfilesModelScoreMutation,
 } = analysisApi;

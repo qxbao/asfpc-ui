@@ -157,7 +157,7 @@ export default function TrainModelCard() {
 								<Typography variant="caption" color="text.secondary">
 									Features:
 								</Typography>
-								<Typography variant="caption">768D + Demographics</Typography>
+								<Typography variant="caption">1024D + Demographics</Typography>
 							</Box>
 							<Box display="flex" justifyContent="space-between">
 								<Typography variant="caption" color="text.secondary">

@@ -5,6 +5,7 @@ import { BackendURL } from "@/lib/server";
 import {
 	useAnalyzeProfileGeminiMutation,
 	useDeleteJunkProfilesMutation,
+	useDeleteProfilesModelScoreMutation,
 	useGetProfilesQuery,
 	useGetProfileStatsQuery,
 	useImportProfileMutation,
@@ -17,6 +18,7 @@ import {
 	FileOpen,
 	People,
 	PeopleOutline,
+	Restore,
 } from "@mui/icons-material";
 import {
 	Box,
@@ -321,8 +323,8 @@ function ProfileTable() {
 }
 
 function Toolbar() {
-	const [deleteJunkProfiles, { isLoading: isDeletingJunkProfiles }] =
-		useDeleteJunkProfilesMutation();
+	const [deleteJunkProfiles, { isLoading: isDeletingJunkProfiles }] = useDeleteJunkProfilesMutation();
+	const [deleteProfilesModelScore, { isLoading: isResettingScores }] = useDeleteProfilesModelScoreMutation();
 	const dispatch = useAppDispatch();
 	const handleDeleteJunkProfiles = async () => {
 		try {
@@ -338,6 +340,26 @@ function Toolbar() {
 			dispatch(
 				openDialog({
 					title: "Delete Failed",
+					content: (error as FetchError).data.error,
+					type: "error",
+				})
+			);
+		}
+	};
+	const handleResetModelScores = async () => {
+		try {
+			await deleteProfilesModelScore().unwrap();
+			dispatch(
+				openDialog({
+					title: "Reset Successful",
+					content: `All model scores have been reset.`,
+					type: "success",
+				})
+			);
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: "Reset Failed",
 					content: (error as FetchError).data.error,
 					type: "error",
 				})
@@ -363,6 +385,16 @@ function Toolbar() {
 				startIcon={<DeleteForever />}
 			>
 				Delete Junk Profiles
+			</Button>
+			<Button
+				disabled={isResettingScores}
+				variant="contained"
+				color="warning"
+				size="small"
+				onClick={handleResetModelScores}
+				startIcon={<Restore />}
+			>
+				Reset Model Scores
 			</Button>
 			<Link
 				href={BackendURL + "/analysis/profile/export"}

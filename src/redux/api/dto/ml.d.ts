@@ -37,16 +37,7 @@ interface ResidualStats {
 }
 
 interface TopFeatures {
-  f769: number
-  f276: number
-  f768: number
-  f752: number
-  f545: number
-  f661: number
-  f584: number
-  f698: number
-  f720: number
-  f42: number
+  [key: string]: number;
 }
 
 interface TrainParams {
