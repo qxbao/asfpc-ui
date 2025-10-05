@@ -223,11 +223,11 @@ function ProfileTable() {
 		}
 	};
 
-	const handleFindSimilar = (profileId: number) => {
+	const handleFindSimilar = (e: React.MouseEvent, profileId: number) => {
+		e.stopPropagation();
 		setSelectedProfileId(profileId);
 	};
 
-	// Show dialog when similar profiles are loaded
 	if (similarProfiles && selectedProfileId !== null) {
 		const profileName = profileList?.data.find(p => p.ID === selectedProfileId)?.Name.String || `Profile #${selectedProfileId}`;
 
@@ -235,7 +235,7 @@ function ProfileTable() {
 			openDialog({
 				title: `🔍 Similar Profiles to "${profileName}"`,
 				content: (
-					<Box sx={{ minWidth: { xs: '100%', sm: 500 }, maxWidth: 700 }}>
+					<Box>
 						{similarProfiles.data.length === 0 ? (
 							<Box 
 								sx={{ 
@@ -467,7 +467,7 @@ function ProfileTable() {
 							Analyze
 						</Button>
 						<Button
-							onClick={() => handleFindSimilar(params.row.id)}
+							onClick={(e) => handleFindSimilar(e, params.row.id)}
 							disabled={isLoadingSimilar && selectedProfileId === params.row.id}
 							size="small"
 							variant="outlined"
