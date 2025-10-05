@@ -32,7 +32,7 @@ import {
 } from "@mui/material";
 import { DataGrid, GridColDef, GridLoadingOverlay } from "@mui/x-data-grid";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function AnalysisPageComponent() {
@@ -228,13 +228,15 @@ function ProfileTable() {
 		setSelectedProfileId(profileId);
 	};
 
-	if (similarProfiles && selectedProfileId !== null) {
-		const profileName = profileList?.data.find(p => p.ID === selectedProfileId)?.Name.String || `Profile #${selectedProfileId}`;
+	// Use useEffect to dispatch dialog when similar profiles are loaded
+	useEffect(() => {
+		if (similarProfiles && selectedProfileId !== null) {
+			const profileName = profileList?.data.find(p => p.ID === selectedProfileId)?.Name.String || `Profile #${selectedProfileId}`;
 
-		dispatch(
-			openDialog({
-				title: `🔍 Similar Profiles to "${profileName}"`,
-				content: (
+			dispatch(
+				openDialog({
+					title: `🔍 Similar Profiles to "${profileName}"`,
+					content: (
 					<Box>
 						{similarProfiles.data.length === 0 ? (
 							<Box 
@@ -411,8 +413,9 @@ function ProfileTable() {
 				type: "info",
 			})
 		);
-		setSelectedProfileId(null);
-	}
+			setSelectedProfileId(null);
+		}
+	}, [similarProfiles, selectedProfileId, profileList, dispatch]);
 
 	const columns: GridColDef[] = [
 		{
