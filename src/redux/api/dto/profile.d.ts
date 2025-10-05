@@ -40,3 +40,19 @@ type ImportProfileRequest = {
 type ImportProfileResponse = {
   data: number;
 }
+
+type FindSimilarProfilesRequest = {
+  profile_id: number;
+  top_k?: number;
+}
+
+type FindSimilarProfilesResponse = {
+  data: SimilarProfile[];
+}
+
+type SimilarProfile = {
+  ProfileID: number;
+  Similarity: number;
+  ProfileUrl: string; // URL to the similar profile
+  ProfileName: NullableString; // Name of the similar profile
+}
