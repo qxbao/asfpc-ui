@@ -88,7 +88,7 @@ function StatsGrid() {
 						color="secondary.main"
 						value={stats.AnalyzedProfiles}
 						icon={Psychology}
-						footer={`${((stats.AnalyzedProfiles / stats.TotalProfiles) * 100).toFixed(1)}% of total profiles`}
+												footer={`${stats.TotalProfiles > 0 ? ((stats.AnalyzedProfiles / stats.TotalProfiles) * 100).toFixed(1) + "%" : "N/A"} of total profiles`}
 					/>
 				</Grid>
 				<Grid component="div" size={4}>

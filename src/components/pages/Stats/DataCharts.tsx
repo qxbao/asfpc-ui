@@ -1,7 +1,8 @@
 "use client";
 import { useGetDataHistoryQuery, useGetScoreDistributionQuery } from "@/redux/api/data.api";
 import { ComposedChart, Line, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
-import { Box, Card, Container, Grid, Typography, alpha, useTheme } from "@mui/material";
+import { Box, Card, Container, Grid, Typography, alpha, useTheme, Skeleton, CircularProgress } from "@mui/material";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 // Custom gradient with shadow for charts
 const CustomChartGradient = ({ id, color }: { id: string; color: string }) => (
@@ -42,8 +43,19 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function DataCharts() {
   const theme = useTheme();
-  const { data: historyData } = useGetDataHistoryQuery();
-  const { data: scoreData } = useGetScoreDistributionQuery();
+  const { 
+    data: historyData, 
+    isLoading: historyLoading, 
+    isError: historyError,
+    refetch: refetchHistory 
+  } = useGetDataHistoryQuery();
+  
+  const { 
+    data: scoreData, 
+    isLoading: scoreLoading, 
+    isError: scoreError,
+    refetch: refetchScore 
+  } = useGetScoreDistributionQuery();
 
   const colors = {
     data: theme.palette.primary.main,
@@ -61,6 +73,18 @@ export default function DataCharts() {
     Count: Number(item.Count),
     Percentage: Number(item.Percentage)
   })) || [];
+
+  // Loading skeleton component
+  const ChartLoadingSkeleton = () => (
+    <Box sx={{ width: '100%', height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
+        <CircularProgress size={40} sx={{ mb: 2 }} />
+        <Typography variant="body2" color="text.secondary">
+          Loading chart data...
+        </Typography>
+      </Box>
+    </Box>
+  );
 
   return (
     <Grid container spacing={3} mt={2}>
@@ -83,9 +107,20 @@ export default function DataCharts() {
           }}>
             Data Collection Over Time
           </Typography>
-          <Box sx={{ width: '100%', height: 400 }}>
-            <ResponsiveContainer>
-              <ComposedChart data={timeseriesData}>
+          
+          {historyLoading ? (
+            <ChartLoadingSkeleton />
+          ) : historyError ? (
+            <ErrorCard
+              title="Failed to Load Chart Data"
+              message="Unable to fetch data collection history. Please try again."
+              errorCode="ERROR_HISTORY_FETCH"
+              onRetry={refetchHistory}
+            />
+          ) : (
+            <Box sx={{ width: '100%', height: 400 }}>
+              <ResponsiveContainer>
+                <ComposedChart data={timeseriesData}>
                 <defs>
                   {/* Enhanced gradient fill */}
                   <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -193,6 +228,7 @@ export default function DataCharts() {
               </ComposedChart>
             </ResponsiveContainer>
           </Box>
+          )}
         </Card>
       </Grid>
 
@@ -214,9 +250,20 @@ export default function DataCharts() {
           }}>
             Score Distribution
           </Typography>
-          <Box sx={{ width: '100%', height: 400 }}>
-            <ResponsiveContainer>
-              <ComposedChart data={scoreDistData}>
+          
+          {scoreLoading ? (
+            <ChartLoadingSkeleton />
+          ) : scoreError ? (
+            <ErrorCard
+              title="Failed to Load Score Data"
+              message="Unable to fetch score distribution data. Please try again."
+              errorCode="ERROR_SCORE_FETCH"
+              onRetry={refetchScore}
+            />
+          ) : (
+            <Box sx={{ width: '100%', height: 400 }}>
+              <ResponsiveContainer>
+                <ComposedChart data={scoreDistData}>
                 <defs>
                   {/* Dynamic gradient for each bar - rainbow spectrum */}
                   {scoreDistData.map((_, index) => {
@@ -413,6 +460,7 @@ export default function DataCharts() {
               </ComposedChart>
             </ResponsiveContainer>
           </Box>
+          )}
         </Card>
       </Grid>
     </Grid>
