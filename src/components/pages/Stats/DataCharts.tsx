@@ -355,14 +355,14 @@ export default function DataCharts() {
                           transition: 'all 0.3s ease-out',
                           cursor: 'pointer'
                         }}
-                        onMouseEnter={(e: any) => {
-                          e.target.setAttribute('opacity', '0.85');
-                          e.target.style.transform = 'scaleY(1.05) translateY(-2px)';
-                          e.target.style.transformOrigin = 'bottom';
+                        onMouseEnter={(e: React.MouseEvent<SVGElement>) => {
+                          e.currentTarget.setAttribute('opacity', '0.85');
+                          e.currentTarget.style.transform = 'scaleY(1.05) translateY(-2px)';
+                          e.currentTarget.style.transformOrigin = 'bottom';
                         }}
-                        onMouseLeave={(e: any) => {
-                          e.target.setAttribute('opacity', '1');
-                          e.target.style.transform = 'scaleY(1) translateY(0)';
+                        onMouseLeave={(e: React.MouseEvent<SVGElement>) => {
+                          e.currentTarget.setAttribute('opacity', '1');
+                          e.currentTarget.style.transform = 'scaleY(1) translateY(0)';
                         }}
                       />
                     );
