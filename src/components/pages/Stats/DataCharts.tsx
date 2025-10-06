@@ -1,6 +1,6 @@
 "use client";
 import { useGetDataHistoryQuery, useGetScoreDistributionQuery } from "@/redux/api/data.api";
-import { ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
+import { ComposedChart, Line, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import { Box, Card, Container, Grid, Typography, alpha, useTheme } from "@mui/material";
 
 // Custom gradient with shadow for charts
@@ -88,47 +88,83 @@ export default function DataCharts() {
     <Grid container spacing={3} mt={2}>
       {/* Time Series Chart */}
       <Grid component="div" size={12}>
-        <Card sx={{ p: 2, '& *:focus': { outline: 'none' } }}>
-          <Typography variant="h6" gutterBottom>Data Collection Over Time</Typography>
+        <Card sx={{ 
+          p: 3, 
+          '& *:focus': { outline: 'none' },
+          background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.95)} 0%, ${alpha(theme.palette.background.default, 0.98)} 100%)`,
+          backdropFilter: 'blur(20px)',
+          boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.12)}`,
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+        }}>
+          <Typography variant="h6" gutterBottom fontWeight={600} sx={{
+            background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 3
+          }}>
+            Data Collection Over Time
+          </Typography>
           <Box sx={{ width: '100%', height: 400 }}>
             <ResponsiveContainer>
               <ComposedChart data={filledTimeseriesData}>
                 <defs>
-                  {/* Gradient fills for area under lines */}
+                  {/* Enhanced gradient fills with multiple stops */}
                   <linearGradient id="areaComments" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={colors.comments} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={colors.comments} stopOpacity={0.01} />
+                    <stop offset="0%" stopColor={colors.comments} stopOpacity={0.6} />
+                    <stop offset="30%" stopColor={colors.comments} stopOpacity={0.4} />
+                    <stop offset="70%" stopColor={colors.comments} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={colors.comments} stopOpacity={0.02} />
                   </linearGradient>
                   <linearGradient id="areaPosts" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={colors.posts} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={colors.posts} stopOpacity={0.01} />
+                    <stop offset="0%" stopColor={colors.posts} stopOpacity={0.6} />
+                    <stop offset="30%" stopColor={colors.posts} stopOpacity={0.4} />
+                    <stop offset="70%" stopColor={colors.posts} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={colors.posts} stopOpacity={0.02} />
                   </linearGradient>
                   <linearGradient id="areaProfiles" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={colors.profiles} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={colors.profiles} stopOpacity={0.01} />
+                    <stop offset="0%" stopColor={colors.profiles} stopOpacity={0.6} />
+                    <stop offset="30%" stopColor={colors.profiles} stopOpacity={0.4} />
+                    <stop offset="70%" stopColor={colors.profiles} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={colors.profiles} stopOpacity={0.02} />
                   </linearGradient>
                   
-                  {/* Drop shadow for lines */}
-                  <filter id="line-shadow" height="200%" width="200%">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-                    <feOffset dx="0" dy="1" result="offsetblur" />
+                  {/* Enhanced drop shadow with color */}
+                  <filter id="line-shadow" height="300%" width="300%" x="-100%" y="-100%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                    <feOffset dx="0" dy="3" result="offsetblur" />
                     <feComponentTransfer>
-                      <feFuncA type="linear" slope="0.2" />
+                      <feFuncA type="linear" slope="0.4" />
                     </feComponentTransfer>
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.2
+                                                         0 0 0 0 0.4
+                                                         0 0 0 0 0.8
+                                                         0 0 0 0.3 0"/>
                     <feMerge>
                       <feMergeNode />
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
                   
-                  {/* Glow effect for active dots */}
-                  <filter id="dot-glow" height="300%" width="300%" x="-100%" y="-100%">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                  {/* Enhanced glow effect with multiple layers */}
+                  <filter id="dot-glow" height="400%" width="400%" x="-150%" y="-150%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur1" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur2" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="blur3" />
                     <feMerge>
-                      <feMergeNode in="coloredBlur" />
-                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="blur3" />
+                      <feMergeNode in="blur2" />
+                      <feMergeNode in="blur1" />
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
+                  </filter>
+                  
+                  {/* Shimmer effect for active elements */}
+                  <filter id="shimmer">
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComponentTransfer>
+                      <feFuncA type="discrete" tableValues="0 1 1 1 0"/>
+                    </feComponentTransfer>
                   </filter>
                 </defs>
                 
@@ -169,23 +205,24 @@ export default function DataCharts() {
                   iconType="line"
                 />
 
-                {/* Lines with gradient fills and smooth curves */}
-                <Line
+                {/* Area charts with gradient fills and smooth curves */}
+                <Area
                   type="monotone"
                   dataKey="comments"
                   stroke={colors.comments}
-                  strokeWidth={2.5}
+                  strokeWidth={3}
                   fill="url(#areaComments)"
-                  filter="url(#line-shadow)"
+                  fillOpacity={1}
                   dot={{ 
-                    r: 3, 
+                    r: 4, 
                     strokeWidth: 2, 
                     fill: theme.palette.background.paper, 
-                    stroke: colors.comments 
+                    stroke: colors.comments,
+                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
                   }}
                   activeDot={{ 
-                    r: 6, 
-                    strokeWidth: 2,
+                    r: 7, 
+                    strokeWidth: 3,
                     fill: colors.comments,
                     stroke: theme.palette.background.paper,
                     filter: "url(#dot-glow)"
@@ -195,22 +232,23 @@ export default function DataCharts() {
                   connectNulls
                 />
                 
-                <Line
+                <Area
                   type="monotone"
                   dataKey="posts"
                   stroke={colors.posts}
-                  strokeWidth={2.5}
+                  strokeWidth={3}
                   fill="url(#areaPosts)"
-                  filter="url(#line-shadow)"
+                  fillOpacity={1}
                   dot={{ 
-                    r: 3, 
+                    r: 4, 
                     strokeWidth: 2, 
                     fill: theme.palette.background.paper, 
-                    stroke: colors.posts 
+                    stroke: colors.posts,
+                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
                   }}
                   activeDot={{ 
-                    r: 6, 
-                    strokeWidth: 2,
+                    r: 7, 
+                    strokeWidth: 3,
                     fill: colors.posts,
                     stroke: theme.palette.background.paper,
                     filter: "url(#dot-glow)"
@@ -221,22 +259,23 @@ export default function DataCharts() {
                   connectNulls
                 />
                 
-                <Line
+                <Area
                   type="monotone"
                   dataKey="profiles"
                   stroke={colors.profiles}
-                  strokeWidth={2.5}
+                  strokeWidth={3}
                   fill="url(#areaProfiles)"
-                  filter="url(#line-shadow)"
+                  fillOpacity={1}
                   dot={{ 
-                    r: 3, 
+                    r: 4, 
                     strokeWidth: 2, 
                     fill: theme.palette.background.paper, 
-                    stroke: colors.profiles 
+                    stroke: colors.profiles,
+                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
                   }}
                   activeDot={{ 
-                    r: 6, 
-                    strokeWidth: 2,
+                    r: 7, 
+                    strokeWidth: 3,
                     fill: colors.profiles,
                     stroke: theme.palette.background.paper,
                     filter: "url(#dot-glow)"
@@ -253,39 +292,108 @@ export default function DataCharts() {
       </Grid>
 
       <Grid size={12}>
-        <Card sx={{ p: 2, '& *:focus': { outline: 'none' } }}>
-          <Typography variant="h6" gutterBottom>Score Distribution</Typography>
+        <Card sx={{ 
+          p: 3, 
+          '& *:focus': { outline: 'none' },
+          background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.95)} 0%, ${alpha(theme.palette.background.default, 0.98)} 100%)`,
+          boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.12)}`,
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          overflow: 'visible'
+        }}>
+          <Typography variant="h6" gutterBottom fontWeight={600} sx={{
+            background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 3
+          }}>
+            Score Distribution
+          </Typography>
           <Box sx={{ width: '100%', height: 400 }}>
             <ResponsiveContainer>
               <ComposedChart data={scoreDistData}>
                 <defs>
-                  {/* Gradient for bars */}
-                  <linearGradient id="scoreBarGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={theme.palette.primary.main} stopOpacity={0.8} />
-                    <stop offset="100%" stopColor={theme.palette.primary.dark} stopOpacity={0.3} />
+                  {/* Dynamic gradient for each bar - rainbow spectrum */}
+                  {scoreDistData.map((_, index) => {
+                    const hue = 260 - (index * 25); // Purple to Blue to Cyan
+                    return (
+                      <linearGradient key={`bar-grad-${index}`} id={`barGradient${index}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={`hsl(${hue}, 85%, 65%)`} stopOpacity={1} />
+                        <stop offset="30%" stopColor={`hsl(${hue}, 80%, 60%)`} stopOpacity={0.95} />
+                        <stop offset="70%" stopColor={`hsl(${hue}, 75%, 50%)`} stopOpacity={0.85} />
+                        <stop offset="100%" stopColor={`hsl(${hue}, 70%, 40%)`} stopOpacity={0.75} />
+                      </linearGradient>
+                    );
+                  })}
+                  
+                  {/* Glossy shine overlay for bars */}
+                  <linearGradient id="barShine" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity={0.6} />
+                    <stop offset="30%" stopColor="#ffffff" stopOpacity={0.3} />
+                    <stop offset="60%" stopColor="#ffffff" stopOpacity={0.05} />
+                    <stop offset="100%" stopColor="#000000" stopOpacity={0.1} />
                   </linearGradient>
-                  {/* Gradient for area fill */}
-                  <linearGradient id="scoreAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.4} />
-                    <stop offset="95%" stopColor={theme.palette.secondary.main} stopOpacity={0.05} />
+                  
+                  {/* Area gradient fill under line */}
+                  <linearGradient id="scoreAreaFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={theme.palette.secondary.main} stopOpacity={0.4} />
+                    <stop offset="50%" stopColor={theme.palette.secondary.main} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={theme.palette.secondary.main} stopOpacity={0.01} />
                   </linearGradient>
-                  {/* Drop shadow filter */}
-                  <filter id="score-shadow" height="200%" width="200%">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                    <feOffset dx="0" dy="2" result="offsetblur" />
+                  
+                  {/* Enhanced 3D shadow with depth */}
+                  <filter id="bar-shadow-3d" height="400%" width="400%" x="-150%" y="-150%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur1" />
+                    <feOffset dx="0" dy="6" result="offset1" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur2" />
+                    <feOffset dx="0" dy="12" result="offset2" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="blur3" />
+                    <feOffset dx="0" dy="20" result="offset3" />
                     <feComponentTransfer>
-                      <feFuncA type="linear" slope="0.3" />
+                      <feFuncA type="linear" slope="0.5" />
                     </feComponentTransfer>
                     <feMerge>
-                      <feMergeNode />
+                      <feMergeNode in="offset3" />
+                      <feMergeNode in="offset2" />
+                      <feMergeNode in="offset1" />
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
-                  {/* Glow effect on hover */}
-                  <filter id="score-glow" height="300%" width="300%" x="-75%" y="-75%">
-                    <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                  
+                  {/* Intense neon glow on hover */}
+                  <filter id="bar-glow-neon" height="500%" width="500%" x="-200%" y="-200%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur1" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="blur2" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="24" result="blur3" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="32" result="blur4" />
+                    <feColorMatrix in="blur1" type="saturate" values="2" />
                     <feMerge>
-                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="blur4" />
+                      <feMergeNode in="blur3" />
+                      <feMergeNode in="blur2" />
+                      <feMergeNode in="blur1" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  
+                  {/* Shimmer animation effect */}
+                  <linearGradient id="shimmer-animation" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="transparent" stopOpacity={0} />
+                    <stop offset="40%" stopColor="#ffffff" stopOpacity={0.1} />
+                    <stop offset="50%" stopColor="#ffffff" stopOpacity={0.4} />
+                    <stop offset="60%" stopColor="#ffffff" stopOpacity={0.1} />
+                    <stop offset="100%" stopColor="transparent" stopOpacity={0} />
+                  </linearGradient>
+                  
+                  {/* Dot glow for line chart */}
+                  <filter id="dot-glow-score" height="400%" width="400%" x="-150%" y="-150%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur1" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur2" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="15" result="blur3" />
+                    <feMerge>
+                      <feMergeNode in="blur3" />
+                      <feMergeNode in="blur2" />
+                      <feMergeNode in="blur1" />
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
                   </filter>
@@ -309,68 +417,93 @@ export default function DataCharts() {
                 <Tooltip 
                   content={<CustomTooltip />}
                   cursor={{ 
-                    fill: alpha(theme.palette.primary.main, 0.1),
+                    fill: alpha(theme.palette.primary.main, 0.08),
                     stroke: theme.palette.primary.main,
-                    strokeWidth: 1,
-                    strokeDasharray: "5 5"
+                    strokeWidth: 2,
+                    strokeDasharray: "5 5",
+                    radius: 8
                   }}
                 />
                 <Legend 
                   wrapperStyle={{
                     paddingTop: "20px"
                   }}
+                  iconType="circle"
                 />
-                {/* Area fill with gradient */}
+                
+                {/* Bar chart with clean gradient - no shadow/border */}
                 <Bar 
                   dataKey="Count" 
-                  fill="url(#scoreBarGradient)"
-                  radius={[8, 8, 0, 0]}
-                  filter="url(#score-shadow)"
-                  animationDuration={800}
+                  radius={[12, 12, 0, 0]}
+                  animationDuration={1200}
                   animationBegin={0}
+                  animationEasing="ease-out"
+                  maxBarSize={80}
                 >
                   {scoreDistData.map((entry, index) => {
-                    const hue = 210 + (index * 15); // Blue to cyan gradient
-                    const color = `hsl(${hue}, 70%, 55%)`;
                     return (
                       <Cell
                         key={`cell-${index}`}
-                        fill={color}
-                        fillOpacity={0.7}
-                        stroke={color}
-                        strokeWidth={2}
+                        fill={`url(#barGradient${index})`}
+                        stroke="none"
+                        style={{
+                          transition: 'all 0.3s ease-out',
+                          cursor: 'pointer'
+                        }}
                         onMouseEnter={(e: any) => {
-                          e.target.setAttribute('filter', 'url(#score-glow)');
-                          e.target.setAttribute('fill-opacity', '0.95');
+                          e.target.setAttribute('opacity', '0.85');
+                          e.target.style.transform = 'scaleY(1.05) translateY(-2px)';
+                          e.target.style.transformOrigin = 'bottom';
                         }}
                         onMouseLeave={(e: any) => {
-                          e.target.setAttribute('filter', 'url(#score-shadow)');
-                          e.target.setAttribute('fill-opacity', '0.7');
+                          e.target.setAttribute('opacity', '1');
+                          e.target.style.transform = 'scaleY(1) translateY(0)';
                         }}
                       />
                     );
                   })}
                 </Bar>
-                {/* Line overlay for trend */}
+                
+                {/* Area overlay for smooth trend visualization */}
+                <Area
+                  type="monotone"
+                  dataKey="Count"
+                  fill="url(#scoreAreaFill)"
+                  fillOpacity={1}
+                  stroke="transparent"
+                  animationDuration={1400}
+                  animationBegin={400}
+                  animationEasing="ease-in-out"
+                />
+                
+                {/* Line overlay with enhanced styling */}
                 <Line
                   type="monotone"
                   dataKey="Count"
                   stroke={theme.palette.secondary.main}
-                  strokeWidth={3}
+                  strokeWidth={4}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   dot={{ 
-                    r: 5, 
-                    strokeWidth: 2, 
+                    r: 6, 
+                    strokeWidth: 3, 
                     fill: theme.palette.background.paper, 
-                    stroke: theme.palette.secondary.main 
+                    stroke: theme.palette.secondary.main,
+                    filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.3))"
                   }}
                   activeDot={{ 
-                    r: 7, 
-                    strokeWidth: 3,
+                    r: 9, 
+                    strokeWidth: 4,
                     fill: theme.palette.secondary.main,
-                    filter: "url(#score-glow)"
+                    stroke: theme.palette.background.paper,
+                    filter: "url(#dot-glow-score)",
+                    style: {
+                      transition: 'all 0.3s ease-out'
+                    }
                   }}
-                  animationDuration={1000}
-                  animationBegin={200}
+                  animationDuration={1400}
+                  animationBegin={600}
+                  animationEasing="ease-in-out"
                 />
               </ComposedChart>
             </ResponsiveContainer>
