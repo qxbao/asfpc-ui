@@ -46,36 +46,14 @@ export default function DataCharts() {
   const { data: scoreData } = useGetScoreDistributionQuery();
 
   const colors = {
-    comments: theme.palette.info.main,
-    posts: theme.palette.warning.main,
-    profiles: theme.palette.success.main
+    data: theme.palette.primary.main,
   };
 
-  // Transform data for time series chart
-  const timeseriesData = historyData?.data.reduce((acc: any[], curr) => {
-    const existingDate = acc.find(item => item.Date === curr.Date);
-    if (existingDate) {
-      existingDate[curr.DataType] = curr.Count;
-    } else {
-      acc.push({
-        Date: new Date(curr.Date).toLocaleDateString(),
-        [curr.DataType]: curr.Count
-      });
-    }
-    return acc;
-  }, []) || [];
-
-  // Fill missing data points with 0 to ensure continuous lines
-  const allDataTypes = ['comments', 'posts', 'profiles'];
-  const filledTimeseriesData = timeseriesData.map(item => {
-    const filledItem = { ...item };
-    allDataTypes.forEach(type => {
-      if (filledItem[type] === undefined) {
-        filledItem[type] = 0;
-      }
-    });
-    return filledItem;
-  });
+  // Transform data for time series chart - new format has single Count value per date
+  const timeseriesData = historyData?.data.map(item => ({
+    Date: new Date(item.Date).toLocaleDateString(),
+    Count: item.Count
+  })) || [];
 
   // Transform data for score distribution
   const scoreDistData = scoreData?.data.map(item => ({
@@ -107,26 +85,14 @@ export default function DataCharts() {
           </Typography>
           <Box sx={{ width: '100%', height: 400 }}>
             <ResponsiveContainer>
-              <ComposedChart data={filledTimeseriesData}>
+              <ComposedChart data={timeseriesData}>
                 <defs>
-                  {/* Enhanced gradient fills with multiple stops */}
-                  <linearGradient id="areaComments" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={colors.comments} stopOpacity={0.6} />
-                    <stop offset="30%" stopColor={colors.comments} stopOpacity={0.4} />
-                    <stop offset="70%" stopColor={colors.comments} stopOpacity={0.2} />
-                    <stop offset="100%" stopColor={colors.comments} stopOpacity={0.02} />
-                  </linearGradient>
-                  <linearGradient id="areaPosts" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={colors.posts} stopOpacity={0.6} />
-                    <stop offset="30%" stopColor={colors.posts} stopOpacity={0.4} />
-                    <stop offset="70%" stopColor={colors.posts} stopOpacity={0.2} />
-                    <stop offset="100%" stopColor={colors.posts} stopOpacity={0.02} />
-                  </linearGradient>
-                  <linearGradient id="areaProfiles" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={colors.profiles} stopOpacity={0.6} />
-                    <stop offset="30%" stopColor={colors.profiles} stopOpacity={0.4} />
-                    <stop offset="70%" stopColor={colors.profiles} stopOpacity={0.2} />
-                    <stop offset="100%" stopColor={colors.profiles} stopOpacity={0.02} />
+                  {/* Enhanced gradient fill */}
+                  <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={colors.data} stopOpacity={0.6} />
+                    <stop offset="30%" stopColor={colors.data} stopOpacity={0.4} />
+                    <stop offset="70%" stopColor={colors.data} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={colors.data} stopOpacity={0.02} />
                   </linearGradient>
                   
                   {/* Enhanced drop shadow with color */}
@@ -157,14 +123,6 @@ export default function DataCharts() {
                       <feMergeNode in="blur1" />
                       <feMergeNode in="SourceGraphic" />
                     </feMerge>
-                  </filter>
-                  
-                  {/* Shimmer effect for active elements */}
-                  <filter id="shimmer">
-                    <feGaussianBlur stdDeviation="2" />
-                    <feComponentTransfer>
-                      <feFuncA type="discrete" tableValues="0 1 1 1 0"/>
-                    </feComponentTransfer>
                   </filter>
                 </defs>
                 
@@ -205,83 +163,30 @@ export default function DataCharts() {
                   iconType="line"
                 />
 
-                {/* Area charts with gradient fills and smooth curves */}
+                {/* Area chart with gradient fill and smooth curve */}
                 <Area
                   type="monotone"
-                  dataKey="comments"
-                  stroke={colors.comments}
+                  dataKey="Count"
+                  name="Data Count"
+                  stroke={colors.data}
                   strokeWidth={3}
-                  fill="url(#areaComments)"
+                  fill="url(#areaGradient)"
                   fillOpacity={1}
                   dot={{ 
                     r: 4, 
                     strokeWidth: 2, 
                     fill: theme.palette.background.paper, 
-                    stroke: colors.comments,
+                    stroke: colors.data,
                     filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
                   }}
                   activeDot={{ 
                     r: 7, 
                     strokeWidth: 3,
-                    fill: colors.comments,
+                    fill: colors.data,
                     stroke: theme.palette.background.paper,
                     filter: "url(#dot-glow)"
                   }}
                   animationDuration={1200}
-                  animationEasing="ease-in-out"
-                  connectNulls
-                />
-                
-                <Area
-                  type="monotone"
-                  dataKey="posts"
-                  stroke={colors.posts}
-                  strokeWidth={3}
-                  fill="url(#areaPosts)"
-                  fillOpacity={1}
-                  dot={{ 
-                    r: 4, 
-                    strokeWidth: 2, 
-                    fill: theme.palette.background.paper, 
-                    stroke: colors.posts,
-                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
-                  }}
-                  activeDot={{ 
-                    r: 7, 
-                    strokeWidth: 3,
-                    fill: colors.posts,
-                    stroke: theme.palette.background.paper,
-                    filter: "url(#dot-glow)"
-                  }}
-                  animationDuration={1200}
-                  animationBegin={100}
-                  animationEasing="ease-in-out"
-                  connectNulls
-                />
-                
-                <Area
-                  type="monotone"
-                  dataKey="profiles"
-                  stroke={colors.profiles}
-                  strokeWidth={3}
-                  fill="url(#areaProfiles)"
-                  fillOpacity={1}
-                  dot={{ 
-                    r: 4, 
-                    strokeWidth: 2, 
-                    fill: theme.palette.background.paper, 
-                    stroke: colors.profiles,
-                    filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
-                  }}
-                  activeDot={{ 
-                    r: 7, 
-                    strokeWidth: 3,
-                    fill: colors.profiles,
-                    stroke: theme.palette.background.paper,
-                    filter: "url(#dot-glow)"
-                  }}
-                  animationDuration={1200}
-                  animationBegin={200}
                   animationEasing="ease-in-out"
                   connectNulls
                 />

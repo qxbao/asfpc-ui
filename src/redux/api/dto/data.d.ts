@@ -11,7 +11,6 @@ type DataStats = {
 type DataHistoryItem = {
     Date: string;
     Count: number;
-    DataType: "comments" | "posts" | "profiles";
 };
 
 type GetDataHistoryResponse = {
