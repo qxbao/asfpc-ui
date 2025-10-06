@@ -13,6 +13,24 @@ export const dataApi = createApi({
 				method: "GET",
 			}),
 		}),
+		getDataHistory: builder.query<GetDataHistoryResponse, void>({
+			query: () => ({
+				url: "/data/chart/timeseries",
+				method: "GET",
+			}),
+		}),
+		getScoreDistribution: builder.query<GetScoreDistributionResponse, void>({
+			query: () => ({
+				url: "/data/chart/scores",
+				method: "GET",
+			}),
+		}),
+		getDataSummary: builder.query<GetDataSummaryResponse, void>({
+			query: () => ({
+				url: "/data/chart/dashboard",
+				method: "GET",
+			}),
+		}),
 		getAllPrompts: builder.query<GetAllPromptsResponse, QueryRequestWithPage>({
 			query: () => ({
 				url: "/data/prompt/list",
@@ -40,6 +58,9 @@ export const dataApi = createApi({
 
 export const {
 	useGetDataStatsQuery,
+	useGetDataHistoryQuery,
+	useGetScoreDistributionQuery,
+	useGetDataSummaryQuery,
 	useGetAllPromptsQuery,
 	useCreatePromptMutation,
 	useGetLogsQuery,

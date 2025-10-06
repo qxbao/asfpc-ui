@@ -8,6 +8,15 @@ type DataStats = {
 	TotalPosts: number;
 };
 
+type DataHistoryItem = {
+    Date: string;
+    Count: number;
+};
+
+type GetDataHistoryResponse = {
+    data: DataHistoryItem[];
+};
+
 type Log = {
 	ID: number;
 	AccountID: NullableInt32;
@@ -21,4 +30,32 @@ type Log = {
 type GetLogsResponse = {
   data: Log[];
   total: number;
+};
+
+type DataSummaryStats = {
+  TotalGroups: number;
+  TotalComments: number;
+  TotalPosts: number;
+  TotalProfiles: number;
+  EmbeddedCount: number;
+  ScannedProfiles: number;
+  ScoredProfiles: number;
+  AnalyzedProfiles: number;
+  TotalAccounts: number;
+  ActiveAccounts: number;
+  BlockedAccounts: number;
+};
+
+type GetDataSummaryResponse = {
+  data: DataSummaryStats;
+};
+
+type ScoreDistributionItem = {
+  ScoreRange: string;
+  Count: number;
+  Percentage: string;
+};
+
+type GetScoreDistributionResponse = {
+  data: ScoreDistributionItem[];
 };

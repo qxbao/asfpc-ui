@@ -2,9 +2,10 @@
 import StatCard from "@/components/ui/cards/StatCard";
 import ErrorCard from "@/components/ui/ErrorCard";
 import Navigator from "@/components/ui/Navigator";
-import { useGetDataStatsQuery } from "@/redux/api/data.api";
-import { Comment, Group, Person, PostAdd } from "@mui/icons-material";
+import { useGetDataSummaryQuery } from "@/redux/api/data.api";
+import { Comment, Group, Person, PostAdd, Psychology, AccountCircle } from "@mui/icons-material";
 import { Box, Grid, Typography } from "@mui/material";
+import DataCharts from "./DataCharts";
 
 export default function StatsPageComponent() {
 	return (
@@ -19,7 +20,7 @@ export default function StatsPageComponent() {
 }
 
 function StatsGrid() {
-	const { data, isLoading, isError, refetch } = useGetDataStatsQuery(undefined, {
+	const { data, isLoading, isError, refetch } = useGetDataSummaryQuery(undefined, {
 		pollingInterval: 10000,
 	});
 	if (isLoading) {
@@ -37,36 +38,70 @@ function StatsGrid() {
 			);
 		}
 	
+	const stats = data.data;
 
 	return (
-		<Grid container spacing={4} mt={5}>
-			<Grid size={4}>
-				<StatCard
-					title="Groups"
-					color="success.main"
-					value={data.data.TotalGroups!}
-					icon={Group}
-          footer={"Last 24h: TODO"}
-				/>
+		<>
+			<Grid container spacing={4} mt={5}>
+				{/* Row 1: Core Data Collection */}
+				<Grid component="div" size={4}>
+					<StatCard
+						title="Total Profiles"
+						color="primary.main"
+						value={stats.TotalProfiles}
+						icon={Person}
+						footer={`Scored: ${stats.ScoredProfiles} | Analyzed: ${stats.AnalyzedProfiles}`}
+					/>
+				</Grid>
+				<Grid component="div" size={4}>
+					<StatCard
+						title="Total Posts"
+						color="warning.main"
+						value={stats.TotalPosts}
+						icon={PostAdd}
+						footer={`From ${stats.TotalGroups} groups`}
+					/>
+				</Grid>
+				<Grid component="div" size={4}>
+					<StatCard
+						title="Total Comments"
+						color="info.main"
+						value={stats.TotalComments}
+						icon={Comment}
+						footer={`Scanned profiles: ${stats.ScannedProfiles}`}
+					/>
+				</Grid>
+
+				{/* Row 2: ML & Account Status */}
+				<Grid component="div" size={4}>
+					<StatCard
+						title="Groups Monitored"
+						color="success.main"
+						value={stats.TotalGroups}
+						icon={Group}
+						footer={`Embedded: ${stats.EmbeddedCount}`}
+					/>
+				</Grid>
+				<Grid component="div" size={4}>
+					<StatCard
+						title="AI Analyzed"
+						color="secondary.main"
+						value={stats.AnalyzedProfiles}
+						icon={Psychology}
+												footer={`${stats.TotalProfiles > 0 ? ((stats.AnalyzedProfiles / stats.TotalProfiles) * 100).toFixed(1) + "%" : "N/A"} of total profiles`}
+					/>
+				</Grid>
+				<Grid component="div" size={4}>
+					<StatCard
+						title="Bot Accounts"
+						color="error.main"
+						value={stats.TotalAccounts}
+						icon={AccountCircle}
+						footer={`Active: ${stats.ActiveAccounts} | Blocked: ${stats.BlockedAccounts}`}
+					/>
+				</Grid>
 			</Grid>
-			<Grid size={4}>
-				<StatCard
-					title="Posts"
-					color="warning.main"
-					value={data.data.TotalPosts!}
-					icon={PostAdd}
-          footer={"Last 24h: TODO"}
-				/>
-			</Grid>
-			<Grid size={4}>
-				<StatCard
-					title="Comments"
-					color="info.main"
-					value={data.data.TotalComments!}
-					icon={Comment}
-					footer={"Last 24h: TODO"}
-				/>
-			</Grid>
-		</Grid>
+			<DataCharts />
+		</>
 	);
 }
