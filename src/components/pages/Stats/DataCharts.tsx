@@ -68,11 +68,17 @@ export default function DataCharts() {
   })) || [];
 
   // Transform data for score distribution
-  const scoreDistData = scoreData?.data.map(item => ({
-    ...item,
-    Count: Number(item.Count),
-    Percentage: Number(item.Percentage)
-  })) || [];
+  const scoreDistData = scoreData?.data
+    .map(item => ({
+      ...item,
+      Count: Number(item.Count),
+      Percentage: Number(item.Percentage)
+    }))
+    .sort((a, b) => {
+      // Extract the first number from ScoreRange (e.g., "0.0-0.2" -> 0.0)
+      const getFirstNumber = (range: string) => parseFloat(range.split('-')[0]);
+      return getFirstNumber(a.ScoreRange) - getFirstNumber(b.ScoreRange);
+    }) || [];
 
   // Loading skeleton component
   const ChartLoadingSkeleton = () => (
@@ -426,6 +432,7 @@ export default function DataCharts() {
                   animationDuration={1400}
                   animationBegin={400}
                   animationEasing="ease-in-out"
+                  legendType="none"
                 />
                 
                 {/* Line overlay with enhanced styling */}
@@ -456,6 +463,7 @@ export default function DataCharts() {
                   animationDuration={1400}
                   animationBegin={600}
                   animationEasing="ease-in-out"
+                  legendType="none"
                 />
               </ComposedChart>
             </ResponsiveContainer>
