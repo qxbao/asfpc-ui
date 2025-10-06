@@ -75,8 +75,12 @@ export default function DataCharts() {
       Percentage: Number(item.Percentage)
     }))
     .sort((a, b) => {
-      // Extract the first number from ScoreRange (e.g., "0.0-0.2" -> 0.0)
-      const getFirstNumber = (range: string) => parseFloat(range.split('-')[0]);
+      const getFirstNumber = (range: string) => {
+        if (typeof range !== "string" || range.trim() === "") return 0;
+        const firstPart = range.split('-')[0].trim();
+        const num = parseFloat(firstPart);
+        return isNaN(num) ? 0 : num;
+      };
       return getFirstNumber(a.ScoreRange) - getFirstNumber(b.ScoreRange);
     }) || [];
 
