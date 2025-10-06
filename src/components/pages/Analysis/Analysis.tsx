@@ -6,7 +6,7 @@ import {
 	useAnalyzeProfileGeminiMutation,
 	useDeleteJunkProfilesMutation,
 	useDeleteProfilesModelScoreMutation,
-	useFindSimilarProfilesQuery,
+	useFindSimilarProfilesMutation,
 	useGetProfilesQuery,
 	useGetProfileStatsQuery,
 	useImportProfileMutation,
@@ -187,7 +187,6 @@ function ProfileTable() {
 		page: 0,
 		pageSize: 10,
 	});
-	const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
 	const [analyzeProfile, { isLoading: isAnalyzingProfile }] =
 		useAnalyzeProfileGeminiMutation();
 	const dispatch = useAppDispatch();
@@ -196,11 +195,7 @@ function ProfileTable() {
 			limit: paginationModel.pageSize,
 			page: paginationModel.page,
 		});
-	const { data: similarProfiles, isLoading: isLoadingSimilar } =
-		useFindSimilarProfilesQuery(
-			{ profile_id: selectedProfileId!, top_k: 10 },
-			{ skip: selectedProfileId === null }
-		);
+	const [findSimilarProfiles, { isLoading: isLoadingSimilar }] = useFindSimilarProfilesMutation();
 
 	const handleAnalyzeProfile = async (profileId: number) => {
 		try {
@@ -223,196 +218,28 @@ function ProfileTable() {
 		}
 	};
 
-	const handleFindSimilar = (e: React.MouseEvent, profileId: number) => {
-		e.stopPropagation();
-		setSelectedProfileId(profileId);
+	const handleFindSimilar = async (e: React.MouseEvent, profileId: number) => {
+		try {
+			const profiles = await findSimilarProfiles({ profile_id: profileId, top_k: 10 }).unwrap();
+			dispatch(openDialog({
+				title: `🔍 Similar Profiles`,
+				type: "success",
+				content: profiles.data && profiles.data.length === 0 ?
+					(<Typography variant="h6" color="text.secondary" mb={1}>
+						No similar profiles found
+					</Typography>) :
+					<SimilarProfilesList profiles={profiles.data} />,
+			}));
+		} catch (error) {
+			dispatch(
+				openDialog({
+					title: "Find Similar Profiles Failed",
+					content: (error as FetchError).data.error,
+					type: "error",
+				})
+			);
+		}
 	};
-
-	if (similarProfiles && selectedProfileId !== null) {
-		const profileName = profileList?.data.find(p => p.ID === selectedProfileId)?.Name.String || `Profile #${selectedProfileId}`;
-
-		dispatch(
-			openDialog({
-				title: `🔍 Similar Profiles to "${profileName}"`,
-				content: (
-					<Box>
-						{similarProfiles.data.length === 0 ? (
-							<Box
-								sx={{
-									p: 4,
-									textAlign: 'center',
-									bgcolor: 'background.default',
-									borderRadius: 2,
-								}}
-							>
-								<Typography variant="h6" color="text.secondary" mb={1}>
-									No similar profiles found
-								</Typography>
-								<Typography variant="body2" color="text.disabled">
-									This profile doesn't have any similar matches in the database.
-								</Typography>
-							</Box>
-						) : (
-							<Box>
-								<Box
-									sx={{
-										mb: 3,
-										p: 2,
-										bgcolor: 'primary.main',
-										color: 'primary.contrastText',
-										borderRadius: 2,
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'space-between',
-									}}
-								>
-									<Box>
-										<Typography variant="h6" fontWeight={700}>
-											Found {similarProfiles.data.length} Match{similarProfiles.data.length > 1 ? 'es' : ''}
-										</Typography>
-										<Typography variant="body2" sx={{ opacity: 0.9 }}>
-											Ranked by similarity score
-										</Typography>
-									</Box>
-									<People sx={{ fontSize: 40, opacity: 0.7 }} />
-								</Box>
-
-								<Box sx={{ maxHeight: 500, overflowY: 'auto', pr: 1 }}>
-									{similarProfiles.data.map((sp: SimilarProfile, index: number) => {
-										const similarityPercent = (sp.Similarity * 100).toFixed(1);
-										const isHighSimilarity = sp.Similarity >= 0.8;
-										const isMediumSimilarity = sp.Similarity >= 0.6 && sp.Similarity < 0.8;
-
-										return (
-											<Paper
-												key={sp.ProfileID}
-												elevation={3}
-												sx={{
-													p: 2,
-													mb: 2,
-													border: 2,
-													borderColor: 'divider.main',
-													transition: 'all 0.2s ease-in-out',
-													'&:hover': {
-														transform: 'translateY(-2px)',
-														boxShadow: 6,
-													},
-												}}
-											>
-												<Box display="flex" gap={2} alignItems="flex-start">
-													{/* Rank Badge */}
-													<Box
-														sx={{
-															minWidth: 40,
-															height: 40,
-															borderRadius: '50%',
-															bgcolor: index < 3 ? 'success.main' : 'secondary.main',
-															color: index < 3 ? 'primary.contrastText' : 'primary.contrastText',
-															display: 'flex',
-															alignItems: 'center',
-															justifyContent: 'center',
-															fontWeight: 700,
-															fontSize: '1.1rem',
-														}}
-													>
-														#{index + 1}
-													</Box>
-
-													{/* Profile Info */}
-													<Box flex={1}>
-														<Box display="flex" alignItems="center" gap={1} mb={1}>
-															<Typography
-																variant="h6"
-																fontWeight={600}
-																sx={{
-																	color: 'black',
-																	wordBreak: 'break-word',
-																}}
-															>
-																{sp.ProfileName.Valid
-																	? sp.ProfileName.String
-																	: `Profile #${sp.ProfileID}`}
-															</Typography>
-														</Box>
-
-														{sp.ProfileUrl && (
-															<Link
-																href={sp.ProfileUrl}
-																target="_blank"
-																rel="noopener noreferrer"
-																style={{ textDecoration: 'none' }}
-															>
-																<Typography
-																	variant="body2"
-																	color="primary.main"
-																	sx={{
-																		display: 'flex',
-																		alignItems: 'center',
-																		gap: 0.5,
-																		mb: 0.5,
-																		'&:hover': { textDecoration: 'underline' },
-																	}}
-																>
-																	🔗 View Profile
-																</Typography>
-															</Link>
-														)}
-
-														<Typography variant="caption" color="text.secondary">
-															Profile ID: {sp.ProfileID}
-														</Typography>
-													</Box>
-
-													{/* Similarity Score */}
-													<Box
-														sx={{
-															textAlign: 'center',
-															minWidth: 80,
-														}}
-													>
-														<Box
-															sx={{
-																bgcolor: isHighSimilarity
-																	? 'success.main'
-																	: isMediumSimilarity
-																		? 'warning.main'
-																		: 'grey.500',
-																color: 'white',
-																borderRadius: 2,
-																p: 1,
-																mb: 0.5,
-															}}
-														>
-															<Typography
-																variant="h5"
-																fontWeight={700}
-																sx={{ lineHeight: 1 }}
-															>
-																{similarityPercent}%
-															</Typography>
-														</Box>
-														<Typography variant="caption" color="text.secondary" fontWeight={600}>
-															{isHighSimilarity
-																? 'High Match'
-																: isMediumSimilarity
-																	? 'Medium Match'
-																	: 'Low Match'}
-														</Typography>
-													</Box>
-												</Box>
-											</Paper>
-										);
-									})}
-								</Box>
-							</Box>
-						)}
-					</Box>
-				),
-				type: "info",
-			})
-		);
-		setSelectedProfileId(null);
-	}
 
 	const columns: GridColDef[] = [
 		{
@@ -468,16 +295,12 @@ function ProfileTable() {
 						</Button>
 						<Button
 							onClick={(e) => handleFindSimilar(e, params.row.id)}
-							disabled={isLoadingSimilar && selectedProfileId === params.row.id}
+							disabled={isLoadingSimilar}
 							size="small"
 							variant="outlined"
 							color="primary"
 						>
-							{isLoadingSimilar && selectedProfileId === params.row.id ? (
-								<CircularProgress size={20} />
-							) : (
-								"Find Similar"
-							)}
+							Find Similar
 						</Button>
 					</Box>
 				);
@@ -621,6 +444,162 @@ function Toolbar() {
 					Export Profiles
 				</Button>
 			</Link>
+		</Box>
+	);
+}
+
+function SimilarProfilesList({ profiles }: { profiles: SimilarProfile[] }) {
+	return (
+		<Box>
+			<Box
+				sx={{
+					mb: 3,
+					p: 2,
+					bgcolor: 'primary.main',
+					color: 'primary.contrastText',
+					borderRadius: 2,
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+				}}
+			>
+				<Box>
+					<Typography variant="h6" fontWeight={700}>
+						Found {profiles.length} Match{profiles.length > 1 ? 'es' : ''}
+					</Typography>
+					<Typography variant="body2" sx={{ opacity: 0.9 }}>
+						Ranked by similarity score
+					</Typography>
+				</Box>
+				<People sx={{ fontSize: 40, opacity: 0.7 }} />
+			</Box>
+
+			<Box sx={{ maxHeight: 500, overflowY: 'auto', pr: 1 }}>
+				{profiles.map((sp: SimilarProfile, index: number) => {
+					const similarityPercent = (sp.Similarity * 100).toFixed(1);
+					const isHighSimilarity = sp.Similarity >= 0.8;
+					const isMediumSimilarity = sp.Similarity >= 0.6 && sp.Similarity < 0.8;
+
+					return (
+						<Paper
+							key={sp.ProfileID}
+							elevation={3}
+							sx={{
+								p: 2,
+								mb: 2,
+								border: 2,
+								borderColor: 'divider.main',
+								transition: 'all 0.2s ease-in-out',
+								'&:hover': {
+									transform: 'translateY(-2px)',
+									boxShadow: 6,
+								},
+							}}
+						>
+							<Box display="flex" gap={2} alignItems="flex-start">
+								{/* Rank Badge */}
+								<Box
+									sx={{
+										minWidth: 40,
+										height: 40,
+										borderRadius: '50%',
+										bgcolor: index < 3 ? 'success.main' : 'secondary.main',
+										color: index < 3 ? 'primary.contrastText' : 'primary.contrastText',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										fontWeight: 700,
+										fontSize: '1.1rem',
+									}}
+								>
+									#{index + 1}
+								</Box>
+
+								<Box flex={1}>
+									<Box display="flex" alignItems="center" gap={1} mb={1}>
+										<Typography
+											variant="h6"
+											fontWeight={600}
+											sx={{
+												color: 'black',
+												wordBreak: 'break-word',
+											}}
+										>
+											{sp.ProfileName.Valid
+												? sp.ProfileName.String
+												: `Profile #${sp.ProfileID}`}
+										</Typography>
+									</Box>
+
+									{sp.ProfileUrl && (
+										<Link
+											href={sp.ProfileUrl}
+											target="_blank"
+											rel="noopener noreferrer"
+											style={{ textDecoration: 'none' }}
+										>
+											<Typography
+												variant="body2"
+												color="primary.main"
+												sx={{
+													display: 'flex',
+													alignItems: 'center',
+													gap: 0.5,
+													mb: 0.5,
+													'&:hover': { textDecoration: 'underline' },
+												}}
+											>
+												🔗 View Profile
+											</Typography>
+										</Link>
+									)}
+
+									<Typography variant="caption" color="text.secondary">
+										Profile ID: {sp.ProfileID}
+									</Typography>
+								</Box>
+
+								{/* Similarity Score */}
+								<Box
+									sx={{
+										textAlign: 'center',
+										minWidth: 80,
+									}}
+								>
+									<Box
+										sx={{
+											bgcolor: isHighSimilarity
+												? 'success.main'
+												: isMediumSimilarity
+													? 'warning.main'
+													: 'grey.500',
+											color: 'white',
+											borderRadius: 2,
+											p: 1,
+											mb: 0.5,
+										}}
+									>
+										<Typography
+											variant="h5"
+											fontWeight={700}
+											sx={{ lineHeight: 1 }}
+										>
+											{similarityPercent}%
+										</Typography>
+									</Box>
+									<Typography variant="caption" color="text.secondary" fontWeight={600}>
+										{isHighSimilarity
+											? 'High Match'
+											: isMediumSimilarity
+												? 'Medium Match'
+												: 'Low Match'}
+									</Typography>
+								</Box>
+							</Box>
+						</Paper>
+					);
+				})}
+			</Box>
 		</Box>
 	);
 }

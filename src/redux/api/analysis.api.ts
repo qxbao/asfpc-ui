@@ -85,13 +85,12 @@ export const analysisApi = createApi({
       }),
       providesTags: ["Profiles"],
     }),
-    findSimilarProfiles: builder.query<FindSimilarProfilesResponse, FindSimilarProfilesRequest>({
+    findSimilarProfiles: builder.mutation<FindSimilarProfilesResponse, FindSimilarProfilesRequest>({
       query: (params) => ({
         url: "/analysis/profile/similar",
         method: "GET",
         params,
       }),
-      providesTags: ["Profiles"],
     }),
   }),
 });
@@ -100,7 +99,7 @@ export const {
   useGetProfilesQuery,
   useGetProfileStatsQuery,
   useGetGeminiKeysQuery,
-  useFindSimilarProfilesQuery,
+  useFindSimilarProfilesMutation,
   useAnalyzeProfileGeminiMutation,
   useAddGeminiKeyMutation,
   useDeleteJunkProfilesMutation,
