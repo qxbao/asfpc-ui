@@ -4,7 +4,6 @@ import { ComposedChart, Line, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
 import { Box, Card, Container, Grid, Typography, alpha, useTheme, Skeleton, CircularProgress } from "@mui/material";
 import ErrorCard from "@/components/ui/ErrorCard";
 
-// Custom gradient with shadow for charts
 const CustomChartGradient = ({ id, color }: { id: string; color: string }) => (
   <defs>
     <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
@@ -63,13 +62,11 @@ export default function DataCharts() {
     model: theme.palette.secondary.main
   };
 
-  // Transform data for time series chart - new format has single Count value per date
   const timeseriesData = historyData?.data.map(item => ({
     Date: new Date(item.Date).toLocaleDateString(),
     Count: item.Count
   })) || [];
 
-  // Transform data for score distribution
   const scoreDistData = scoreData?.data
     .map(item => ({
       ...item,
@@ -87,7 +84,6 @@ export default function DataCharts() {
       return getFirstNumber(a.range) - getFirstNumber(b.range);
     }) || [];
 
-  // Loading skeleton component
   const ChartLoadingSkeleton = () => (
     <Box sx={{ width: '100%', height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Box sx={{ textAlign: 'center' }}>
@@ -101,7 +97,6 @@ export default function DataCharts() {
 
   return (
     <Grid container spacing={3} mt={2}>
-      {/* Time Series Chart */}
       <Grid component="div" size={12}>
         <Card sx={{ 
           p: 3, 
@@ -118,7 +113,7 @@ export default function DataCharts() {
             WebkitTextFillColor: 'transparent',
             mb: 3
           }}>
-            Data Collection Over Time
+            Profiles added over time
           </Typography>
           
           {historyLoading ? (
@@ -160,7 +155,6 @@ export default function DataCharts() {
                     </feMerge>
                   </filter>
                   
-                  {/* Enhanced glow effect with multiple layers */}
                   <filter id="dot-glow" height="400%" width="400%" x="-150%" y="-150%">
                     <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur1" />
                     <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur2" />
@@ -211,11 +205,10 @@ export default function DataCharts() {
                   iconType="line"
                 />
 
-                {/* Area chart with gradient fill and smooth curve */}
                 <Area
                   type="monotone"
                   dataKey="Count"
-                  name="Data Count"
+                  name="Profile added count"
                   stroke={colors.data}
                   strokeWidth={3}
                   fill="url(#areaGradient)"
@@ -260,7 +253,7 @@ export default function DataCharts() {
             WebkitTextFillColor: 'transparent',
             mb: 3
           }}>
-            Score Distribution
+            Score distribution
           </Typography>
           
           {scoreLoading ? (

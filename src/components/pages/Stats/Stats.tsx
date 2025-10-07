@@ -37,20 +37,18 @@ function StatsGrid() {
 				/>
 			);
 		}
-	
 	const stats = data.data;
 
 	return (
 		<>
 			<Grid container spacing={4} mt={5}>
-				{/* Row 1: Core Data Collection */}
 				<Grid component="div" size={4}>
 					<StatCard
 						title="Total Profiles"
 						color="primary.main"
 						value={stats.TotalProfiles}
 						icon={Person}
-						footer={`Scored: ${stats.ScoredProfiles} | Analyzed: ${stats.AnalyzedProfiles}`}
+						footer={`Scored: ${stats.ScoredProfiles} | Analyzed: ${stats.AnalyzedProfiles} | Embedded: ${stats.EmbeddedCount}`}
 					/>
 				</Grid>
 				<Grid component="div" size={4}>
@@ -71,27 +69,15 @@ function StatsGrid() {
 						footer={`Scanned profiles: ${stats.ScannedProfiles}`}
 					/>
 				</Grid>
-
-				{/* Row 2: ML & Account Status */}
-				<Grid component="div" size={4}>
+				<Grid component="div" size={6}>
 					<StatCard
 						title="Groups Monitored"
 						color="success.main"
 						value={stats.TotalGroups}
 						icon={Group}
-						footer={`Embedded: ${stats.EmbeddedCount}`}
-					/>
+						footer={`Recommended: ${stats.TotalAccounts * 5}`} />
 				</Grid>
-				<Grid component="div" size={4}>
-					<StatCard
-						title="AI Analyzed"
-						color="secondary.main"
-						value={stats.AnalyzedProfiles}
-						icon={Psychology}
-												footer={`${stats.TotalProfiles > 0 ? ((stats.AnalyzedProfiles / stats.TotalProfiles) * 100).toFixed(1) + "%" : "N/A"} of total profiles`}
-					/>
-				</Grid>
-				<Grid component="div" size={4}>
+				<Grid component="div" size={6}>
 					<StatCard
 						title="Bot Accounts"
 						color="error.main"
