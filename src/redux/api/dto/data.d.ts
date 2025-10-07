@@ -51,9 +51,9 @@ type GetDataSummaryResponse = {
 };
 
 type ScoreDistributionItem = {
-  ScoreRange: string;
-  Count: number;
-  Percentage: string;
+  range: string;
+  gemini_score: number;
+  model_score: number;
 };
 
 type GetScoreDistributionResponse = {
