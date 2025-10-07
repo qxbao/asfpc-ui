@@ -208,7 +208,7 @@ export default function DataCharts() {
                 <Area
                   type="monotone"
                   dataKey="Count"
-                  name="Profile added count"
+                  name="Profiles added count"
                   stroke={colors.data}
                   strokeWidth={3}
                   fill="url(#areaGradient)"
