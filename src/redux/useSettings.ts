@@ -11,9 +11,9 @@ export const useSettings = () => {
     },
   );
 
-  const refreshSettings = () => {
+  const refreshSettings = async () => {
     if (!isUninitialized) {
-      refetch();
+      await refetch();
     }
   };
 

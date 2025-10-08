@@ -30,12 +30,12 @@ export const settingApi = createApi({
         try {
           await queryFulfilled;
           dispatch(updateMultipleSettings(arg.settings));
-        } catch (error) {
+        } catch (_) {
           dispatch(
             openDialog({
               title: "Error",
               type: "error",
-              content: "Failed to update settings.",
+              content: "Failed to update settings: ",
             }),
           );
         }

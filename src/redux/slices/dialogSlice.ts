@@ -14,7 +14,6 @@ export interface DialogState {
     | "warning"
     | "confirm";
   onConfirm?: string;
-  data?: any;
 }
 
 const initialState: DialogState = {
@@ -23,7 +22,6 @@ const initialState: DialogState = {
   content: "",
   type: "info",
   onConfirm: undefined,
-  data: undefined,
 };
 
 export const dialogSlice = createSlice({
@@ -36,7 +34,6 @@ export const dialogSlice = createSlice({
       state.content = action.payload.content;
       state.type = action.payload.type;
       state.onConfirm = action.payload.onConfirm;
-      state.data = action.payload.data;
     },
     closeDialog: (state) => {
       state.isOpen = false;
@@ -44,7 +41,6 @@ export const dialogSlice = createSlice({
       state.content = "";
       state.type = "info";
       state.onConfirm = undefined;
-      state.data = undefined;
     },
   },
 });

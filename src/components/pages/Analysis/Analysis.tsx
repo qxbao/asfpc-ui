@@ -31,7 +31,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import { DataGrid, GridLoadingOverlay } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

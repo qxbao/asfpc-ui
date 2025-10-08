@@ -2,7 +2,7 @@
 import CustomAppBar from "@/components/layouts/CustomAppBar";
 import CustomSideBar from "@/components/layouts/CustomSideBar";
 import AppDialog from "@/components/ui/AppDialog";
-import { Box, Toolbar, Typography } from "@mui/material";
+import { Box, Toolbar } from "@mui/material";
 
 export default function DashboardLayout({
   children,

@@ -12,7 +12,6 @@ interface TrainingInfoSectionProps {
 
 export default function TrainingInfoSection({
   metadata,
-  modelName,
 }: TrainingInfoSectionProps) {
   const dispatch = useAppDispatch();
 

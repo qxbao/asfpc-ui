@@ -16,7 +16,7 @@ export default async function BotAccountDetails({
     if (isNaN(account_id)) {
       return <div>Invalid Account ID</div>;
     }
-  } catch (error) {
+  } catch (_error) {
     return <div>Invalid Account ID</div>;
   }
   return <BotAccountDetailsPage accountId={account_id} />;
