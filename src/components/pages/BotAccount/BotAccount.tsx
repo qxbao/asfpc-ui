@@ -75,7 +75,7 @@ function AccountsStats() {
           icon={AccountTree}
           color="primary.main"
           title="Total Bots"
-          value={isLoading ? loadingIcon : data?.data.TotalAccounts!}
+          value={isLoading ? loadingIcon : data?.data.TotalAccounts}
           footer="All bot accounts in the system"
         />
       </Grid>
@@ -84,12 +84,12 @@ function AccountsStats() {
           icon={Check}
           color="success.main"
           title="Active Bots"
-          value={isLoading ? loadingIcon : data?.data.ActiveAccounts!}
+          value={isLoading ? loadingIcon : data?.data.ActiveAccounts}
           footer={
-            isLoading
+            isLoading || !data
               ? ""
               : `${(
-                  (data?.data.ActiveAccounts! / data?.data.TotalAccounts!) *
+                  (data?.data.ActiveAccounts / data?.data.TotalAccounts) *
                   100
                 ).toFixed(2)}% of all bots`
           }
@@ -100,12 +100,12 @@ function AccountsStats() {
           icon={Block}
           color="error.main"
           title="Blocked Bots"
-          value={isLoading ? loadingIcon : data?.data.BlockedAccounts!}
+          value={isLoading ? loadingIcon : data?.data.BlockedAccounts}
           footer={
-            isLoading
+            isLoading || !data
               ? ""
               : `${(
-                  (data?.data.BlockedAccounts! / data?.data.TotalAccounts!) *
+                  (data?.data.BlockedAccounts / data?.data.TotalAccounts) *
                   100
                 ).toFixed(2)}% of all bots`
           }

@@ -119,8 +119,8 @@ function CronJobTable() {
   useEffect(() => {
     if (!hasRunningJobs) return;
 
-    const interval = setInterval(() => {
-      refetch();
+    const interval = setInterval(async () => {
+      await refetch();
     }, 3000);
 
     return () => clearInterval(interval);

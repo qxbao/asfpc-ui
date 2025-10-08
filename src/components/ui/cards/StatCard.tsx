@@ -1,6 +1,13 @@
 "use client";
 import type { SvgIconComponent } from "@mui/icons-material";
-import { Card, CardContent, Box, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Box,
+  Typography,
+  type Theme,
+  type SxProps,
+} from "@mui/material";
 import React from "react";
 
 interface StatCardProps {
@@ -9,7 +16,7 @@ interface StatCardProps {
   icon: SvgIconComponent;
   color: string;
   footer?: string | React.ReactNode;
-  sx?: any;
+  sx?: SxProps<Theme> | undefined;
 }
 
 export default function StatCard({

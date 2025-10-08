@@ -25,7 +25,15 @@ import {
   YAxis,
 } from "recharts";
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { name: string; value: number; color: string }[];
+  label?: string;
+}) => {
   if (active && payload && payload.length) {
     return (
       <Card
@@ -40,7 +48,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <Typography variant="subtitle2" color="text.secondary">
           {label}
         </Typography>
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry, index) => (
           <Typography key={index} variant="body2" sx={{ color: entry.color }}>
             {entry.name}: {entry.value}
           </Typography>

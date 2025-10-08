@@ -71,7 +71,11 @@ export default function BotAccountDetailsPage({
       <Grid container spacing={2} mb={2}>
         <Grid size={9}>
           <AccountInfoCard
-            accountData={accountData?.data!}
+            accountData={
+              accountData && accountData.data
+                ? accountData.data
+                : ({} as AccountInfoDetails)
+            }
             groupLen={
               isLoadingGroups || !groupsData?.data
                 ? 0
@@ -87,7 +91,11 @@ export default function BotAccountDetailsPage({
         <Grid size={9}>
           <GroupsTable
             groups={isLoadingGroups ? [] : groupsData?.data || []}
-            account={accountData?.data!}
+            account={
+              accountData && accountData.data
+                ? accountData.data
+                : ({} as AccountInfoDetails)
+            }
           />
         </Grid>
       </Grid>

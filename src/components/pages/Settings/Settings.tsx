@@ -126,7 +126,6 @@ function SettingsForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
     watch,
     setValue,
   } = useForm<SettingsFormData>({
@@ -172,8 +171,8 @@ function SettingsForm() {
     }
   };
 
-  const handleRefresh = () => {
-    refreshSettings();
+  const handleRefresh = async () => {
+    await refreshSettings();
     setHasChanges(false);
   };
 
@@ -331,7 +330,7 @@ function SettingsForm() {
                     }),
                   })}
                   onChange={(e) => {
-                    register(settingKey).onChange(e);
+                    void register(settingKey).onChange(e);
                     setHasChanges(true);
                   }}
                 />

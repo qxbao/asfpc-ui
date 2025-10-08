@@ -8,7 +8,6 @@ import {
   Group,
   Person,
   PostAdd,
-  Psychology,
   AccountCircle,
 } from "@mui/icons-material";
 import { Box, Grid, Typography } from "@mui/material";
