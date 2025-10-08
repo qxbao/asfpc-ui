@@ -1,20 +1,8 @@
 "use client";
-import { useGetDataHistoryQuery, useGetScoreDistributionQuery } from "@/redux/api/data.api";
-import { ComposedChart, Line, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
-import { Box, Card, Container, Grid, Typography, alpha, useTheme, Skeleton, CircularProgress } from "@mui/material";
 import ErrorCard from "@/components/ui/ErrorCard";
-
-const CustomChartGradient = ({ id, color }: { id: string; color: string }) => (
-  <defs>
-    <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="5%" stopColor={color} stopOpacity={0.8} />
-      <stop offset="95%" stopColor={color} stopOpacity={0.1} />
-    </linearGradient>
-    <filter id={`shadow-${id}`} height="200%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor={color} />
-    </filter>
-  </defs>
-);
+import { useGetDataHistoryQuery, useGetScoreDistributionQuery } from "@/redux/api/data.api";
+import { Box, Card, CircularProgress, Grid, Typography, alpha, useTheme } from "@mui/material";
+import { Area, Bar, CartesianGrid, ComposedChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -130,15 +118,12 @@ export default function DataCharts() {
               <ResponsiveContainer>
                 <ComposedChart data={timeseriesData}>
                 <defs>
-                  {/* Enhanced gradient fill */}
                   <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={colors.data} stopOpacity={0.6} />
                     <stop offset="30%" stopColor={colors.data} stopOpacity={0.4} />
                     <stop offset="70%" stopColor={colors.data} stopOpacity={0.2} />
                     <stop offset="100%" stopColor={colors.data} stopOpacity={0.02} />
                   </linearGradient>
-                  
-                  {/* Enhanced drop shadow with color */}
                   <filter id="line-shadow" height="300%" width="300%" x="-100%" y="-100%">
                     <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
                     <feOffset dx="0" dy="3" result="offsetblur" />
