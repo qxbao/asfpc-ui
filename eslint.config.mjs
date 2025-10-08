@@ -60,10 +60,7 @@ export default [
         { prefer: "type-imports" },
       ],
 
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      "react-refresh/only-export-components": "off",
       "prettier/prettier": "warn",
     },
   },
