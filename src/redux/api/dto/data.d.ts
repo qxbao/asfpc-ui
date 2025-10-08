@@ -1,30 +1,30 @@
 type GetDataStatsResponse = {
-	data: DataStats;
+  data: DataStats;
 };
 
 type DataStats = {
-	TotalGroups: number;
-	TotalComments: number;
-	TotalPosts: number;
+  TotalGroups: number;
+  TotalComments: number;
+  TotalPosts: number;
 };
 
 type DataHistoryItem = {
-    Date: string;
-    Count: number;
+  Date: string;
+  Count: number;
 };
 
 type GetDataHistoryResponse = {
-    data: DataHistoryItem[];
+  data: DataHistoryItem[];
 };
 
 type Log = {
-	ID: number;
-	AccountID: NullableInt32;
-	Action: string;
-	TargetID: NullableInt32;
-	Description: NullableString;
-	CreatedAt: NullableTime;
-	Username: NullableString;
+  ID: number;
+  AccountID: NullableInt32;
+  Action: string;
+  TargetID: NullableInt32;
+  Description: NullableString;
+  CreatedAt: NullableTime;
+  Username: NullableString;
 };
 
 type GetLogsResponse = {

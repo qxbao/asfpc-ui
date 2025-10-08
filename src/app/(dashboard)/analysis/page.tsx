@@ -1,8 +1,6 @@
-import AnalysisPageComponent from '@/components/pages/Analysis/Analysis'
-import React from 'react'
+import AnalysisPageComponent from "@/components/pages/Analysis/Analysis";
+import React from "react";
 
 export default function AnalysisPage() {
-  return (
-    <AnalysisPageComponent />
-  )
+  return <AnalysisPageComponent />;
 }

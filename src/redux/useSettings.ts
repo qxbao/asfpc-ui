@@ -3,14 +3,17 @@ import { useGetAllSettingsQuery } from "./api/setting.api";
 
 export const useSettings = () => {
   const settingsState = useAppSelector((state) => state.settings);
-  
-  const { isLoading, error, refetch, isUninitialized } = useGetAllSettingsQuery(undefined, {
-    skip: settingsState.isLoaded,
-  });
 
-  const refreshSettings = () => {
+  const { isLoading, error, refetch, isUninitialized } = useGetAllSettingsQuery(
+    undefined,
+    {
+      skip: settingsState.isLoaded,
+    },
+  );
+
+  const refreshSettings = async () => {
     if (!isUninitialized) {
-      refetch();
+      await refetch();
     }
   };
 
@@ -22,10 +25,13 @@ export const useSettings = () => {
     const upperPrefix = prefix.toUpperCase();
     return Object.entries(settingsState.settings)
       .filter(([key]) => key.toUpperCase().startsWith(upperPrefix))
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
   };
 
   const hasSetting = (key: string): boolean => {
@@ -58,4 +64,4 @@ export const useGeminiSettings = () => {
 export const useMLSettings = () => {
   const { getSettingsByPrefix } = useSettings();
   return getSettingsByPrefix("ML");
-}
+};

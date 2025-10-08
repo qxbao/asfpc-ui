@@ -1,25 +1,30 @@
 "use client";
 
-import { useGetAllSettingsQuery } from '@/redux/api/setting.api';
-import { useAppSelector } from '@/redux/hooks';
-import { createContext, useContext, useEffect, ReactNode } from 'react';
+import { useGetAllSettingsQuery } from "@/redux/api/setting.api";
+import { useAppSelector } from "@/redux/hooks";
+import { type SerializedError } from "@reduxjs/toolkit";
+import { type FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type { ReactNode } from "react";
+import { createContext, useContext, useEffect } from "react";
 
 interface SettingsLoaderContextType {
   isSettingsLoaded: boolean;
   isSettingsLoading: boolean;
-  settingsError: any;
+  settingsError: FetchBaseQueryError | SerializedError | undefined;
 }
 
 const SettingsLoaderContext = createContext<SettingsLoaderContextType>({
   isSettingsLoaded: false,
   isSettingsLoading: false,
-  settingsError: null,
+  settingsError: undefined,
 });
 
 export const useSettingsLoader = () => {
   const context = useContext(SettingsLoaderContext);
   if (!context) {
-    throw new Error('useSettingsLoader must be used within a SettingsLoaderProvider');
+    throw new Error(
+      "useSettingsLoader must be used within a SettingsLoaderProvider",
+    );
   }
   return context;
 };
@@ -28,27 +33,24 @@ interface SettingsLoaderProviderProps {
   children: ReactNode;
 }
 
-export const SettingsLoaderProvider = ({ children }: SettingsLoaderProviderProps) => {
-  // Get settings state from Redux
+export const SettingsLoaderProvider = ({
+  children,
+}: SettingsLoaderProviderProps) => {
   const settingsState = useAppSelector((state) => state.settings);
-  
-  // Only fetch settings if they haven't been loaded yet
-  const { 
-    data, 
-    isLoading, 
-    error,
-    refetch,
-    isUninitialized
-  } = useGetAllSettingsQuery(undefined, {
-    skip: settingsState.isLoaded,
-    refetchOnMountOrArgChange: false,
-    refetchOnFocus: false,
-  });
+
+  const { isLoading, error, refetch, isUninitialized } = useGetAllSettingsQuery(
+    undefined,
+    {
+      skip: settingsState.isLoaded,
+      refetchOnMountOrArgChange: false,
+      refetchOnFocus: false,
+    },
+  );
 
   useEffect(() => {
     if (error && !settingsState.isLoaded && !isUninitialized) {
-      const retryTimer = setTimeout(() => {
-        refetch();
+      const retryTimer = setTimeout(async () => {
+        await refetch();
       }, 5000);
 
       return () => clearTimeout(retryTimer);
@@ -57,7 +59,11 @@ export const SettingsLoaderProvider = ({ children }: SettingsLoaderProviderProps
 
   useEffect(() => {
     if (settingsState.isLoaded) {
-      console.log('Settings loaded successfully:', Object.keys(settingsState.settings).length, 'settings');
+      console.log(
+        "Settings loaded successfully:",
+        Object.keys(settingsState.settings).length,
+        "settings",
+      );
     }
   }, [settingsState.isLoaded, settingsState.settings]);
 

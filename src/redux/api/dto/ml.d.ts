@@ -9,31 +9,31 @@ type ModelInfo = {
 };
 
 type ModelMetadata = {
-  rmse?: number
-  r2?: number
-  mae?: number
-  rmsle?: number
-  smape?: number
-  prediction_stats?: PredictionStats
-  residual_stats?: ResidualStats
-  top_features?: TopFeatures
-  saved_at?: string
-  is_gpu?: boolean
-  train_params?: TrainParams
-}
+  rmse?: number;
+  r2?: number;
+  mae?: number;
+  rmsle?: number;
+  smape?: number;
+  prediction_stats?: PredictionStats;
+  residual_stats?: ResidualStats;
+  top_features?: TopFeatures;
+  saved_at?: string;
+  is_gpu?: boolean;
+  train_params?: TrainParams;
+};
 
 interface PredictionStats {
-  min: number
-  max: number
-  mean: number
-  std: number
+  min: number;
+  max: number;
+  mean: number;
+  std: number;
 }
 
 interface ResidualStats {
-  mean: number
-  std: number
-  bias_low_scores: number
-  bias_high_scores: number
+  mean: number;
+  std: number;
+  bias_low_scores: number;
+  bias_high_scores: number;
 }
 
 interface TopFeatures {
@@ -44,17 +44,18 @@ interface TrainParams {
   [key: string]: string | number;
 }
 
-
 type ModelValidation = {
   IsExists: boolean;
   IsValid: boolean;
 };
 
-type TrainModelRequest = {
-  model_name: string;
-  auto_tune?: boolean;
-  trials?: number;
-} | undefined;
+type TrainModelRequest =
+  | {
+      model_name: string;
+      auto_tune?: boolean;
+      trials?: number;
+    }
+  | undefined;
 
 type DeleteModelRequest = {
   model_name: string;

@@ -1,4 +1,12 @@
-import { Box, Button, Card, CardContent, Chip, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { Cancel, Refresh } from "@mui/icons-material";
 
 interface ErrorCardProps {
@@ -72,7 +80,12 @@ export default function ErrorCard({
 
           {/* Error Content */}
           <Box flex={1}>
-            <Typography variant="h6" fontWeight={700} color="error.main" gutterBottom>
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              color="error.main"
+              gutterBottom
+            >
               {title}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -166,8 +179,13 @@ export default function ErrorCard({
 
         {/* Troubleshooting Tips */}
         <Box mt={2}>
-          <Typography variant="caption" color="text.secondary" sx={{ fontStyle: "italic" }}>
-            💡 Troubleshooting: Verify network connection, check server status, or refresh the browser
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ fontStyle: "italic" }}
+          >
+            💡 Troubleshooting: Verify network connection, check server status,
+            or refresh the browser
           </Typography>
         </Box>
       </CardContent>

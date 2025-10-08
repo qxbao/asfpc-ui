@@ -2,7 +2,7 @@
 import CustomAppBar from "@/components/layouts/CustomAppBar";
 import CustomSideBar from "@/components/layouts/CustomSideBar";
 import AppDialog from "@/components/ui/AppDialog";
-import { Box, Toolbar, Typography } from "@mui/material";
+import { Box, Toolbar } from "@mui/material";
 
 export default function DashboardLayout({
   children,
@@ -13,7 +13,10 @@ export default function DashboardLayout({
     <Box sx={{ display: "flex" }}>
       <CustomAppBar />
       <CustomSideBar />
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+      >
         <Toolbar />
         {children}
       </Box>

@@ -29,7 +29,10 @@ export const analysisApi = createApi({
       }),
       invalidatesTags: ["Profiles"],
     }),
-    importProfile: builder.mutation<ImportProfileResponse, ImportProfileRequest>({
+    importProfile: builder.mutation<
+      ImportProfileResponse,
+      ImportProfileRequest
+    >({
       query: (body) => {
         const formData = new FormData();
         formData.append("file", body.file);
@@ -85,7 +88,10 @@ export const analysisApi = createApi({
       }),
       providesTags: ["Profiles"],
     }),
-    findSimilarProfiles: builder.mutation<FindSimilarProfilesResponse, FindSimilarProfilesRequest>({
+    findSimilarProfiles: builder.mutation<
+      FindSimilarProfilesResponse,
+      FindSimilarProfilesRequest
+    >({
       query: (params) => ({
         url: "/analysis/profile/similar",
         method: "GET",
