@@ -26,14 +26,12 @@ export default [
         ...globals.browser,
         ...globals.node,
       },
-      parser: tseslint.parser,
       parserOptions: {
         project: "./tsconfig.json",
       },
     },
     plugins: {
       "@next/next": nextPlugin,
-      "@typescript-eslint": tseslint.plugin,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       prettier,
