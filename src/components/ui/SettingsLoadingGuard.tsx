@@ -1,8 +1,8 @@
 "use client";
 
-import { useSettingsLoader } from '@/contexts/SettingsLoaderProvider';
-import { Box, CircularProgress, Typography, Alert } from '@mui/material';
-import { ReactNode } from 'react';
+import { useSettingsLoader } from "@/contexts/SettingsLoaderProvider";
+import { Box, CircularProgress, Typography, Alert } from "@mui/material";
+import type { ReactNode } from "react";
 
 interface SettingsLoadingGuardProps {
   children: ReactNode;
@@ -14,21 +14,22 @@ interface SettingsLoadingGuardProps {
  * Component that guards content until settings are loaded.
  * Can optionally show a loading screen or custom fallback.
  */
-export const SettingsLoadingGuard = ({ 
-  children, 
+export const SettingsLoadingGuard = ({
+  children,
   showLoadingScreen = false,
-  fallback 
+  fallback,
 }: SettingsLoadingGuardProps) => {
-  const { isSettingsLoaded, isSettingsLoading, settingsError } = useSettingsLoader();
+  const { isSettingsLoaded, isSettingsLoading, settingsError } =
+    useSettingsLoader();
 
   // Show error state
   if (settingsError && !isSettingsLoaded) {
     return (
-      <Box 
-        display="flex" 
-        flexDirection="column" 
-        alignItems="center" 
-        justifyContent="center" 
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
         minHeight="50vh"
         gap={2}
       >
@@ -45,13 +46,13 @@ export const SettingsLoadingGuard = ({
     if (fallback) {
       return <>{fallback}</>;
     }
-    
+
     return (
-      <Box 
-        display="flex" 
-        flexDirection="column" 
-        alignItems="center" 
-        justifyContent="center" 
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
         minHeight="50vh"
         gap={2}
       >
@@ -71,8 +72,9 @@ export const SettingsLoadingGuard = ({
  * Simple hook to check if settings are ready
  */
 export const useSettingsReady = () => {
-  const { isSettingsLoaded, isSettingsLoading, settingsError } = useSettingsLoader();
-  
+  const { isSettingsLoaded, isSettingsLoading, settingsError } =
+    useSettingsLoader();
+
   return {
     isReady: isSettingsLoaded,
     isLoading: isSettingsLoading,

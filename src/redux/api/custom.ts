@@ -7,5 +7,5 @@ export const customQuery = (baseUrl: string) => {
       // TODO: Set secret header
       return headers;
     },
-  })
-} 
+  });
+};

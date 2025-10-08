@@ -22,15 +22,20 @@ export const accountApi = createApi({
       }),
       providesTags: ["SingleStats"],
     }),
-    getAccountList: builder.query<GetAccountListResponse, QueryRequestWithPage>({
-      query: (params) => ({
-        url: "/account/list",
-        method: "GET",
-        params,
-      }),
-      providesTags: ["AccountList"],
-    }),
-    getGroupsByAccountID: builder.query<GetGroupsByAccountResponse, GetGroupsByAccountRequest>({
+    getAccountList: builder.query<GetAccountListResponse, QueryRequestWithPage>(
+      {
+        query: (params) => ({
+          url: "/account/list",
+          method: "GET",
+          params,
+        }),
+        providesTags: ["AccountList"],
+      },
+    ),
+    getGroupsByAccountID: builder.query<
+      GetGroupsByAccountResponse,
+      GetGroupsByAccountRequest
+    >({
       query: (params) => ({
         url: "/account/group/list",
         method: "GET",
@@ -54,7 +59,10 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["AccountStats", "AccountList"],
     }),
-    renewAccountsToken: builder.mutation<RenewAccessTokenResponse, RequestWithIDs>({
+    renewAccountsToken: builder.mutation<
+      RenewAccessTokenResponse,
+      RequestWithIDs
+    >({
       query: (body) => ({
         url: "/account/token/gen",
         method: "POST",
@@ -70,7 +78,10 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["SingleStats", "AccountList", "AccountStats"],
     }),
-    updateAccountCredentials: builder.mutation<void, UpdateAccountCredentialsRequest>({
+    updateAccountCredentials: builder.mutation<
+      void,
+      UpdateAccountCredentialsRequest
+    >({
       query: (body) => ({
         url: "/account/update/credentials",
         method: "POST",
@@ -102,8 +113,8 @@ export const accountApi = createApi({
       }),
       invalidatesTags: ["SingleStats", "AccountList"],
     }),
-  })
-})
+  }),
+});
 
 export const {
   useGetAccountStatsQuery,

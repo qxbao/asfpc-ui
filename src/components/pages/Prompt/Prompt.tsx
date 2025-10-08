@@ -1,27 +1,31 @@
 "use client";
 import Navigator from "@/components/ui/Navigator";
-import { useCreatePromptMutation, useGetAllPromptsQuery } from "@/redux/api/data.api";
+import {
+  useCreatePromptMutation,
+  useGetAllPromptsQuery,
+} from "@/redux/api/data.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
 import { Add } from "@mui/icons-material";
 import {
-	Box,
-	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	CircularProgress,
-	Grid,
-	Paper,
-	TextField,
-	Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import type { GridColDef } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export default function PromptsPageComponent() {
-
   return (
     <Box bgcolor={"background.paper"} p={3}>
       <Navigator link={["Prompts"]} />
@@ -37,7 +41,7 @@ export default function PromptsPageComponent() {
         </Grid>
       </Grid>
     </Box>
-  )
+  );
 }
 
 function PromptTable() {
@@ -45,11 +49,12 @@ function PromptTable() {
     page: 0,
     pageSize: 10,
   });
-  
-  const { data: promptList, isLoading: isLoadingPrompts } = useGetAllPromptsQuery({
-    limit: paginationModel.pageSize,
-    page: paginationModel.page,
-  });
+
+  const { data: promptList, isLoading: isLoadingPrompts } =
+    useGetAllPromptsQuery({
+      limit: paginationModel.pageSize,
+      page: paginationModel.page,
+    });
 
   const columns: GridColDef[] = [
     {
@@ -64,20 +69,27 @@ function PromptTable() {
   ];
 
   if (isLoadingPrompts) {
-    return <Box display="flex" justifyContent="center" alignItems="center" height={400}>
-      <CircularProgress color="secondary" size={40} />
-    </Box>
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height={400}
+      >
+        <CircularProgress color="secondary" size={40} />
+      </Box>
+    );
   }
 
   return (
     <Box>
-      <Paper sx={{width: "100%" }}>
-        <Typography  fontWeight={400} p={1} fontSize={14} bgcolor={"inherit"}>
+      <Paper sx={{ width: "100%" }}>
+        <Typography fontWeight={400} p={1} fontSize={14} bgcolor={"inherit"}>
           Total prompts: {promptList?.total || 0}
         </Typography>
         <DataGrid
           rows={
-            (!isLoadingPrompts && promptList)
+            !isLoadingPrompts && promptList
               ? promptList.data.map((prompt) => ({
                   id: prompt.ServiceName,
                   version: prompt.Version,
@@ -140,7 +152,7 @@ function AddPromptCard() {
           title: "Success",
           content: `Prompt for "${data.service_name}" has been created successfully!`,
           type: "success",
-        })
+        }),
       );
     } catch (error) {
       dispatch(
@@ -148,7 +160,7 @@ function AddPromptCard() {
           title: `${(error as FetchError).status} ERROR`,
           content: `Details: ${(error as FetchError).data.error}`,
           type: "error",
-        })
+        }),
       );
     }
   };

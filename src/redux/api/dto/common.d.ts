@@ -1,43 +1,42 @@
 type RequestWithIDs = {
-	ids: number[];
+  ids: number[];
 };
 
 type RequestWithID = {
-	id: number;
+  id: number;
 };
 
-
 type QueryRequestWithPage = {
-	page?: number;
-	limit?: number;
-}
+  page?: number;
+  limit?: number;
+};
 
 type NullableInt32 = {
-	Int32: number;
-	Valid: boolean;
+  Int32: number;
+  Valid: boolean;
 };
 
 type NullableString = {
-	String: string;
-	Valid: boolean;
+  String: string;
+  Valid: boolean;
 };
 
 type NullableJSON = {
   RawMessage: JSON;
   Valid: boolean;
-}
+};
 
 type NullableTime = {
-	Time: string;
-	Valid: boolean;
+  Time: string;
+  Valid: boolean;
 };
 
 type NullableBool = {
-	Bool: boolean;
-	Valid: boolean;
+  Bool: boolean;
+  Valid: boolean;
 };
 
 type NullableFloat64 = {
-	Float64: number;
-	Valid: boolean;
+  Float64: number;
+  Valid: boolean;
 };

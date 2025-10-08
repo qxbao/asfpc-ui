@@ -13,7 +13,10 @@ export default function DashboardLayout({
     <Box sx={{ display: "flex" }}>
       <CustomAppBar />
       <CustomSideBar />
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+      >
         <Toolbar />
         {children}
       </Box>

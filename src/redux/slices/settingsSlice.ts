@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface SettingsState {
   settings: Record<string, string>;
@@ -13,7 +14,7 @@ const initialState: SettingsState = {
 };
 
 const settingsSlice = createSlice({
-  name: 'settings',
+  name: "settings",
   initialState,
   reducers: {
     setSettings: (state, action: PayloadAction<Record<string, string>>) => {
@@ -21,11 +22,17 @@ const settingsSlice = createSlice({
       state.isLoaded = true;
       state.lastUpdated = Date.now();
     },
-    updateSetting: (state, action: PayloadAction<{ key: string; value: string }>) => {
+    updateSetting: (
+      state,
+      action: PayloadAction<{ key: string; value: string }>,
+    ) => {
       state.settings[action.payload.key] = action.payload.value;
       state.lastUpdated = Date.now();
     },
-    updateMultipleSettings: (state, action: PayloadAction<Record<string, string>>) => {
+    updateMultipleSettings: (
+      state,
+      action: PayloadAction<Record<string, string>>,
+    ) => {
       state.settings = { ...state.settings, ...action.payload };
       state.lastUpdated = Date.now();
     },
@@ -37,6 +44,11 @@ const settingsSlice = createSlice({
   },
 });
 
-export const { setSettings, updateSetting, updateMultipleSettings, clearSettings } = settingsSlice.actions;
+export const {
+  setSettings,
+  updateSetting,
+  updateMultipleSettings,
+  clearSettings,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

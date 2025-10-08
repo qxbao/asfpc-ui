@@ -1,18 +1,20 @@
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { closeDialog } from '@/redux/slices/dialogSlice';
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { closeDialog } from "@/redux/slices/dialogSlice";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
-} from '@mui/material';
-import React from 'react';
+  DialogTitle,
+} from "@mui/material";
+import React from "react";
 
 const AppDialog: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { isOpen, title, content, type, onConfirm } = useAppSelector((state) => state.dialog);
+  const { isOpen, title, content, type, onConfirm } = useAppSelector(
+    (state) => state.dialog,
+  );
 
   const handleClose = () => {
     dispatch(closeDialog());
@@ -25,22 +27,28 @@ const AppDialog: React.FC = () => {
     handleClose();
   };
 
-  const getDialogColor = (): 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning' => {
+  const getDialogColor = ():
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning" => {
     switch (type) {
-      case 'error':
-        return 'error';
-      case 'warning':
-        return 'warning';
-      case 'success':
-        return 'success';
-      case 'info':
-        return 'info';
+      case "error":
+        return "error";
+      case "warning":
+        return "warning";
+      case "success":
+        return "success";
+      case "info":
+        return "info";
       default:
-        return 'primary';
+        return "primary";
     }
   };
 
-  const isConfirmDialog = type === 'confirm';
+  const isConfirmDialog = type === "confirm";
 
   return (
     <Dialog
@@ -49,28 +57,37 @@ const AppDialog: React.FC = () => {
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       maxWidth="sm"
-      sx={{ "& .MuiPaper-root": { bgcolor: 'white', py: 1 } }}
+      sx={{ "& .MuiPaper-root": { bgcolor: "white", py: 1 } }}
       fullWidth
     >
       <DialogTitle
-        sx={{ color: getDialogColor() + ".main", fontWeight: 'bold' }}
-        id="dialog-title">
+        sx={{ color: getDialogColor() + ".main", fontWeight: "bold" }}
+        id="dialog-title"
+      >
         {title}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText 
-          id="dialog-description"
-          component="div"
-        >
+        <DialogContentText id="dialog-description" component="div">
           {content}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="secondary" variant='outlined' sx={{borderWidth: 2}} autoFocus>
-          {isConfirmDialog ? 'Cancel' : 'Close'}
+        <Button
+          onClick={handleClose}
+          color="secondary"
+          variant="outlined"
+          sx={{ borderWidth: 2 }}
+          autoFocus
+        >
+          {isConfirmDialog ? "Cancel" : "Close"}
         </Button>
         {isConfirmDialog && (
-          <Button onClick={handleConfirm} color={getDialogColor()} variant="contained" autoFocus>
+          <Button
+            onClick={handleConfirm}
+            color={getDialogColor()}
+            variant="contained"
+            autoFocus
+          >
             Confirm
           </Button>
         )}

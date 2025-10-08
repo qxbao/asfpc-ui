@@ -31,7 +31,13 @@ export const settingApi = createApi({
           await queryFulfilled;
           dispatch(updateMultipleSettings(arg.settings));
         } catch (error) {
-          dispatch(openDialog({ title: "Error", type: "error", content: "Failed to update settings." }));
+          dispatch(
+            openDialog({
+              title: "Error",
+              type: "error",
+              content: "Failed to update settings.",
+            }),
+          );
         }
       },
     }),

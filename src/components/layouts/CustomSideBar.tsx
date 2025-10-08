@@ -1,7 +1,27 @@
-import { AccountBox, Analytics, Assignment, AutoMode, BarChart, Computer, DensitySmall, Home, Key, Settings } from "@mui/icons-material";
-import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
-import { usePathname, useRouter } from 'next/navigation';
-import React from 'react';
+import {
+  AccountBox,
+  Analytics,
+  Assignment,
+  AutoMode,
+  BarChart,
+  Computer,
+  DensitySmall,
+  Home,
+  Key,
+  Settings,
+} from "@mui/icons-material";
+import {
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+} from "@mui/material";
+import { usePathname, useRouter } from "next/navigation";
+import React from "react";
 
 type NavChild = {
   text: string;
@@ -20,7 +40,7 @@ const navItems: NavChild[] = [
   { text: "Logs", icon: <DensitySmall />, url: "/log" },
   { text: "Gemini API Key", icon: <Key />, url: "/key" },
   { text: "Settings", icon: <Settings />, url: "/settings" },
-]
+];
 
 export default function CustomSideBar() {
   const drawerWidth = 300;
@@ -44,25 +64,32 @@ export default function CustomSideBar() {
                 onClick={() => router.push(item.url)}
                 sx={{
                   borderRadius: 1,
-                  color: pathname === item.url ? 'primary.main' : 'secondary.main',
-              }}>
-                <ListItemIcon sx={{
-                  color: pathname === item.url ? 'primary.main' : 'secondary.main',
-                }}>{item.icon}</ListItemIcon>
+                  color:
+                    pathname === item.url ? "primary.main" : "secondary.main",
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    color:
+                      pathname === item.url ? "primary.main" : "secondary.main",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText
                   primary={item.text}
                   slotProps={{
                     primary: {
-                      fontSize: '.95rem',
+                      fontSize: ".95rem",
                       fontWeight: pathname === item.url ? 700 : 400,
-                    }
+                    },
                   }}
                 />
-                </ListItemButton>
+              </ListItemButton>
             </ListItem>
           ))}
         </List>
       </Box>
     </Drawer>
-  )
+  );
 }

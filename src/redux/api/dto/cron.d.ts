@@ -1,8 +1,8 @@
 type GetCronJobListResponse = {
   data: {
-    [jobName: string]: JobStatus
-  }
-  count: number
+    [jobName: string]: JobStatus;
+  };
+  count: number;
 };
 
 type JobStatus = {

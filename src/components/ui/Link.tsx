@@ -1,25 +1,28 @@
-import { Box } from "@mui/material"
-import Link from "next/link"
+import { Box } from "@mui/material";
+import Link from "next/link";
 
 export default function CustomLink({
   href,
   children,
-  props
+  props,
 }: {
-  href: string
-  children: React.ReactNode,
-  props?: React.AnchorHTMLAttributes<HTMLAnchorElement>
+  href: string;
+  children: React.ReactNode;
+  props?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
 }) {
   return (
-    <Box component={'span'} sx={{
-      '&:hover': {
-        textDecoration: 'underline',
-        cursor: 'pointer'
-      }
-    }}>
-      <Link href={href}{...props}>
+    <Box
+      component={"span"}
+      sx={{
+        "&:hover": {
+          textDecoration: "underline",
+          cursor: "pointer",
+        },
+      }}
+    >
+      <Link href={href} {...props}>
         {children}
       </Link>
     </Box>
-  )
+  );
 }

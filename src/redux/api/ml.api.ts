@@ -29,15 +29,17 @@ export const mlApi = createApi({
     }),
     traceRequest: builder.query<TraceRequestResponse, number>({
       query: (request_id) => `/data/request/${request_id}`,
-      providesTags: (_result, _error, request_id) => [{ type: "TrainingRequest", id: request_id }],
+      providesTags: (_result, _error, request_id) => [
+        { type: "TrainingRequest", id: request_id },
+      ],
     }),
   }),
 });
 
-export const { 
-  useGetModelsQuery, 
-  useTrainModelMutation, 
+export const {
+  useGetModelsQuery,
+  useTrainModelMutation,
   useDeleteModelMutation,
   useTraceRequestQuery,
-  useLazyTraceRequestQuery 
+  useLazyTraceRequestQuery,
 } = mlApi;
