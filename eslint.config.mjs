@@ -37,18 +37,23 @@ export default [
       prettier,
     },
     rules: {
-      // Next.js rules
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
       
-      // React Hooks rules
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
 
       "@next/next/no-html-link-for-pages": "off", // allow custom routing
       "@next/next/no-img-element": "off", // allow <img> when needed
 
-      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/consistent-type-imports": [
         "warn",
