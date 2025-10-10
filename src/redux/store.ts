@@ -7,6 +7,7 @@ import { analysisApi } from "./api/analysis.api";
 import { mlApi } from "./api/ml.api";
 import { settingApi } from "./api/setting.api";
 import { cronApi } from "./api/cron.api";
+import { categoryApi } from "./api/category.api";
 
 export const makeStore = () => {
   return configureStore({
@@ -19,6 +20,7 @@ export const makeStore = () => {
       [mlApi.reducerPath]: mlApi.reducer,
       [settingApi.reducerPath]: settingApi.reducer,
       [cronApi.reducerPath]: cronApi.reducer,
+      [categoryApi.reducerPath]: categoryApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false })
@@ -27,7 +29,8 @@ export const makeStore = () => {
         .concat(analysisApi.middleware)
         .concat(mlApi.middleware)
         .concat(settingApi.middleware)
-        .concat(cronApi.middleware),
+        .concat(cronApi.middleware)
+        .concat(categoryApi.middleware),
   });
 };
 

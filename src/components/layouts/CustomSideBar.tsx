@@ -4,6 +4,7 @@ import {
   Assignment,
   AutoMode,
   BarChart,
+  Category,
   Computer,
   DensitySmall,
   Home,
@@ -31,6 +32,7 @@ type NavChild = {
 
 const navItems: NavChild[] = [
   { text: "Home", icon: <Home />, url: "/" },
+  { text: "Categories", icon: <Category />, url: "/category" },
   { text: "Bot Accounts", icon: <AccountBox />, url: "/account" },
   { text: "Statistics", icon: <BarChart />, url: "/stats" },
   { text: "Analysis", icon: <Analytics />, url: "/analysis" },
