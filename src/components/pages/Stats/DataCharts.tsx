@@ -83,8 +83,8 @@ export default function DataCharts() {
 
   const timeseriesData =
     historyData?.data.map((item) => ({
-      Date: new Date(item.Date).toLocaleDateString(),
-      Count: item.Count,
+      Date: new Date(item.date).toLocaleDateString(),
+      Count: item.count,
     })) || [];
 
   const scoreDistData =

@@ -4,13 +4,13 @@ type GetProfilesAnalysisResponse = {
 };
 
 type ProfileAnalysis = {
-  ID: number;
-  FacebookID: string;
-  Name: NullableString;
-  NonNullCount: number;
-  IsAnalyzed: NullableBool;
-  GeminiScore: NullableFloat64;
-  ModelScore: NullableFloat64;
+  id: number;
+  facebook_id: string;
+  name: NullableString;
+  non_null_count: number;
+  is_analyzed: NullableBool;
+  gemini_score: NullableFloat64;
+  model_score: NullableFloat64;
 };
 
 type AnalyzeProfileGeminiResponse = {
@@ -26,11 +26,11 @@ type GetProfileStatsResponse = {
 };
 
 type ProfileStats = {
-  TotalProfiles: number;
-  ScannedProfiles: number;
-  AnalyzedProfiles: number;
-  EmbeddedCount: number;
-  ScoredProfiles: number;
+  total_profiles: number;
+  scanned_profiles: number;
+  analyzed_profiles: number;
+  embedded_count: number;
+  scored_profiles: number;
 };
 
 type ImportProfileRequest = {

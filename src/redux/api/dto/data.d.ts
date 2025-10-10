@@ -3,14 +3,14 @@ type GetDataStatsResponse = {
 };
 
 type DataStats = {
-  TotalGroups: number;
-  TotalComments: number;
-  TotalPosts: number;
+  total_groups: number;
+  total_comments: number;
+  total_posts: number;
 };
 
 type DataHistoryItem = {
-  Date: string;
-  Count: number;
+  date: string;
+  count: number;
 };
 
 type GetDataHistoryResponse = {
@@ -18,13 +18,13 @@ type GetDataHistoryResponse = {
 };
 
 type Log = {
-  ID: number;
-  AccountID: NullableInt32;
-  Action: string;
-  TargetID: NullableInt32;
-  Description: NullableString;
-  CreatedAt: NullableTime;
-  Username: NullableString;
+  id: number;
+  account_id: NullableInt32;
+  action: string;
+  target_id: NullableInt32;
+  description: NullableString;
+  created_at: NullableTime;
+  username: NullableString;
 };
 
 type GetLogsResponse = {
@@ -33,17 +33,17 @@ type GetLogsResponse = {
 };
 
 type DataSummaryStats = {
-  TotalGroups: number;
-  TotalComments: number;
-  TotalPosts: number;
-  TotalProfiles: number;
-  EmbeddedCount: number;
-  ScannedProfiles: number;
-  ScoredProfiles: number;
-  AnalyzedProfiles: number;
-  TotalAccounts: number;
-  ActiveAccounts: number;
-  BlockedAccounts: number;
+  total_groups: number;
+  total_comments: number;
+  total_posts: number;
+  total_profiles: number;
+  embedded_count: number;
+  scanned_profiles: number;
+  scored_profiles: number;
+  analyzed_profiles: number;
+  total_accounts: number;
+  active_accounts: number;
+  blocked_accounts: number;
 };
 
 type GetDataSummaryResponse = {

@@ -55,45 +55,45 @@ function StatsGrid() {
           <StatCard
             title="Total Profiles"
             color="primary.main"
-            value={stats.TotalProfiles}
+            value={stats.total_profiles}
             icon={Person}
-            footer={`Scored: ${stats.ScoredProfiles} | Analyzed: ${stats.AnalyzedProfiles} | Embedded: ${stats.EmbeddedCount}`}
+            footer={`Scored: ${stats.scored_profiles} | Analyzed: ${stats.analyzed_profiles} | Embedded: ${stats.embedded_count}`}
           />
         </Grid>
         <Grid component="div" size={4}>
           <StatCard
             title="Total Posts"
             color="warning.main"
-            value={stats.TotalPosts}
+            value={stats.total_posts}
             icon={PostAdd}
-            footer={`From ${stats.TotalGroups} groups`}
+            footer={`From ${stats.total_groups} groups`}
           />
         </Grid>
         <Grid component="div" size={4}>
           <StatCard
             title="Total Comments"
             color="info.main"
-            value={stats.TotalComments}
+            value={stats.total_comments}
             icon={Comment}
-            footer={`Scanned profiles: ${stats.ScannedProfiles}`}
+            footer={`Scanned profiles: ${stats.scanned_profiles}`}
           />
         </Grid>
         <Grid component="div" size={6}>
           <StatCard
             title="Groups Monitored"
             color="success.main"
-            value={stats.TotalGroups}
+            value={stats.total_groups}
             icon={Group}
-            footer={`Recommended: ${stats.TotalAccounts * 5}`}
+            footer={`Recommended: ${stats.total_accounts * 5}`}
           />
         </Grid>
         <Grid component="div" size={6}>
           <StatCard
             title="Bot Accounts"
             color="error.main"
-            value={stats.TotalAccounts}
+            value={stats.total_accounts}
             icon={AccountCircle}
-            footer={`Active: ${stats.ActiveAccounts} | Blocked: ${stats.BlockedAccounts}`}
+            footer={`Active: ${stats.active_accounts} | Blocked: ${stats.blocked_accounts}`}
           />
         </Grid>
       </Grid>

@@ -1,7 +1,7 @@
 type AccountStats = {
-  TotalAccounts: number;
-  ActiveAccounts: number;
-  BlockedAccounts: number;
+  total_accounts: number;
+  active_accounts: number;
+  blocked_accounts: number;
 };
 
 type GetAccountStatsResponse = {
@@ -9,14 +9,14 @@ type GetAccountStatsResponse = {
 };
 
 type AccountInfo = {
-  ID: number;
-  Username: string;
-  Email: string;
-  UpdatedAt: string;
-  AccessToken: NullableString;
-  IsLogin: boolean;
-  IsBlock: boolean;
-  GroupCount: number;
+  id: number;
+  username: string;
+  email: string;
+  updated_at: string;
+  access_token: NullableString;
+  is_login: boolean;
+  is_block: boolean;
+  group_count: number;
 };
 
 type GetAccountListResponse = {
@@ -46,17 +46,17 @@ type GetAccountInfoResponse = {
 };
 
 type AccountInfoDetails = {
-  ID: number;
-  Email: string;
-  Username: string;
-  Password: string;
-  IsBlock: boolean;
-  Ua: string;
-  CreatedAt: string;
-  UpdatedAt: string;
-  Cookies: NullableJSON;
-  AccessToken: NullableString;
-  ProxyID: NullableInt32;
+  id: number;
+  email: string;
+  username: string;
+  password: string;
+  is_block: boolean;
+  ua: string;
+  created_at: string;
+  updated_at: string;
+  cookies: NullableJSON;
+  access_token: NullableString;
+  proxy_id: NullableInt32;
 };
 
 type GetAccountRequest = {

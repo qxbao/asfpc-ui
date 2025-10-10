@@ -11,7 +11,7 @@ type GetGeminiKeysResponse = {
 };
 
 type APIKey = {
-  ID: number;
-  ApiKey: string;
-  TokenUsed: number;
+  id: number;
+  api_key: string;
+  token_used: number;
 };

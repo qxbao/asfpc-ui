@@ -17,12 +17,12 @@ type GetGroupsByAccountResponse = {
 };
 
 type GroupInfo = {
-  ID: number;
-  GroupID: string;
-  GroupName: string;
-  IsJoined: boolean;
-  AccountID: NullableInt32;
-  ScannedAt: NullableTime;
+  id: number;
+  group_id: string;
+  group_name: string;
+  is_joined: boolean;
+  account_id: NullableInt32;
+  scanned_at: NullableTime;
 };
 
 type DeleteGroupRequest = {

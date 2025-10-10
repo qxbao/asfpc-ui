@@ -140,10 +140,10 @@ function AccountInfoCard({
   ) => {
     try {
       await updateAccountCredentials({
-        id: accountData.ID,
+        id: accountData.id,
         username: formData.username,
         email: formData.email,
-        password: formData.password || accountData.Password!,
+        password: formData.password || accountData.password!,
       }).unwrap();
       dispatch(
         openDialog({
@@ -171,8 +171,8 @@ function AccountInfoCard({
   };
 
   const handleToggleMode = () => {
-    setValue("username", accountData.Username || "");
-    setValue("email", accountData.Email || "");
+    setValue("username", accountData.username || "");
+    setValue("email", accountData.email || "");
     setIsEditing(!isEditing);
   };
 
@@ -260,7 +260,7 @@ function ShowAccount({
           Username
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.Username}
+          {data.username}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -268,7 +268,7 @@ function ShowAccount({
           Email
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.Email || "N/A"}
+          {data.email || "N/A"}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -276,7 +276,7 @@ function ShowAccount({
           Password
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {"*".repeat(data.Password.length!)}
+          {"*".repeat(data.password.length!)}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -284,7 +284,7 @@ function ShowAccount({
           User Agent
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.Ua || "N/A"}
+          {data.ua || "N/A"}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -300,10 +300,10 @@ function ShowAccount({
           Access Token
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.AccessToken.Valid
-            ? data.AccessToken.String.length > 20
-              ? `${data.AccessToken.String.substring(0, 30)}...`
-              : data.AccessToken.String
+          {data.access_token.Valid
+            ? data.access_token.String.length > 20
+              ? `${data.access_token.String.substring(0, 30)}...`
+              : data.access_token.String
             : "N/A"}
         </Typography>
       </Grid>
@@ -312,7 +312,7 @@ function ShowAccount({
           Cookies
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.Cookies.Valid ? "Generated" : "N/A"}
+          {data.cookies.Valid ? "Generated" : "N/A"}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -322,9 +322,9 @@ function ShowAccount({
         <Typography
           variant="body1"
           fontWeight={500}
-          color={data.IsBlock ? "error.main" : "success.main"}
+          color={data.is_block ? "error.main" : "success.main"}
         >
-          {data.IsBlock ? "Blocked" : "Active"}
+          {data.is_block ? "Blocked" : "Active"}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -332,7 +332,7 @@ function ShowAccount({
           Creation Time
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.CreatedAt ? new Date(data.CreatedAt).toLocaleString() : "N/A"}
+          {data.created_at ? new Date(data.created_at).toLocaleString() : "N/A"}
         </Typography>
       </Grid>
       <Grid size={6}>
@@ -340,7 +340,7 @@ function ShowAccount({
           Last update
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {data.UpdatedAt ? new Date(data.UpdatedAt).toLocaleString() : "N/A"}
+          {data.updated_at ? new Date(data.updated_at).toLocaleString() : "N/A"}
         </Typography>
       </Grid>
     </Grid>
@@ -552,7 +552,7 @@ function GroupsTable({
       filterable: false,
       renderCell: (params) => (
         <ActionsCell
-          disableJoinGroup={disableJoinGroup || !account.Cookies.Valid}
+          disableJoinGroup={disableJoinGroup || !account.cookies.Valid}
           setDisableJoinGroup={setDisableJoinGroup}
           groupId={params.row.id}
         />
@@ -565,12 +565,12 @@ function GroupsTable({
       <Paper sx={{ height: 500, width: "100%" }}>
         <DataGrid
           rows={groups.map((group) => ({
-            id: group.ID,
-            gid: group.GroupID,
-            groupName: group.GroupName,
-            isJoined: group.IsJoined,
-            scannedAt: group.ScannedAt.Valid
-              ? new Date(group.ScannedAt.Time).toLocaleString()
+            id: group.id,
+            gid: group.group_id,
+            groupName: group.group_name,
+            isJoined: group.is_joined,
+            scannedAt: group.scanned_at.Valid
+              ? new Date(group.scanned_at.Time).toLocaleString()
               : "N/A",
           }))}
           columns={columns}

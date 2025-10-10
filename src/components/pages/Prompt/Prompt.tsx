@@ -91,11 +91,11 @@ function PromptTable() {
           rows={
             !isLoadingPrompts && promptList
               ? promptList.data.map((prompt) => ({
-                  id: prompt.ServiceName,
-                  version: prompt.Version,
-                  content: prompt.Content,
-                  created_by: prompt.CreatedBy,
-                  created_at: new Date(prompt.CreatedAt).toLocaleString(),
+                  id: prompt.service_name,
+                  version: prompt.version,
+                  content: prompt.content,
+                  created_by: prompt.created_by,
+                  created_at: new Date(prompt.created_at).toLocaleString(),
                 }))
               : []
           }

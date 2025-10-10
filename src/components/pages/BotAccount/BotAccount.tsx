@@ -75,7 +75,7 @@ function AccountsStats() {
           icon={AccountTree}
           color="primary.main"
           title="Total Bots"
-          value={isLoading ? loadingIcon : data?.data.TotalAccounts}
+          value={isLoading ? loadingIcon : data?.data.total_accounts}
           footer="All bot accounts in the system"
         />
       </Grid>
@@ -84,12 +84,12 @@ function AccountsStats() {
           icon={Check}
           color="success.main"
           title="Active Bots"
-          value={isLoading ? loadingIcon : data?.data.ActiveAccounts}
+          value={isLoading ? loadingIcon : data?.data.active_accounts}
           footer={
             isLoading || !data
               ? ""
               : `${(
-                  (data?.data.ActiveAccounts / data?.data.TotalAccounts) *
+                  (data?.data.active_accounts / data?.data.total_accounts) *
                   100
                 ).toFixed(2)}% of all bots`
           }
@@ -100,12 +100,12 @@ function AccountsStats() {
           icon={Block}
           color="error.main"
           title="Blocked Bots"
-          value={isLoading ? loadingIcon : data?.data.BlockedAccounts}
+          value={isLoading ? loadingIcon : data?.data.blocked_accounts}
           footer={
             isLoading || !data
               ? ""
               : `${(
-                  (data?.data.BlockedAccounts / data?.data.TotalAccounts) *
+                  (data?.data.blocked_accounts / data?.data.total_accounts) *
                   100
                 ).toFixed(2)}% of all bots`
           }
@@ -189,19 +189,19 @@ function AccountTable() {
           rows={
             !il2 && accountList && accountList.data
               ? accountList.data.map((account) => ({
-                  id: account.ID,
-                  username: account.Username,
-                  email: account.Email,
-                  accessToken: account.AccessToken.Valid,
-                  isLogin: account.IsLogin,
-                  isBlock: account.IsBlock,
-                  groupCount: account.GroupCount,
-                  updatedAt: new Date(account.UpdatedAt).toLocaleString(),
+                  id: account.id,
+                  username: account.username,
+                  email: account.email,
+                  accessToken: account.access_token.Valid,
+                  isLogin: account.is_login,
+                  isBlock: account.is_block,
+                  groupCount: account.group_count,
+                  updatedAt: new Date(account.updated_at).toLocaleString(),
                 }))
               : []
           }
           columns={columns}
-          rowCount={accountStats?.data.TotalAccounts || 0}
+          rowCount={accountStats?.data.total_accounts || 0}
           loading={il1 || il2}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}

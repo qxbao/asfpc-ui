@@ -3,9 +3,9 @@ type GetModelsResponse = {
 };
 
 type ModelInfo = {
-  Name: string;
-  Metadata: ModelMetadata | null;
-  Validation: ModelValidation;
+  name: string;
+  metadata: ModelMetadata | null;
+  validation: ModelValidation;
 };
 
 type ModelMetadata = {
@@ -45,8 +45,8 @@ interface TrainParams {
 }
 
 type ModelValidation = {
-  IsExists: boolean;
-  IsValid: boolean;
+  exists: boolean;
+  is_valid: boolean;
 };
 
 type TrainModelRequest =
@@ -67,13 +67,13 @@ type TrainModelResponse = {
 };
 
 type TrainingRequest = {
-  ID: number;
-  Progress: number;
-  Status: number;
-  Description: NullableString;
-  CreatedAt: NullableTime;
-  UpdatedAt: NullableTime;
-  ErrorMessage: NullableString;
+  id: number;
+  progress: number;
+  status: number;
+  description: NullableString;
+  created_at: NullableTime;
+  updated_at: NullableTime;
+  error_message: NullableString;
 };
 
 type TraceRequestResponse = {

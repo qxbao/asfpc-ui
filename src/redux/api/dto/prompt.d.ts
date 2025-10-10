@@ -1,10 +1,10 @@
 type Prompt = {
-  ID: number;
-  Content: string;
-  ServiceName: string;
-  Version: number;
-  CreatedBy: string;
-  CreatedAt: string;
+  id: number;
+  content: string;
+  service_name: string;
+  version: number;
+  created_by: string;
+  created_at: string;
 };
 
 type GetAllPromptsResponse = {

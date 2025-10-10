@@ -59,7 +59,7 @@ function APIKeysStats() {
   const { data, isLoading } = useGetGeminiKeysQuery();
   const totalKeys = data?.data?.length || 0;
   const totalTokensUsed =
-    data?.data?.reduce((sum, key) => sum + key.TokenUsed, 0) || 0;
+    data?.data?.reduce((sum, key) => sum + key.token_used, 0) || 0;
   const loadingIcon = <CircularProgress color="secondary" size={40} />;
 
   return (
@@ -185,9 +185,9 @@ function APITable() {
           rows={
             !isLoading && apiKeys && apiKeys.data
               ? apiKeys.data.map((key) => ({
-                  id: key.ID,
-                  key: key.ApiKey,
-                  tokenUsed: key.TokenUsed,
+                  id: key.id,
+                  key: key.api_key,
+                  tokenUsed: key.token_used,
                 }))
               : []
           }

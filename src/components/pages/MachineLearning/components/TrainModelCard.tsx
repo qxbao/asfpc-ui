@@ -78,7 +78,7 @@ export default function TrainModelCard() {
 
   useEffect(() => {
     if (trainingData?.data) {
-      const status = trainingData.data.Status;
+      const status = trainingData.data.status;
       if (status === 2) {
         setTrainingRequestId(null);
         dispatch(mlApi.util.invalidateTags(["Models"]));
@@ -94,7 +94,7 @@ export default function TrainModelCard() {
         dispatch(
           openDialog({
             title: "Training Failed",
-            content: `Training failed: ${trainingData.data.ErrorMessage?.Valid ? trainingData.data.ErrorMessage.String : "Unknown error"}`,
+            content: `Training failed: ${trainingData.data.error_message?.Valid ? trainingData.data.error_message.String : "Unknown error"}`,
             type: "error",
           }),
         );
@@ -234,7 +234,7 @@ export default function TrainModelCard() {
               <Box display="flex" alignItems="center" gap={1} mb={1}>
                 <LinearProgress
                   variant="determinate"
-                  value={trainingData.data.Progress * 100}
+                  value={trainingData.data.progress * 100}
                   sx={{ flexGrow: 1, height: 8, borderRadius: 4 }}
                 />
                 <Typography
@@ -242,7 +242,7 @@ export default function TrainModelCard() {
                   color="text.secondary"
                   minWidth={40}
                 >
-                  {Math.round(trainingData.data.Progress * 100)}%
+                  {Math.round(trainingData.data.progress * 100)}%
                 </Typography>
               </Box>
               <Box
@@ -255,35 +255,35 @@ export default function TrainModelCard() {
                 </Typography>
                 <Chip
                   label={
-                    trainingData.data.Status === 0
+                    trainingData.data.status === 0
                       ? "Pending"
-                      : trainingData.data.Status === 1
+                      : trainingData.data.status === 1
                         ? "Running"
-                        : trainingData.data.Status === 2
+                        : trainingData.data.status === 2
                           ? "Completed"
                           : "Failed"
                   }
                   size="small"
                   color={
-                    trainingData.data.Status === 0
+                    trainingData.data.status === 0
                       ? "default"
-                      : trainingData.data.Status === 1
+                      : trainingData.data.status === 1
                         ? "primary"
-                        : trainingData.data.Status === 2
+                        : trainingData.data.status === 2
                           ? "success"
                           : "error"
                   }
                   variant="outlined"
                 />
               </Box>
-              {trainingData.data.Description?.Valid && (
+              {trainingData.data.description?.Valid && (
                 <Typography
                   variant="caption"
                   color="text.secondary"
                   mt={1}
                   display="block"
                 >
-                  {trainingData.data.Description.String}
+                  {trainingData.data.description.String}
                 </Typography>
               )}
             </Box>
@@ -298,7 +298,7 @@ export default function TrainModelCard() {
               isLoading ||
               (trainingRequestId !== null &&
                 trainingData !== undefined &&
-                trainingData.data.Status! <= 1)
+                trainingData.data.status! <= 1)
             }
             sx={{ textTransform: "none", borderRadius: 3 }}
             startIcon={<Add />}

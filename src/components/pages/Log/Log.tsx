@@ -60,7 +60,7 @@ function LogTable() {
             display={"flex"}
             flexGrow={1}
           >
-            <Link href={`/account/${params.row.account_id}`}>
+            <Link href={`/account/${params.row.account_id.String}`}>
               <Typography
                 fontWeight={500}
                 color={"primary"}
@@ -102,13 +102,13 @@ function LogTable() {
           rows={
             !isLoadingLogs && logList
               ? logList.data.map((log) => ({
-                  id: log.ID,
-                  action: log.Action,
-                  target_id: log.TargetID.Int32,
-                  account_id: log.AccountID.Int32,
-                  description: log.Description.String,
-                  username: log.Username.String,
-                  created_at: new Date(log.CreatedAt.Time).toLocaleString(),
+                  id: log.id,
+                  action: log.action,
+                  target_id: log.target_id.Int32,
+                  account_id: log.account_id.Int32,
+                  description: log.description.String,
+                  username: log.username.String,
+                  created_at: new Date(log.created_at.Time).toLocaleString(),
                 }))
               : []
           }

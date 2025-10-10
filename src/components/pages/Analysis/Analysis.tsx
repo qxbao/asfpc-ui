@@ -69,7 +69,7 @@ function ProfileStats() {
       <Grid size={{ xs: 12, sm: 6 }} sx={{ gridRow: "span 2" }}>
         <StatCard
           title="Total Profiles"
-          value={isLoading ? loadingIcon : data?.data.TotalProfiles || 0}
+          value={isLoading ? loadingIcon : data?.data.total_profiles || 0}
           icon={PeopleOutline}
           color="info.main"
           sx={{
@@ -90,7 +90,7 @@ function ProfileStats() {
           <Grid size={6}>
             <StatCard
               title="Scored Profiles"
-              value={isLoading ? loadingIcon : data?.data.ScoredProfiles || 0}
+              value={isLoading ? loadingIcon : data?.data.scored_profiles || 0}
               icon={People}
               color="secondary.main"
               sx={{ height: "90px" }}
@@ -100,7 +100,7 @@ function ProfileStats() {
           <Grid size={6}>
             <StatCard
               title="Scanned Profiles"
-              value={isLoading ? loadingIcon : data?.data.ScannedProfiles || 0}
+              value={isLoading ? loadingIcon : data?.data.scanned_profiles || 0}
               icon={People}
               color="warning.main"
               sx={{ height: "90px" }}
@@ -110,7 +110,9 @@ function ProfileStats() {
           <Grid size={6}>
             <StatCard
               title="Analyzed Profiles"
-              value={isLoading ? loadingIcon : data?.data.AnalyzedProfiles || 0}
+              value={
+                isLoading ? loadingIcon : data?.data.analyzed_profiles || 0
+              }
               icon={People}
               color="success.main"
               sx={{ height: "90px" }}
@@ -120,7 +122,7 @@ function ProfileStats() {
           <Grid size={6}>
             <StatCard
               title="Embedded Profiles"
-              value={isLoading ? loadingIcon : data?.data.EmbeddedCount || 0}
+              value={isLoading ? loadingIcon : data?.data.embedded_count || 0}
               icon={People}
               color="primary.main"
               sx={{ height: "90px" }}
@@ -136,8 +138,8 @@ function ProfileStats() {
             {isLoading
               ? "Loading..."
               : `${(
-                  ((data?.data.AnalyzedProfiles || 0) /
-                    (data?.data.TotalProfiles || 1)) *
+                  ((data?.data.analyzed_profiles || 0) /
+                    (data?.data.total_profiles || 1)) *
                   100
                 ).toFixed(2)}%`}
             )
@@ -148,8 +150,8 @@ function ProfileStats() {
             value={
               isLoading
                 ? 0
-                : ((data?.data.AnalyzedProfiles || 0) /
-                    (data?.data.TotalProfiles || 1)) *
+                : ((data?.data.analyzed_profiles || 0) /
+                    (data?.data.total_profiles || 1)) *
                   100
             }
           />
@@ -160,8 +162,8 @@ function ProfileStats() {
             {isLoading
               ? "Loading..."
               : `${(
-                  ((data?.data.EmbeddedCount || 0) /
-                    (data?.data.TotalProfiles || 1)) *
+                  ((data?.data.embedded_count || 0) /
+                    (data?.data.total_profiles || 1)) *
                   100
                 ).toFixed(2)}%`}
             )
@@ -172,8 +174,8 @@ function ProfileStats() {
             value={
               isLoading
                 ? 0
-                : ((data?.data.EmbeddedCount || 0) /
-                    (data?.data.TotalProfiles || 1)) *
+                : ((data?.data.embedded_count || 0) /
+                    (data?.data.total_profiles || 1)) *
                   100
             }
           />
@@ -339,16 +341,16 @@ function ProfileTable() {
           rows={
             !isLoadingProfiles && profileList
               ? profileList.data.map((profile) => ({
-                  id: profile.ID,
-                  name: profile.Name.String,
-                  facebook_id: profile.FacebookID,
-                  nn_count: profile.NonNullCount,
-                  is_analyzed: profile.IsAnalyzed.Bool,
-                  gemini_score: profile.GeminiScore.Valid
-                    ? profile.GeminiScore.Float64
+                  id: profile.id,
+                  name: profile.name.String,
+                  facebook_id: profile.facebook_id,
+                  nn_count: profile.non_null_count,
+                  is_analyzed: profile.is_analyzed.Bool,
+                  gemini_score: profile.gemini_score.Valid
+                    ? profile.gemini_score.Float64
                     : "No",
-                  model_score: profile.ModelScore.Valid
-                    ? profile.ModelScore.Float64
+                  model_score: profile.model_score.Valid
+                    ? profile.model_score.Float64
                     : "No",
                 }))
               : []
