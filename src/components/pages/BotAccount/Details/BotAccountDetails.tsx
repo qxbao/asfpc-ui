@@ -562,7 +562,6 @@ function GroupsTable({
 					disableJoinGroup={disableJoinGroup || !account.cookies.Valid}
 					setDisableJoinGroup={setDisableJoinGroup}
 					groupId={params.row.id}
-					groupName={params.row.groupName}
 				/>
 			),
 		},
@@ -618,12 +617,10 @@ function ActionsCell({
 	disableJoinGroup,
 	setDisableJoinGroup,
 	groupId,
-	groupName,
 }: {
 	disableJoinGroup: boolean;
 	setDisableJoinGroup: (val: boolean) => void;
 	groupId: number;
-	groupName: string;
 }) {
 	const [openCategories, setOpenCategories] = useState(false);
 	const [joinGroup, { isLoading }] = useJoinGroupMutation();
