@@ -55,14 +55,14 @@ export default function AnalysisPageComponent() {
         <Grid size={12}>
           <ProfileStats />
         </Grid>
-        <Grid size={9}>
+        <Grid size={12}>
           <ProfileTable />
         </Grid>
         <Grid size={3}>
           <ImportProfilesForm />
-          <Box mt={2}>
-            <AddProfilesToCategoryForm />
-          </Box>
+        </Grid>
+        <Grid size={3}>
+          <AddProfilesToCategoryForm />
         </Grid>
       </Grid>
     </Box>
@@ -280,7 +280,7 @@ function ProfileTable() {
           return <Typography variant="body2" color="text.secondary">-</Typography>;
         }
         return (
-          <Box display="flex" gap={0.5} flexWrap="wrap" py={0.5}>
+          <Box display="flex" alignItems="center" height="100%" gap={0.5} flexWrap="wrap" py={0.5}>
             {categories.map((category: Category) => (
               <Chip
                 key={category.id}
@@ -705,7 +705,7 @@ function ImportProfilesForm() {
   };
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Paper sx={{ p: 3, height: "100%" }}>
       <Typography variant="h6" fontWeight={600} mb={2}>
         Import Profiles
       </Typography>
