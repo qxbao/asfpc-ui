@@ -269,7 +269,6 @@ function PromptTable({
 							: []
 					}
 					columns={columns}
-					rowCount={filteredPrompts?.length || 0}
 					loading={isLoadingPrompts}
 					paginationModel={paginationModel}
 					onPaginationModelChange={setPaginationModel}

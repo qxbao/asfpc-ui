@@ -719,7 +719,6 @@ function ActionsCell({
 			</Box>
 			<GroupCategoryManager
 				groupId={groupId}
-				groupName={groupName}
 				open={openCategories}
 				onClose={() => setOpenCategories(false)}
 			/>

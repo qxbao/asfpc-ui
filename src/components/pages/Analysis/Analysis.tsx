@@ -26,6 +26,7 @@ import {
 import {
   Box,
   Button,
+  Chip,
   CircularProgress,
   FormControl,
   FormHelperText,
@@ -270,6 +271,30 @@ function ProfileTable() {
       width: 100,
     },
     {
+      field: "categories",
+      headerName: "Categories",
+      width: 250,
+      renderCell(params) {
+        const categories = params.row.categories;
+        if (categories.length === 0) {
+          return <Typography variant="body2" color="text.secondary">-</Typography>;
+        }
+        return (
+          <Box display="flex" gap={0.5} flexWrap="wrap" py={0.5}>
+            {categories.map((category: Category) => (
+              <Chip
+                key={category.id}
+                label={category.name}
+                size="small"
+                color="primary"
+                variant="outlined"
+              />
+            ))}
+          </Box>
+        );
+      },
+    },
+    {
       field: "actions",
       headerName: "Actions",
       flex: 1,
@@ -331,6 +356,7 @@ function ProfileTable() {
                   model_score: profile.model_score.Valid
                     ? profile.model_score.Float64
                     : "No",
+                  categories: profile.categories,
                 }))
               : []
           }

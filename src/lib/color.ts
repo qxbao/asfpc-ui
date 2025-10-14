@@ -110,7 +110,6 @@ function getContrastTextColor(bgColor: string): string {
  */
 export function generateContrastColor(
 	text: string,
-	backgroundColor: "white" | "dark" = "white"
 ): {
 	backgroundColor: string;
 	textColor: string;

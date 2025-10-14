@@ -7,7 +7,6 @@ import {
 } from "@/redux/api/category.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
-import { generateContrastColor } from "@/lib/color";
 import { Add, Close, Delete } from "@mui/icons-material";
 import {
 	Box,
@@ -29,14 +28,12 @@ import { useState } from "react";
 
 interface GroupCategoryManagerProps {
 	groupId: number;
-	groupName?: string;
 	open: boolean;
 	onClose: () => void;
 }
 
 export default function GroupCategoryManager({
 	groupId,
-	groupName,
 	open,
 	onClose,
 }: GroupCategoryManagerProps) {
@@ -46,7 +43,7 @@ export default function GroupCategoryManager({
 	);
 
 	// Fetch all categories
-	const { data: allCategoriesData, isLoading: isLoadingAllCategories } =
+	const { data: allCategoriesData } =
 		useGetAllCategoriesQuery();
 
 	// Fetch categories for this group
@@ -126,10 +123,6 @@ export default function GroupCategoryManager({
 			);
 		}
 	};
-
-	// Use provided group name or fallback to group ID
-	const displayName = groupName || `Group #${groupId}`;
-	const groupColor = generateContrastColor(displayName, "white");
 
 	return (
 		<Dialog 

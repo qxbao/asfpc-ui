@@ -5,6 +5,7 @@ import {
   useTraceRequestQuery,
   mlApi,
 } from "@/redux/api/ml.api";
+import { useGetAllCategoriesQuery } from "@/redux/api/category.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
 import { Add } from "@mui/icons-material";
@@ -15,19 +16,24 @@ import {
   CardContent,
   CardHeader,
   Chip,
+  FormControl,
   FormControlLabel,
+  InputLabel,
   LinearProgress,
+  MenuItem,
+  Select,
   Switch,
   TextField,
   Typography,
 } from "@mui/material";
 import type { SubmitHandler } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 type TrainModelFormData = {
   modelName: string;
   autoTune: boolean;
   trials: number;
+  categoryId: number | "";
 };
 
 export default function TrainModelCard() {
@@ -39,6 +45,7 @@ export default function TrainModelCard() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<TrainModelFormData>({
@@ -47,9 +54,12 @@ export default function TrainModelCard() {
       modelName: "",
       autoTune: false,
       trials: 20,
+      categoryId: "",
     },
   });
   const [trainModel, { isLoading }] = useTrainModelMutation();
+  const { data: categoriesData } = useGetAllCategoriesQuery();
+  const categories = categoriesData?.data || [];
 
   const { data: trainingData } = useTraceRequestQuery(trainingRequestId!, {
     skip: !trainingRequestId,
@@ -62,6 +72,7 @@ export default function TrainModelCard() {
         model_name: data.modelName,
         auto_tune: data.autoTune,
         trials: data.autoTune ? data.trials : undefined,
+        category_id: data.categoryId !== "" ? data.categoryId : undefined,
       }).unwrap();
 
       setTrainingRequestId(result.request_id);
@@ -144,6 +155,30 @@ export default function TrainModelCard() {
                 message: "Only letters, numbers, underscore and dash allowed",
               },
             })}
+          />
+
+          <Controller
+            name="categoryId"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth size="small">
+                <InputLabel id="category-select-label">Category (Optional)</InputLabel>
+                <Select
+                  {...field}
+                  labelId="category-select-label"
+                  label="Category (Optional)"
+                >
+                  <MenuItem value="">
+                    <em>All Categories</em>
+                  </MenuItem>
+                  {categories.map((category: { id: number; name: string }) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
           />
 
           <Box>

@@ -11,6 +11,7 @@ type ProfileAnalysis = {
   is_analyzed: NullableBool;
   gemini_score: NullableFloat64;
   model_score: NullableFloat64;
+  categories: Category[];
 };
 
 type AnalyzeProfileGeminiResponse = {

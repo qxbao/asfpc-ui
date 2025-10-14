@@ -63,7 +63,6 @@ export default [
       ],
 
       "react-refresh/only-export-components": "off",
-      "prettier/prettier": "warn",
     },
   },
 ];

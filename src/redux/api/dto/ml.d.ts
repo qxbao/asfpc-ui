@@ -54,6 +54,7 @@ type TrainModelRequest =
       model_name: string;
       auto_tune?: boolean;
       trials?: number;
+      category_id?: number;
     }
   | undefined;
 
