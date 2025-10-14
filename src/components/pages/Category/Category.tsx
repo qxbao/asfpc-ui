@@ -134,7 +134,7 @@ function CategoryTable() {
           <IconButton
             size="small"
             color="error"
-            onClick={() => handleDelete(params.row.ID)}
+            onClick={() => handleDelete(params.row.id)}
           >
             <Delete fontSize="small" />
           </IconButton>

@@ -61,6 +61,7 @@ export default [
         "warn",
         { prefer: "type-imports" },
       ],
+      "@typescript-eslint/triple-slash-reference": "off",
 
       "react-refresh/only-export-components": "off",
     },
