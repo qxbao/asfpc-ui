@@ -19,7 +19,7 @@ const theme = createTheme({
       paper: "#0c0c0cff",
     },
     primary: {
-      main: "#1e3bcdff",
+      main: "#4962dfff",
     },
     text: {
       primary: "#e3e3e3ff",
@@ -33,7 +33,7 @@ const theme = createTheme({
       main: "#2f50e2ff",
     },
     error: {
-      main: "#d3271bff",
+      main: "#c13328ff",
     },
     success: {
       main: "#1d9923ff",

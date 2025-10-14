@@ -48,12 +48,12 @@ export default function ModelListing() {
       <Grid container spacing={3}>
         {models.data
           .toSorted((a, b) => {
-            const aR2 = a.Metadata?.r2 ?? 0;
-            const bR2 = b.Metadata?.r2 ?? 0;
+            const aR2 = a.metadata?.r2 ?? 0;
+            const bR2 = b.metadata?.r2 ?? 0;
             return bR2 - aR2;
           })
           .map((model) => (
-            <Grid size={4} key={model.Name}>
+            <Grid size={4} key={model.name}>
               <ModelCard model={model} />
             </Grid>
           ))}

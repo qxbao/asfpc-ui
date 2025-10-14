@@ -9,9 +9,10 @@ export default function MachineLearningPageComponent() {
   return (
     <Box bgcolor={"background.paper"} p={3}>
       <Navigator link={["Machine Learning"]} />
-      <Typography variant="h6" fontWeight={600} marginBottom={3}>
+      <Typography variant="h6" fontWeight={600} marginBottom={2}>
         Machine Learning Models
       </Typography>
+
       <MLStats />
       <Grid spacing={4} mt={4} container>
         <Grid size={9}>

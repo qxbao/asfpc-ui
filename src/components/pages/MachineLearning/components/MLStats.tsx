@@ -27,7 +27,7 @@ export default function MLStats() {
           value={
             isLoading
               ? "Loading..."
-              : data?.data?.filter((m) => m.Validation.IsValid).length
+              : data?.data?.filter((m) => m.validation?.IsValid).length
           }
           footer="Ready for predictions"
         />

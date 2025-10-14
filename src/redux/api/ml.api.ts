@@ -2,21 +2,11 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { customQuery } from "./custom";
 import { BackendURL } from "@/lib/server";
 
-export interface MLModelConfig {
-  category_id: number;
-  model_path: string;
-}
-
-export interface CategoryMLConfig {
-  id: number;
-  key: string;
-  value: string;
-}
 
 export const mlApi = createApi({
   baseQuery: customQuery(BackendURL),
   reducerPath: "mlApi",
-  tagTypes: ["Models", "TrainingRequest", "MLConfig"],
+  tagTypes: ["Models", "TrainingRequest"],
   endpoints: (builder) => ({
     getModels: builder.query<GetModelsResponse, void>({
       query: () => "/ml/list",
@@ -38,49 +28,35 @@ export const mlApi = createApi({
       }),
       invalidatesTags: ["Models"],
     }),
+    updateModel: builder.mutation<void, UpdateModelRequest>({
+      query: (body) => ({
+        url: "/model/update",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Models"],
+    }),
+    assignModelToCategory: builder.mutation<void, AssignModelToCategoryRequest>({
+      query: (body) => ({
+        url: "/model/assign",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Models"],
+    }),
+    syncModels: builder.mutation<{ message: string }, void>({
+      query: () => ({
+        url: "/ml/sync",
+        method: "POST",
+      }),
+      invalidatesTags: ["Models"],
+    }),
+    // Training request tracing
     traceRequest: builder.query<TraceRequestResponse, number>({
       query: (request_id) => `/data/request/${request_id}`,
       providesTags: (_result, _error, request_id) => [
         { type: "TrainingRequest", id: request_id },
       ],
-    }),
-    getMLModelConfig: builder.query<MLModelConfig, number>({
-      query: (categoryId) => `/ml/config/model/${categoryId}`,
-      providesTags: (result, error, categoryId) => [
-        { type: "MLConfig", id: `model-${categoryId}` },
-      ],
-    }),
-    setMLModelConfig: builder.mutation<MLModelConfig, MLModelConfig>({
-      query: (config) => ({
-        url: "/ml/config/model",
-        method: "POST",
-        body: config,
-      }),
-      invalidatesTags: (result, error, config) => [
-        { type: "MLConfig", id: `model-${config.category_id}` },
-        { type: "MLConfig", id: "LIST" },
-      ],
-    }),
-    getEmbeddingModelConfig: builder.query<MLModelConfig, number>({
-      query: (categoryId) => `/ml/config/embedding/${categoryId}`,
-      providesTags: (result, error, categoryId) => [
-        { type: "MLConfig", id: `embedding-${categoryId}` },
-      ],
-    }),
-    setEmbeddingModelConfig: builder.mutation<MLModelConfig, MLModelConfig>({
-      query: (config) => ({
-        url: "/ml/config/embedding",
-        method: "POST",
-        body: config,
-      }),
-      invalidatesTags: (result, error, config) => [
-        { type: "MLConfig", id: `embedding-${config.category_id}` },
-        { type: "MLConfig", id: "LIST" },
-      ],
-    }),
-    getAllCategoryMLConfigs: builder.query<{ data: CategoryMLConfig[] }, void>({
-      query: () => "/ml/config/all",
-      providesTags: [{ type: "MLConfig", id: "LIST" }],
     }),
   }),
 });
@@ -89,11 +65,9 @@ export const {
   useGetModelsQuery,
   useTrainModelMutation,
   useDeleteModelMutation,
+  useUpdateModelMutation,
+  useAssignModelToCategoryMutation,
+  useSyncModelsMutation,
   useTraceRequestQuery,
   useLazyTraceRequestQuery,
-  useGetMLModelConfigQuery,
-  useSetMLModelConfigMutation,
-  useGetEmbeddingModelConfigQuery,
-  useSetEmbeddingModelConfigMutation,
-  useGetAllCategoryMLConfigsQuery,
 } = mlApi;

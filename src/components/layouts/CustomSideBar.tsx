@@ -10,7 +10,6 @@ import {
   Home,
   Key,
   Settings,
-  Tune,
 } from "@mui/icons-material";
 import {
   Box,
@@ -39,7 +38,6 @@ const navItems: NavChild[] = [
   { text: "Analysis", icon: <Analytics />, url: "/analysis" },
   { text: "Prompts", icon: <Assignment />, url: "/prompt" },
   { text: "ML Models", icon: <Computer />, url: "/ml" },
-  { text: "ML Config", icon: <Tune />, url: "/ml-config" },
   { text: "Automation", icon: <AutoMode />, url: "/cron" },
   { text: "Logs", icon: <DensitySmall />, url: "/log" },
   { text: "Gemini API Key", icon: <Key />, url: "/key" },

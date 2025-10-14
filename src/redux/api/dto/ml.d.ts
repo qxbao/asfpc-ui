@@ -3,9 +3,13 @@ type GetModelsResponse = {
 };
 
 type ModelInfo = {
+  id?: number;
   name: string;
-  metadata: ModelMetadata | null;
-  validation: ModelValidation;
+  description?: string;
+  category_id?: number;
+  created_at?: string;
+  metadata?: ModelMetadata | null;
+  validation?: ModelValidation;
 };
 
 type ModelMetadata = {
@@ -45,8 +49,8 @@ interface TrainParams {
 }
 
 type ModelValidation = {
-  exists: boolean;
-  is_valid: boolean;
+  Exists: boolean;
+  IsValid: boolean;
 };
 
 type TrainModelRequest =
@@ -79,4 +83,17 @@ type TrainingRequest = {
 
 type TraceRequestResponse = {
   data: TrainingRequest;
+};
+
+// Model update/assign types
+type UpdateModelRequest = {
+  id: number;
+  name: string;
+  description?: string;
+  category_id?: number | null;
+};
+
+type AssignModelToCategoryRequest = {
+  model_id: number;
+  category_id: number;
 };
