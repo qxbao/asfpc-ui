@@ -51,8 +51,16 @@ type FindSimilarProfilesResponse = {
 };
 
 type SimilarProfile = {
-  ProfileID: number;
-  Similarity: number;
-  ProfileUrl: string; // URL to the similar profile
-  ProfileName: NullableString; // Name of the similar profile
+  profile_id: number;
+  similarity: number;
+  profile_url: string; // URL to the similar profile
+  profile_name: NullableString; // Name of the similar profile
+};
+
+type AddAllProfilesToCategoryRequest = {
+  category_id: number;
+};
+
+type AddAllProfilesToCategoryResponse = {
+  data: number;
 };

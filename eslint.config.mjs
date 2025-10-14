@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import prettier from "eslint-plugin-prettier";
+import pp from "prettier"
 
 export default [
   {
@@ -34,7 +35,8 @@ export default [
       "@next/next": nextPlugin,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      prettier,
+      "eslint-plugin-prettier": prettier,
+      "prettier": pp,
     },
     rules: {
       ...nextPlugin.configs.recommended.rules,

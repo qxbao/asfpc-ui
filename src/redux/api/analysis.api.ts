@@ -18,17 +18,6 @@ export const analysisApi = createApi({
       }),
       providesTags: ["Profiles"],
     }),
-    analyzeProfileGemini: builder.mutation<
-      AnalyzeProfileGeminiResponse,
-      RequestWithID
-    >({
-      query: (body) => ({
-        url: "/analysis/profile/analyze",
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Profiles"],
-    }),
     importProfile: builder.mutation<
       ImportProfileResponse,
       ImportProfileRequest
@@ -98,6 +87,17 @@ export const analysisApi = createApi({
         params,
       }),
     }),
+    addAllProfilesToCategory: builder.mutation<
+      AddAllProfilesToCategoryResponse,
+      AddAllProfilesToCategoryRequest
+    >({
+      query: (body) => ({
+        url: "/analysis/profile/category/bulk",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Profiles"],
+    }),
   }),
 });
 
@@ -106,10 +106,10 @@ export const {
   useGetProfileStatsQuery,
   useGetGeminiKeysQuery,
   useFindSimilarProfilesMutation,
-  useAnalyzeProfileGeminiMutation,
-  useAddGeminiKeyMutation,
-  useDeleteJunkProfilesMutation,
-  useDeleteGeminiKeyMutation,
   useImportProfileMutation,
+  useAddGeminiKeyMutation,
+  useDeleteGeminiKeyMutation,
+  useDeleteJunkProfilesMutation,
   useDeleteProfilesModelScoreMutation,
+  useAddAllProfilesToCategoryMutation,
 } = analysisApi;

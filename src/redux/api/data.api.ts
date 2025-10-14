@@ -46,6 +46,22 @@ export const dataApi = createApi({
       }),
       invalidatesTags: ["Prompts"],
     }),
+    deletePrompt: builder.mutation<void, DeletePromptRequest>({
+      query: (body) => ({
+        url: "/data/prompt/delete",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["Prompts"],
+    }),
+    rollbackPrompt: builder.mutation<void, RollbackPromptRequest>({
+      query: (body) => ({
+        url: "/data/prompt/rollback",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Prompts"],
+    }),
     getLogs: builder.query<GetLogsResponse, QueryRequestWithPage>({
       query: (params) => ({
         url: "/data/log/list",
@@ -62,6 +78,8 @@ export const {
   useGetScoreDistributionQuery,
   useGetDataSummaryQuery,
   useGetAllPromptsQuery,
+  useDeletePromptMutation,
+  useRollbackPromptMutation,
   useCreatePromptMutation,
   useGetLogsQuery,
 } = dataApi;

@@ -3,7 +3,7 @@ import StatCard from "@/components/ui/cards/StatCard";
 import Navigator from "@/components/ui/Navigator";
 import { BackendURL } from "@/lib/server";
 import {
-  useAnalyzeProfileGeminiMutation,
+  useAddAllProfilesToCategoryMutation,
   useDeleteJunkProfilesMutation,
   useDeleteProfilesModelScoreMutation,
   useFindSimilarProfilesMutation,
@@ -11,6 +11,7 @@ import {
   useGetProfileStatsQuery,
   useImportProfileMutation,
 } from "@/redux/api/analysis.api";
+import { useGetAllCategoriesQuery } from "@/redux/api/category.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { openDialog } from "@/redux/slices/dialogSlice";
 import {
@@ -20,14 +21,20 @@ import {
   People,
   PeopleOutline,
   Restore,
+  Search,
 } from "@mui/icons-material";
 import {
   Box,
   Button,
   CircularProgress,
+  FormControl,
+  FormHelperText,
   Grid,
+  InputLabel,
   LinearProgress,
+  MenuItem,
   Paper,
+  Select,
   Typography,
 } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
@@ -52,6 +59,9 @@ export default function AnalysisPageComponent() {
         </Grid>
         <Grid size={3}>
           <ImportProfilesForm />
+          <Box mt={2}>
+            <AddProfilesToCategoryForm />
+          </Box>
         </Grid>
       </Grid>
     </Box>
@@ -190,8 +200,6 @@ function ProfileTable() {
     page: 0,
     pageSize: 10,
   });
-  const [analyzeProfile, { isLoading: isAnalyzingProfile }] =
-    useAnalyzeProfileGeminiMutation();
   const dispatch = useAppDispatch();
   const { data: profileList, isLoading: isLoadingProfiles } =
     useGetProfilesQuery({
@@ -200,27 +208,6 @@ function ProfileTable() {
     });
   const [findSimilarProfiles, { isLoading: isLoadingSimilar }] =
     useFindSimilarProfilesMutation();
-
-  const handleAnalyzeProfile = async (profileId: number) => {
-    try {
-      const response = await analyzeProfile({ id: profileId }).unwrap();
-      dispatch(
-        openDialog({
-          title: "Analysis Result",
-          content: `The analysis score is: ${response.data}`,
-          type: "success",
-        }),
-      );
-    } catch (error) {
-      dispatch(
-        openDialog({
-          title: "Analysis Failed",
-          content: (error as FetchError).data.error,
-          type: "error",
-        }),
-      );
-    }
-  };
 
   const handleFindSimilar = async (e: React.MouseEvent, profileId: number) => {
     try {
@@ -297,20 +284,12 @@ function ProfileTable() {
             gap={1}
           >
             <Button
-              onClick={() => handleAnalyzeProfile(params.row.id)}
-              disabled={params.row.is_analyzed || isAnalyzingProfile}
-              size="small"
-              variant="outlined"
-              color="success"
-            >
-              Analyze
-            </Button>
-            <Button
               onClick={(e) => handleFindSimilar(e, params.row.id)}
               disabled={isLoadingSimilar}
               size="small"
-              variant="outlined"
+              variant="contained"
               color="primary"
+              startIcon={<Search />}
             >
               Find Similar
             </Button>
@@ -497,14 +476,14 @@ function SimilarProfilesList({ profiles }: { profiles: SimilarProfile[] }) {
 
       <Box sx={{ maxHeight: 500, overflowY: "auto", pr: 1 }}>
         {profiles.map((sp: SimilarProfile, index: number) => {
-          const similarityPercent = (sp.Similarity * 100).toFixed(1);
-          const isHighSimilarity = sp.Similarity >= 0.8;
+          const similarityPercent = (sp.similarity * 100).toFixed(1);
+          const isHighSimilarity = sp.similarity >= 0.8;
           const isMediumSimilarity =
-            sp.Similarity >= 0.6 && sp.Similarity < 0.8;
+            sp.similarity >= 0.6 && sp.similarity < 0.8;
 
           return (
             <Paper
-              key={sp.ProfileID}
+              key={sp.profile_id}
               elevation={3}
               sx={{
                 p: 2,
@@ -550,15 +529,15 @@ function SimilarProfilesList({ profiles }: { profiles: SimilarProfile[] }) {
                         wordBreak: "break-word",
                       }}
                     >
-                      {sp.ProfileName.Valid
-                        ? sp.ProfileName.String
-                        : `Profile #${sp.ProfileID}`}
+                      {sp.profile_name.Valid
+                        ? sp.profile_name.String
+                        : `Profile #${sp.profile_id}`}
                     </Typography>
                   </Box>
 
-                  {sp.ProfileUrl && (
+                  {sp.profile_url && (
                     <Link
-                      href={sp.ProfileUrl}
+                      href={sp.profile_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ textDecoration: "none" }}
@@ -580,7 +559,7 @@ function SimilarProfilesList({ profiles }: { profiles: SimilarProfile[] }) {
                   )}
 
                   <Typography variant="caption" color="text.secondary">
-                    Profile ID: {sp.ProfileID}
+                    Profile ID: {sp.profile_id}
                   </Typography>
                 </Box>
 
@@ -762,6 +741,106 @@ function ImportProfilesForm() {
           startIcon={isUploading ? <CircularProgress size={20} /> : undefined}
         >
           {isUploading ? "Importing..." : "Import Profiles"}
+        </Button>
+      </Box>
+    </Paper>
+  );
+}
+
+type AddToCategoryFormData = {
+  category_id: number;
+};
+
+function AddProfilesToCategoryForm() {
+  const dispatch = useAppDispatch();
+  const { data: categoriesData } = useGetAllCategoriesQuery();
+  const [addAllProfilesToCategory, { isLoading: isAdding }] =
+    useAddAllProfilesToCategoryMutation();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    watch,
+  } = useForm<AddToCategoryFormData>({
+    defaultValues: {
+      category_id: 0,
+    },
+  });
+
+  const categories = categoriesData?.data || [];
+  const selectedCategoryId = watch("category_id");
+
+  const onSubmit = async (data: AddToCategoryFormData) => {
+    try {
+      const result = await addAllProfilesToCategory({
+        category_id: data.category_id,
+      }).unwrap();
+
+      dispatch(
+        openDialog({
+          title: "Success",
+          content: `Successfully added ${result.data || 0} profiles to the category.`,
+          type: "success",
+        }),
+      );
+      reset();
+    } catch (error) {
+      dispatch(
+        openDialog({
+          title: "Failed",
+          content: (error as FetchError).data?.error || "Failed to add profiles to category",
+          type: "error",
+        }),
+      );
+    }
+  };
+
+  return (
+    <Paper sx={{ p: 3 }}>
+      <Typography variant="h6" fontWeight={600} mb={2}>
+        Add All Profiles to Category
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+        <FormControl 
+          fullWidth 
+          error={!!errors.category_id}
+          sx={{ mb: 2 }}
+        >
+          <InputLabel id="category-select-label">Select Category</InputLabel>
+          <Select
+            labelId="category-select-label"
+            id="category-select"
+            value={selectedCategoryId}
+            label="Select Category"
+            {...register("category_id", {
+              required: "Please select a category",
+              validate: (value) => value !== 0 || "Please select a category",
+            })}
+          >
+            <MenuItem value={0}>
+              <em>-- Select a category --</em>
+            </MenuItem>
+            {categories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors.category_id && (
+            <FormHelperText>{errors.category_id.message}</FormHelperText>
+          )}
+        </FormControl>
+
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={isAdding || categories.length === 0}
+          startIcon={isAdding ? <CircularProgress size={20} /> : undefined}
+        >
+          {isAdding ? "Adding..." : "Add All to Category"}
         </Button>
       </Box>
     </Paper>

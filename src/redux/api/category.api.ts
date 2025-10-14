@@ -38,6 +38,26 @@ export const categoryApi = createApi({
       }),
       invalidatesTags: ["Categories"],
     }),
+    getGroupCategories: builder.query<GetAllCategoriesResponse, number>({
+      query: (groupId) => `/category/group/${groupId}`,
+      providesTags: ["Categories"],
+    }),
+    addGroupCategory: builder.mutation<void, AddGroupCategoryRequest>({
+      query: (body) => ({
+        url: "/category/group",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Categories"],
+    }),
+    deleteGroupCategory: builder.mutation<void, DeleteGroupCategoryRequest>({
+      query: (body) => ({
+        url: "/category/group",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["Categories"],
+    }),
   }),
 });
 
@@ -46,4 +66,7 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useAddGroupCategoryMutation,
+  useGetGroupCategoriesQuery,
+  useDeleteGroupCategoryMutation,
 } = categoryApi;

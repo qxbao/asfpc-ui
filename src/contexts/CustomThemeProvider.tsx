@@ -30,7 +30,7 @@ const theme = createTheme({
       main: "#727272ff",
     },
     info: {
-      main: "#1b3bc7ff",
+      main: "#2f50e2ff",
     },
     error: {
       main: "#d3271bff",
