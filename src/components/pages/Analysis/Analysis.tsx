@@ -26,7 +26,6 @@ import {
 import {
   Box,
   Button,
-  Chip,
   CircularProgress,
   FormControl,
   FormHelperText,
@@ -149,10 +148,10 @@ function ProfileStats() {
             {isLoading
               ? "Loading..."
               : `${(
-                  ((data?.data.analyzed_profiles || 0) /
-                    (data?.data.total_profiles || 1)) *
-                  100
-                ).toFixed(2)}%`}
+                ((data?.data.analyzed_profiles || 0) /
+                  (data?.data.total_profiles || 1)) *
+                100
+              ).toFixed(2)}%`}
             )
           </Typography>
           <LinearProgress
@@ -162,8 +161,8 @@ function ProfileStats() {
               isLoading
                 ? 0
                 : ((data?.data.analyzed_profiles || 0) /
-                    (data?.data.total_profiles || 1)) *
-                  100
+                  (data?.data.total_profiles || 1)) *
+                100
             }
           />
         </Box>
@@ -173,10 +172,10 @@ function ProfileStats() {
             {isLoading
               ? "Loading..."
               : `${(
-                  ((data?.data.embedded_count || 0) /
-                    (data?.data.total_profiles || 1)) *
-                  100
-                ).toFixed(2)}%`}
+                ((data?.data.embedded_count || 0) /
+                  (data?.data.total_profiles || 1)) *
+                100
+              ).toFixed(2)}%`}
             )
           </Typography>
           <LinearProgress
@@ -186,8 +185,8 @@ function ProfileStats() {
               isLoading
                 ? 0
                 : ((data?.data.embedded_count || 0) /
-                    (data?.data.total_profiles || 1)) *
-                  100
+                  (data?.data.total_profiles || 1)) *
+                100
             }
           />
         </Box>
@@ -201,20 +200,31 @@ function ProfileTable() {
     page: 0,
     pageSize: 10,
   });
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(undefined);
   const dispatch = useAppDispatch();
+  const { data: categories } = useGetAllCategoriesQuery();
   const { data: profileList, isLoading: isLoadingProfiles } =
     useGetProfilesQuery({
       limit: paginationModel.pageSize,
       page: paginationModel.page,
+      category_id: selectedCategoryId,
     });
-  const [findSimilarProfiles, { isLoading: isLoadingSimilar }] =
-    useFindSimilarProfilesMutation();
+  const [findSimilarProfiles, { isLoading: isLoadingSimilar }] = useFindSimilarProfilesMutation();
 
-  const handleFindSimilar = async (e: React.MouseEvent, profileId: number) => {
+  const handleFindSimilar = async (_: React.MouseEvent, profileId: number) => {
     try {
+      if (!selectedCategoryId) {
+        dispatch(openDialog({
+          title: "No Category Selected",
+          content: "Please select a category to find similar profiles.",
+          type: "warning",
+        }));
+        return;
+      }
       const profiles = await findSimilarProfiles({
         profile_id: profileId,
         top_k: 10,
+        category_id: selectedCategoryId,
       }).unwrap();
       dispatch(
         openDialog({
@@ -241,7 +251,8 @@ function ProfileTable() {
     }
   };
 
-  const columns: GridColDef[] = [
+  // Base columns
+  const baseColumns: GridColDef[] = [
     {
       field: "id",
       headerName: "ID",
@@ -257,43 +268,23 @@ function ProfileTable() {
       width: 80,
     },
     {
-      field: "gemini_score",
-      headerName: "Gemini Score",
-      type: "number",
-      align: "center",
-      width: 100,
-    },
-    {
       field: "model_score",
       headerName: "Model Score",
       type: "number",
-      align: "center",
-      width: 100,
+      width: 120,
+      valueFormatter: (value: NullableFloat64) => value.Valid ? value.Float64.toFixed(4) : '-',
     },
     {
-      field: "categories",
-      headerName: "Categories",
-      width: 250,
-      renderCell(params) {
-        const categories = params.row.categories;
-        if (categories.length === 0) {
-          return <Typography variant="body2" color="text.secondary">-</Typography>;
-        }
-        return (
-          <Box display="flex" alignItems="center" height="100%" gap={0.5} flexWrap="wrap" py={0.5}>
-            {categories.map((category: Category) => (
-              <Chip
-                key={category.id}
-                label={category.name}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-            ))}
-          </Box>
-        );
-      },
-    },
+      field: "gemini_score",
+      headerName: "Gemini Score",
+      type: "number",
+      width: 120,
+      valueFormatter: (value: NullableFloat64) => value.Valid ? value.Float64.toFixed(4) : '-',
+    }
+  ];
+
+  const columns: GridColDef[] = [
+    ...baseColumns,
     {
       field: "actions",
       headerName: "Actions",
@@ -340,24 +331,44 @@ function ProfileTable() {
   return (
     <Box>
       <Toolbar />
+      <Box sx={{ mb: 2, display: "flex", gap: 2, alignItems: "center" }}>
+        <FormControl size="small" sx={{ minWidth: 250 }}>
+          <InputLabel>Filter by Category</InputLabel>
+          <Select
+            value={selectedCategoryId ?? ""}
+            label="Filter by Category"
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedCategoryId(value === undefined ? undefined : Number(value));
+              setPaginationModel({ ...paginationModel, page: 0 });
+            }}
+          >
+            {categories?.data.map((cat) => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {selectedCategoryId && (
+            <FormHelperText>
+              Showing profiles in selected category
+            </FormHelperText>
+          )}
+        </FormControl>
+      </Box>
       <Paper sx={{ width: "100%" }}>
         <DataGrid
           rows={
             !isLoadingProfiles && profileList
               ? profileList.data.map((profile) => ({
-                  id: profile.id,
-                  name: profile.name.String,
-                  facebook_id: profile.facebook_id,
-                  nn_count: profile.non_null_count,
-                  is_analyzed: profile.is_analyzed.Bool,
-                  gemini_score: profile.gemini_score.Valid
-                    ? profile.gemini_score.Float64
-                    : "No",
-                  model_score: profile.model_score.Valid
-                    ? profile.model_score.Float64
-                    : "No",
-                  categories: profile.categories,
-                }))
+                id: profile.id,
+                name: profile.name.String,
+                facebook_id: profile.facebook_id,
+                nn_count: profile.non_null_count,
+                is_analyzed: profile.is_analyzed.Bool,
+                model_score: profile.model_score,
+                gemini_score: profile.gemini_score,
+              }))
               : []
           }
           columns={columns}
@@ -829,8 +840,8 @@ function AddProfilesToCategoryForm() {
         Add All Profiles to Category
       </Typography>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <FormControl 
-          fullWidth 
+        <FormControl
+          fullWidth
           error={!!errors.category_id}
           sx={{ mb: 2 }}
         >

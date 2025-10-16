@@ -1,11 +1,3 @@
-type Category = {
-  id: number;
-  name: string;
-  description: NullableString;
-  created_at: string;
-  updated_at: string;
-};
-
 type GetAllCategoriesResponse = {
   data: Category[];
 };

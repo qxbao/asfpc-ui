@@ -9,9 +9,8 @@ type ProfileAnalysis = {
   name: NullableString;
   non_null_count: number;
   is_analyzed: NullableBool;
-  gemini_score: NullableFloat64;
-  model_score: NullableFloat64;
-  categories: Category[];
+  model_score?: number | null;
+  gemini_score?: number | null;
 };
 
 type AnalyzeProfileGeminiResponse = {
@@ -44,6 +43,7 @@ type ImportProfileResponse = {
 
 type FindSimilarProfilesRequest = {
   profile_id: number;
+  category_id: number;
   top_k?: number;
 };
 

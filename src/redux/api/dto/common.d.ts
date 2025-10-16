@@ -9,6 +9,7 @@ type RequestWithID = {
 type QueryRequestWithPage = {
   page?: number;
   limit?: number;
+  category_id?: number;
 };
 
 type NullableInt32 = {
