@@ -3,6 +3,7 @@ import StatCard from "@/components/ui/cards/StatCard";
 import ErrorCard from "@/components/ui/ErrorCard";
 import Navigator from "@/components/ui/Navigator";
 import { useGetDataSummaryQuery } from "@/redux/api/data.api";
+import { useGetAllCategoriesQuery } from "@/redux/api/category.api";
 import {
   Comment,
   Group,
@@ -10,24 +11,52 @@ import {
   PostAdd,
   AccountCircle,
 } from "@mui/icons-material";
-import { Box, Grid, Typography } from "@mui/material";
+import { 
+  Box, 
+  Grid, 
+  Typography, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  MenuItem 
+} from "@mui/material";
+import { useState } from "react";
 import DataCharts from "./DataCharts";
 
 export default function StatsPageComponent() {
+  const [selectedCategory, setSelectedCategory] = useState<number>(1);
+  const { data: categoriesData } = useGetAllCategoriesQuery();
+
   return (
     <Box bgcolor={"background.paper"} p={3}>
       <Navigator link={["Statistics"]} />
-      <Typography variant="h6" fontWeight={600} marginBottom={3}>
-        Statistics
-      </Typography>
-      <StatsGrid />
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={3}>
+        <Typography variant="h6" fontWeight={600}>
+          Statistics
+        </Typography>
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+          <InputLabel>Category</InputLabel>
+          <Select
+            value={selectedCategory}
+            label="Category"
+            onChange={(e) => setSelectedCategory(Number(e.target.value))}
+          >
+            {categoriesData?.data.map((category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <StatsGrid categoryId={selectedCategory} />
     </Box>
   );
 }
 
-function StatsGrid() {
+function StatsGrid({ categoryId }: { categoryId: number }) {
   const { data, isLoading, isError, refetch } = useGetDataSummaryQuery(
-    undefined,
+    categoryId,
     {
       pollingInterval: 10000,
     },
@@ -97,7 +126,7 @@ function StatsGrid() {
           />
         </Grid>
       </Grid>
-      <DataCharts />
+      <DataCharts categoryId={categoryId} />
     </>
   );
 }
