@@ -13,21 +13,21 @@ export const dataApi = createApi({
         method: "GET",
       }),
     }),
-    getDataHistory: builder.query<GetDataHistoryResponse, void>({
-      query: () => ({
-        url: "/data/chart/timeseries",
+    getDataHistory: builder.query<GetDataHistoryResponse, number>({
+      query: (categoryId) => ({
+        url: `/data/chart/timeseries?category_id=${categoryId}`,
         method: "GET",
       }),
     }),
-    getScoreDistribution: builder.query<GetScoreDistributionResponse, void>({
-      query: () => ({
-        url: "/data/chart/scores",
+    getScoreDistribution: builder.query<GetScoreDistributionResponse, number>({
+      query: (categoryId) => ({
+        url: `/data/chart/scores?category_id=${categoryId}`,
         method: "GET",
       }),
     }),
-    getDataSummary: builder.query<GetDataSummaryResponse, void>({
-      query: () => ({
-        url: "/data/chart/dashboard",
+    getDataSummary: builder.query<GetDataSummaryResponse, number>({
+      query: (categoryId) => ({
+        url: `/data/chart/dashboard?category_id=${categoryId}`,
         method: "GET",
       }),
     }),

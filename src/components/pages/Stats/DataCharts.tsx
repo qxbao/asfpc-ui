@@ -59,21 +59,21 @@ const CustomTooltip = ({
   return null;
 };
 
-export default function DataCharts() {
+export default function DataCharts({ categoryId }: { categoryId: number }) {
   const theme = useTheme();
   const {
     data: historyData,
     isLoading: historyLoading,
     isError: historyError,
     refetch: refetchHistory,
-  } = useGetDataHistoryQuery();
+  } = useGetDataHistoryQuery(categoryId);
 
   const {
     data: scoreData,
     isLoading: scoreLoading,
     isError: scoreError,
     refetch: refetchScore,
-  } = useGetScoreDistributionQuery();
+  } = useGetScoreDistributionQuery(categoryId);
 
   const colors = {
     data: theme.palette.primary.main,
